@@ -3,7 +3,42 @@
 	<head>
 		<meta charset="utf-8">
 		<title>MUPLEx</title>
+	</head>
 
+	<body>
+		<script type="text/javascript">
+			"use strict";
+
+			window.onload = process;
+			var a;
+			
+			function process() {
+				var hInExp = document.getElementById('in_exp');
+				var hOutParser = document.getElementById('out_parser');
+
+				var expIn = hInExp.value;
+				var outParser = '';
+
+				try {
+					var t = Tokenizer.chop(expIn);
+					outParser += 'Tokens:\n-------\n' + t.join(', ') + '\n\n';
+
+					a = RDP.tree(t);
+					outParser += 'AST:\n----\n' + a.toString() + '\n\n';
+				} catch(err) {
+					outParser += err;
+				}
+
+				hOutParser.value = outParser;
+			}
+
+			function doEval() {
+				var hOutInterpreter = document.getElementById('out_interpreter');
+				var res = a.ev(Emp);
+				hOutInterpreter.value = res.toString();
+			}
+		</script>
+		
 		<script type="text/javascript" src="interpreter/List.js"></script>
 
 		<script type="text/javascript" src="interpreter/Unit.js"></script>
@@ -67,42 +102,7 @@
 
 		<script type="text/javascript" src="parser/RDP.js"></script>
 		<script type="text/javascript" src="parser/TokenList.js"></script>
-
-		<script type="text/javascript">
-			"use strict";
-
-			setTimeout(process, 200);
-			var a;
-			
-			function process() {
-				var hInExp = document.getElementById('in_exp');
-				var hOutParser = document.getElementById('out_parser');
-
-				var expIn = hInExp.value;
-				var outParser = '';
-
-				try {
-					var t = Tokenizer.chop(expIn);
-					outParser += 'Tokens:\n-------\n' + t.join(', ') + '\n\n';
-
-					a = RDP.tree(t);
-					outParser += 'AST:\n----\n' + a.toString() + '\n\n';
-				} catch(err) {
-					outParser += err;
-				}
-
-				hOutParser.value = outParser;
-			}
-
-			function doEval() {
-				var hOutInterpreter = document.getElementById('out_interpreter');
-				var res = a.ev(Emp);
-				hOutInterpreter.value = res.toString();
-			}
-		</script>
-	</head>
-
-	<body>
+		
 		<h2>MUPLEx</h2>
 		Code:
 		<br />
