@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MUPLEx</title>
+
+		<script type="text/javascript" src="interpreter/List.js"></script>
+
+		<script type="text/javascript" src="interpreter/Unit.js"></script>
+		<script type="text/javascript" src="interpreter/UnitQ.js"></script>
+
+		<script type="text/javascript" src="interpreter/Num.js"></script>
+		<script type="text/javascript" src="interpreter/NumQ.js"></script>
+		<script type="text/javascript" src="interpreter/Add.js"></script>
+		<script type="text/javascript" src="interpreter/Sub.js"></script>
+		<script type="text/javascript" src="interpreter/Mul.js"></script>
+		<script type="text/javascript" src="interpreter/Let.js"></script>
+		<script type="text/javascript" src="interpreter/Var.js"></script>
+		<script type="text/javascript" src="interpreter/Fun.js"></script>
+		<script type="text/javascript" src="interpreter/Closure.js"></script>
+		<script type="text/javascript" src="interpreter/Call.js"></script>
+
+		<script type="text/javascript" src="interpreter/Bool.js"></script>
+		<script type="text/javascript" src="interpreter/BoolQ.js"></script>
+		<script type="text/javascript" src="interpreter/If.js"></script>
+		<script type="text/javascript" src="interpreter/Greater.js"></script>
+		<script type="text/javascript" src="interpreter/And.js"></script>
+		<script type="text/javascript" src="interpreter/Or.js"></script>
+		<script type="text/javascript" src="interpreter/Xor.js"></script>
+
+		<script type="text/javascript" src="interpreter/Record.js"></script>
+		<script type="text/javascript" src="interpreter/RecordQ.js"></script>
+		<script type="text/javascript" src="interpreter/Deref.js"></script>
+		<script type="text/javascript" src="interpreter/ContainsQ.js"></script>
+
+		<script type="text/javascript" src="interpreter/Set.js"></script>
+		<script type="text/javascript" src="interpreter/SetFst.js"></script>
+		<script type="text/javascript" src="interpreter/SetSnd.js"></script>
+
+		<script type="text/javascript" src="interpreter/Pair.js"></script>
+		<script type="text/javascript" src="interpreter/PairQ.js"></script>
+		<script type="text/javascript" src="interpreter/Fst.js"></script>
+		<script type="text/javascript" src="interpreter/Snd.js"></script>
+
+		<script type="text/javascript" src="expansion/callStar.js"></script>
+		<script type="text/javascript" src="expansion/funStar.js"></script>
+		<script type="text/javascript" src="expansion/ifStar.js"></script>
+		<script type="text/javascript" src="expansion/letStar.js"></script>
+		<script type="text/javascript" src="expansion/letrecStar.js"></script>
+		<script type="text/javascript" src="expansion/pairStar.js"></script>
+
+		<script type="text/javascript" src="CodeColor.js"></script>
+
+		<script type="text/javascript" src="tokenizer/IterableString.js"></script>
+		<script type="text/javascript" src="tokenizer/Tokenizer.js"></script>
+		<script type="text/javascript" src="tokenizer/TokBool.js"></script>
+		<script type="text/javascript" src="tokenizer/TokCommML.js"></script>
+		<script type="text/javascript" src="tokenizer/TokCommSL.js"></script>
+		<script type="text/javascript" src="tokenizer/TokEnd.js"></script>
+		<script type="text/javascript" src="tokenizer/TokIdentifier.js"></script>
+		<script type="text/javascript" src="tokenizer/TokKeyword.js"></script>
+		<script type="text/javascript" src="tokenizer/TokLPar.js"></script>
+		<script type="text/javascript" src="tokenizer/TokNum.js"></script>
+		<script type="text/javascript" src="tokenizer/TokRPar.js"></script>
+		<script type="text/javascript" src="tokenizer/TokStr.js"></script>
+		<script type="text/javascript" src="tokenizer/TokWhitespace.js"></script>
+
+		<script type="text/javascript" src="parser/RDP.js"></script>
+		<script type="text/javascript" src="parser/TokenList.js"></script>
+
+		<script type="text/javascript">
+			"use strict";
+
+			setTimeout(process, 200);
+			var a;
+			
+			function process() {
+				var hInExp = document.getElementById('in_exp');
+				var hOutParser = document.getElementById('out_parser');
+
+				var expIn = hInExp.value;
+				var outParser = '';
+
+				try {
+					var t = Tokenizer.chop(expIn);
+					outParser += 'Tokens:\n-------\n' + t.join(', ') + '\n\n';
+
+					a = RDP.tree(t);
+					outParser += 'AST:\n----\n' + a.toString() + '\n\n';
+				} catch(err) {
+					outParser += err;
+				}
+
+				hOutParser.value = outParser;
+			}
+
+			function doEval() {
+				var hOutInterpreter = document.getElementById('out_interpreter');
+				var res = a.ev(Emp);
+				hOutInterpreter.value = res.toString();
+			}
+		</script>
+	</head>
+
+	<body>
+		<h2>MUPLEx</h2>
+		Code:
+		<br />
+		<textarea id="in_exp" onkeyup="process()" rows="10" cols="50">(let a 10
+ (let f (fun f x (+ x a))
+  (set! a 3
+   (let a 100
+    (call f 11)))))</textarea>
+		<br />
+
+		Parser output:
+		<br />
+		<textarea id="out_parser" rows="10" cols="50" readonly="readonly"></textarea>		
+ 	
+ 	<br />
+  <input value="Compute" type="button" onclick="doEval()"/>
+  <br />
+  <br />
+  Interpreter output:
+		<br />
+		<textarea id="out_interpreter" rows="10" cols="50" readonly="readonly"></textarea>
+	</body>
+</html>
