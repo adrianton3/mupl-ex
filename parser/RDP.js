@@ -207,32 +207,24 @@ RDP.tree.special._ifStar = function(token) {
 	return ifStar(ifList, ifDef);
 }
 
-RDP.tree.special._fun = function(token) {
-	token.expect(RDP.tree.identifier, 'RDP: first fun parameter must be an identifier');
-	var funName = token.past().s;
-	token.expect(RDP.tree.identifier, 'RDP: second fun parameter must be an identifier');
-	var funPName = token.past().s;
+RDP.tree.special._lambdaStar = function(token) {
+	token.expect(RDP.tree.lPar, 'RDP: lambda missing lpar');
+	var funParamList = RDP.tree.funParamList(token);
+	token.expect(RDP.tree.rPar, 'RDP: lambda missing rpar');
 	var funBody = RDP.tree.exp(token);
-	token.expect(RDP.tree.rPar, 'RDP: fun: Missing rpar');
-	return new Fun(funName, funPName, funBody);
+	token.expect(RDP.tree.rPar, 'RDP: lambda: Missing rpar');
+	return new funStar(false, funParamList, funBody);
 }
 
 RDP.tree.special._funStar = function(token) {
-	token.expect(RDP.tree.identifier, 'RDP: first fun* parameter must be an identifier');
+	token.expect(RDP.tree.identifier, 'RDP: first fun parameter must be an identifier');
 	var funName = token.past().s;
-	token.expect(RDP.tree.lPar, 'RDP: fun* missing lpar');
+	token.expect(RDP.tree.lPar, 'RDP: fun missing lpar');
 	var funParamList = RDP.tree.funParamList(token);
-	token.expect(RDP.tree.rPar, 'RDP: fun* missing rpar');
+	token.expect(RDP.tree.rPar, 'RDP: fun missing rpar');
 	var funBody = RDP.tree.exp(token);
-	token.expect(RDP.tree.rPar, 'RDP: fun*: Missing rpar');
+	token.expect(RDP.tree.rPar, 'RDP: fun: Missing rpar');
 	return new funStar(funName, funParamList, funBody);
-}
-
-RDP.tree.special._call = function(token) {
-	var callCallee = RDP.tree.exp(token);
-	var callParam = RDP.tree.exp(token);
-	token.expect(RDP.tree.rPar, 'RDP: call: Missing rpar');
-	return new Call(callCallee, callParam);
 }
 
 RDP.tree.special._callStar = function(token) {
@@ -423,14 +415,13 @@ RDP.tree.special._setsnd = function(token) {
 
 RDP.tree.special.bindings = [
 	new StrHandlerPair('if'       , RDP.tree.special._if        ),
-	new StrHandlerPair('if*'      , RDP.tree.special._ifStar    ),
+	new StrHandlerPair('cond'     , RDP.tree.special._ifStar    ),
 	new StrHandlerPair('let'      , RDP.tree.special._let       ),
 	new StrHandlerPair('let*'     , RDP.tree.special._letStar   ),
 	new StrHandlerPair('letrec'   , RDP.tree.special._letrecStar),
-	new StrHandlerPair('fun'      , RDP.tree.special._fun       ),
-	new StrHandlerPair('fun*'     , RDP.tree.special._funStar   ),
-	new StrHandlerPair('call'     , RDP.tree.special._call      ),
-	new StrHandlerPair('call*'    , RDP.tree.special._callStar  ),
+	new StrHandlerPair('lambda'   , RDP.tree.special._lambdaStar),
+	new StrHandlerPair('fun'      , RDP.tree.special._funStar   ),
+	new StrHandlerPair('call'     , RDP.tree.special._callStar  ),
 	new StrHandlerPair('record'   , RDP.tree.special._record    ),
 	new StrHandlerPair('record?'  , RDP.tree.special._recordQ   ),
 	new StrHandlerPair('contains?', RDP.tree.special._containsQ ),

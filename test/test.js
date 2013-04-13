@@ -113,9 +113,9 @@ test('Record', function() {
 });
 
 test('Fun', function() {
-	deepEqual(_e('(call (fun f x (+ 10 x)) 5)'), new Num(15), 'Fun');
-	deepEqual(_e('(let a 10 (call (fun f x (+ a x)) 5))'), new Num(15), 'Closure');
-	deepEqual(_e('(let a 10 (let f (fun f x (+ a x)) (let a 30 (call f 5))))'), new Num(15), 'Closure scope');
+	deepEqual(_e('(call (fun f (x) (+ 10 x)) 5)'), new Num(15), 'Fun');
+	deepEqual(_e('(let a 10 (call (fun f (x) (+ a x)) 5))'), new Num(15), 'Closure');
+	deepEqual(_e('(let a 10 (let f (fun f (x) (+ a x)) (let a 30 (call f 5))))'), new Num(15), 'Closure scope');
 });
 
 test('Set!', function() {
@@ -127,9 +127,9 @@ test('Set!', function() {
 });
 
 test('Extendibles', function() {
-	deepEqual(_e('(if* ((#t 10) (#t 20)) 30)'), new Num(10), 'If*');
-	deepEqual(_e('(if* ((#f 10) (#t 20)) 30)'), new Num(20), 'If*');
-	deepEqual(_e('(if* ((#f 10) (#f 20)) 30)'), new Num(30), 'If*');
+	deepEqual(_e('(cond ((#t 10) (#t 20)) 30)'), new Num(10), 'If*');
+	deepEqual(_e('(cond ((#f 10) (#t 20)) 30)'), new Num(20), 'If*');
+	deepEqual(_e('(cond ((#f 10) (#f 20)) 30)'), new Num(30), 'If*');
 	
 	deepEqual(_e('(let* ((a 10) (b 20)) a)'), new Num(10), 'Let*');
 	deepEqual(_e('(let* ((a 10) (a 20)) a)'), new Num(20), 'Let*');
@@ -140,8 +140,10 @@ test('Extendibles', function() {
 	deepEqual(_e('(list 11)'), new Pair(new Num(11), new Unit()), 'Short list');
 	deepEqual(_e('(list)'), new Unit(), 'Shortest list');
 	
-	deepEqual(_e('(call* (fun* f (a b) (+ a b)) 11 22)'), new Num(33), 'Call*(Fun*)');
-	deepEqual(_e('(let c (call (fun* f (a b) (+ a b)) 11) (call c 22))'), new Num(33), 'Call*(Fun*)');
+	deepEqual(_e('(call (fun f (a b) (+ a b)) 11 22)'), new Num(33), 'Call(Fun)');
+	deepEqual(_e('(let c (call (fun f (a b) (+ a b)) 11) (call c 22))'), new Num(33), 'Call(Fun)');
+	
+	deepEqual(_e('(call (lambda (a b) (+ a b)) 11 22)'), new Num(33), 'Call(Lambda)');
 	
 	deepEqual(_e('(letrec ((a c) (b 22) (c b)) c)'), new Num(22), 'Letrec');
 });

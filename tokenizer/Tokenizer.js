@@ -159,11 +159,11 @@ Tokenizer.chop.alphanum.reserved = [
 	'unit',
 	'pair', 'pair?', 'list', 'fst', 'snd',
 	'record', 'record?', 'deref', 'contains?',
-	'fun', 'fun*', 'lambda', 'call', 'call*',
+	'fun', 'lambda', 'call',
 	'+', '-', '*', '/', '%',
 	'<', '<=', '=', '>=', '>',
 	'and', 'or', 'xor',
-	'let', 'let*', 'letrec', 'if', 'if*',
+	'let', 'let*', 'letrec', 'if', 'cond',
 	'set!', 'setfst!', 'setsnd!',
 	'num?', 'bool?', 'unit?'];
 

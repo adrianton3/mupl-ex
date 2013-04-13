@@ -107,7 +107,7 @@
 		Code:
 		<br />
 		<textarea id="in_exp" onkeyup="process()" rows="10" cols="50">(let a 10
- (let f (fun f x (+ x a))
+ (let f (lambda (x) (+ x a))
   (set! a 3
    (let a 100
     (call f 11)))))</textarea>
