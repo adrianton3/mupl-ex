@@ -19,15 +19,12 @@ Tokenizer.chop = function(s) {
 			var n = str.next();
 			if(n == '/') {
 				var tmp = Tokenizer.chop.commsl(str)
-				//tok.push(tmp);
 			}
 			else if(n == '*') {
 				var tmp = Tokenizer.chop.commml(str);
-				//tok.push(tmp); 
 			}
 			else {
-				var tmp = Tokenizer.chop.alphanum(str);
-				//tok.push(tmp); 
+				tok.push(Tokenizer.chop.alphanum(str));
 			}
 		}
 		else if(c >= '0' && c <= '9') { 
@@ -104,6 +101,8 @@ Tokenizer.chop.num = function(str) {
 		}
 	}
 	
+	if(') \n\t'.indexOf(str.cur()) == -1) throw "Unexpected character '" + str.cur() + "' after \"" + str.getMarked() + '"';
+	
 	return new TokNum(str.getMarked());
 }
 
@@ -161,8 +160,8 @@ Tokenizer.chop.alphanum.reserved = [
 	'record', 'record?', 'deref', 'contains?',
 	'fun', 'lambda', 'call',
 	'+', '-', '*', '/', '%',
-	'<', '<=', '=', '>=', '>',
-	'and', 'or', 'xor',
+	/*'<', '<=', '=', '>='*/, '>',
+	'not', 'and', 'or', 'xor',
 	'let', 'let*', 'letrec', 'if', 'cond',
 	'set!', 'setfst!', 'setsnd!',
 	'num?', 'bool?', 'unit?'];

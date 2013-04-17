@@ -4,14 +4,14 @@ MUPLEx
 MUPLEx is a Scheme like language, a superset of MUPL. The original MUPL specification was provided by Dan Grossman.
 In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, branching and implicit currying.
 
-[Try it out](http://htmlpreview.github.com/?https://github.com/madflame991/muplex/blob/working/main.html)
-\* will not work in Chrome/Safari  
+[Try it out](http://htmlpreview.github.com/?https://github.com/madflame991/muplex/blob/working/main.html)  
+\*will not work in Chrome/Safari
 
 **Examples:**
 
 1. The map function
 
-```clojure
+ ```clojure
 (call 
 
  (fun map (l op)
@@ -25,8 +25,8 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
 
 2. Closures
 
-```clojure
-(letrec 
+ ```clojure
+(let* 
  ((f (lambda (x y) (+ x y)))
   (add10 (call f 10)))
  (call add10 3))
@@ -34,7 +34,7 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
 
 3. Mutation
 
-```clojure
+ ```clojure
 (let a 10
  (let f (lambda (x) (+ x a))
   (set! a 3
@@ -56,6 +56,10 @@ Planned features:
 
 Version history:
 ----------------
+
+### 0.2.1
+
+* added /, %, not
 
 ### 0.2
 

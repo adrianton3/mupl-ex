@@ -13,6 +13,7 @@ test('Atomic tests', function() {
 	deepEqual(_l('//sl comment'), [new TokEnd()], 'SL comment parse');
 	deepEqual(_l('/*ml comment*/'), [new TokEnd()], 'ML comment parse');
 	deepEqual(_l('/*ml\ncomment*/'), [new TokEnd()], 'ML comment with NL parse');
+	deepEqual(_l('/'), [new TokKeyword('/'), new TokEnd()], 'Slash');
   deepEqual(_l('764'), [new TokNum(764), new TokEnd()], 'Num int parse');
   deepEqual(_l('764.432'), [new TokNum(764.432), new TokEnd()], 'Num float parse');
   deepEqual(_l('#t'), [new TokBool('#t'), new TokEnd()], 'Bool true parse');
@@ -32,6 +33,17 @@ test('Exceptions', function() {
 	throws(function() { _l('"str\ning"') }, 'NL in double quoted string');
 	throws(function() { _l("'") }, 'Single quote');
 	throws(function() { _l('"') }, 'Double quote');
+	throws(function() { _l('234iden') }, 'Num.Identifier');
+});
+
+test('Identifiers', function() {
+	deepEqual(_l('iden'), [new TokIdentifier('iden'), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden10'), [new TokIdentifier('iden10'), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden10th'), [new TokIdentifier('iden10th'), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden-a'), [new TokIdentifier('iden-a'), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden?'), [new TokIdentifier('iden?'), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden'), [new TokIdentifier('iden'), new TokEnd()], 'Identifier');
+	deepEqual(_l('++'), [new TokIdentifier('++'), new TokEnd()], 'Identifier');
 });
 //=============================================================================
 module('parser');
@@ -66,12 +78,16 @@ test('Atomic trees', function() {
 });
 
 test('Math ops', function() {
-	deepEqual(_e('(+ 15 20)'), new Num(35), 'Add');
-	deepEqual(_e('(- 15 20)'), new Num(-5), 'Sub');
-	deepEqual(_e('(* 15 20)'), new Num(300), 'Mul');
+	deepEqual(_e('(+ 15 20)'), new Num(15+20), 'Add');
+	deepEqual(_e('(- 15 20)'), new Num(15-20), 'Sub');
+	deepEqual(_e('(* 15 20)'), new Num(15*20), 'Mul');
+	deepEqual(_e('(/ 15 20)'), new Num(15/20), 'Div');
+	deepEqual(_e('(% 15 20)'), new Num(15%20), 'Mod');
 });
 
 test('Bool ops', function() {
+	deepEqual(_e('(not #f)'), new Bool(true), 'Not');
+	deepEqual(_e('(not #t)'), new Bool(false), 'Not');
 	deepEqual(_e('(and #f #t)'), new Bool(false), 'And');
 	deepEqual(_e('(and #t #t)'), new Bool(true), 'And');
 	deepEqual(_e('(or #f #t)'), new Bool(true), 'Or');

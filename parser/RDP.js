@@ -26,7 +26,12 @@
  * | contains? exp contains_list
  * | deref exp name
  * | num? exp
+ * | and exp exp
+ * | or exp exp
+ * | xor exp exp
  * | + exp exp
+ * | - exp exp
+ * | * exp exp
  * | > exp exp
  * 
  * if_list -> [ ( exp exp ) ]
@@ -358,11 +363,31 @@ RDP.tree.special._mul = function(token) {
 	return new Mul(mulE1, mulE2);
 }
 
+RDP.tree.special._div = function(token) {
+	var divE1 = RDP.tree.exp(token);
+	var divE2 = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: /: Missing rpar');
+	return new Div(divE1, divE2);
+}
+
+RDP.tree.special._mod = function(token) {
+	var modE1 = RDP.tree.exp(token);
+	var modE2 = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: %: Missing rpar');
+	return new Mod(modE1, modE2);
+}
+
 RDP.tree.special._greater = function(token) {
 	var greaterE1 = RDP.tree.exp(token);
 	var greaterE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: >: Missing rpar');
 	return new Greater(greaterE1, greaterE2);
+}
+
+RDP.tree.special._not = function(token) {
+	var notE = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: not: Missing rpar');
+	return new Not(notE);
 }
 
 RDP.tree.special._and = function(token) {
@@ -427,12 +452,15 @@ RDP.tree.special.bindings = [
 	new StrHandlerPair('contains?', RDP.tree.special._containsQ ),
 	new StrHandlerPair('deref'    , RDP.tree.special._deref     ),
 	new StrHandlerPair('>'        , RDP.tree.special._greater   ),
+	new StrHandlerPair('not'      , RDP.tree.special._not       ),
 	new StrHandlerPair('and'      , RDP.tree.special._and       ),
 	new StrHandlerPair('or'       , RDP.tree.special._or        ), 
 	new StrHandlerPair('xor'      , RDP.tree.special._xor       ), 
 	new StrHandlerPair('+'        , RDP.tree.special._add       ), 
 	new StrHandlerPair('-'        , RDP.tree.special._sub       ), 
-	new StrHandlerPair('*'        , RDP.tree.special._mul       ), 
+	new StrHandlerPair('*'        , RDP.tree.special._mul       ),
+	new StrHandlerPair('/'        , RDP.tree.special._div       ),
+	new StrHandlerPair('%'        , RDP.tree.special._mod       ), 
 	new StrHandlerPair('num?'     , RDP.tree.special._numQ      ), 
 	new StrHandlerPair('unit?'    , RDP.tree.special._unitQ     ),
 	new StrHandlerPair('bool?'    , RDP.tree.special._boolQ     ),
