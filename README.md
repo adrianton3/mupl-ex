@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 MUPLEx
 ======
 
@@ -76,3 +77,7 @@ Version history:
 muplex
 ======
 >>>>>>> remotes/gh/master
+=======
+muplex
+======
+>>>>>>> 515e9856cad3063856873d5547177681d309f12a
