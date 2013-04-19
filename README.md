@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 MUPLEx
 ======
 
@@ -73,11 +71,3 @@ Version history:
 ### 0.1
 
 * basic scheme-like language
-=======
-muplex
-======
->>>>>>> remotes/gh/master
-=======
-muplex
-======
->>>>>>> 515e9856cad3063856873d5547177681d309f12a
