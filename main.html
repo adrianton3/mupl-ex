@@ -34,8 +34,15 @@
 
 			function doEval() {
 				var hOutInterpreter = document.getElementById('out_interpreter');
+				
+				Out.reset();
 				var res = a.ev(Emp);
-				hOutInterpreter.value = res.toString();
+				var istr = res.toString();
+				
+				istr += '\n---\n\n';
+				istr += Out.toString();
+				
+				hOutInterpreter.value = istr;
 			}
 		</script>
 		
@@ -80,6 +87,9 @@
 		<script type="text/javascript" src="interpreter/PairQ.js"></script>
 		<script type="text/javascript" src="interpreter/Fst.js"></script>
 		<script type="text/javascript" src="interpreter/Snd.js"></script>
+		
+		<script type="text/javascript" src="interpreter/Out.js"></script>
+		<script type="text/javascript" src="interpreter/Print.js"></script>
 
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>

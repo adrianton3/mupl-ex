@@ -49,13 +49,17 @@ it's very good as syntactic salt for preventing the common "I lost 15 minutes on
 Planned features:
 -----------------
 
+* add strings
 * add namespaces or some equivalent construct
 * add +, *, ... for more than 2 operands
 * add "compile-time" basic type checking for primitive operations
-* add print
 
 Version history:
 ----------------
+
+### 0.2.2
+
+* added a quick and dirty way to print stuff
 
 ### 0.2.1
 

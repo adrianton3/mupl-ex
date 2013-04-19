@@ -164,7 +164,8 @@ Tokenizer.chop.alphanum.reserved = [
 	'not', 'and', 'or', 'xor',
 	'let', 'let*', 'letrec', 'if', 'cond',
 	'set!', 'setfst!', 'setsnd!',
-	'num?', 'bool?', 'unit?'];
+	'num?', 'bool?', 'unit?',
+	'print'];
 
 Tokenizer.chop.whitespace = function(str) {
 	str.setMarker();
