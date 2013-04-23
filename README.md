@@ -5,7 +5,7 @@ MUPLEx is a Scheme like language, a superset of MUPL. The original MUPL specific
 In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, branching and implicit currying.
 
 [Try it out](http://htmlpreview.github.com/?https://github.com/madflame991/muplex/blob/working/main.html)  
-\*will not work in Chrome/Safari
+\*the live demo will not work in Chrome/Safari
 
 **Examples:**
 
@@ -51,11 +51,17 @@ Planned features:
 
 * add strings
 * add namespaces or some equivalent construct
-* add +, *, ... for more than 2 operands
-* add "compile-time" basic type checking for primitive operations
+* add +, \*, ... for more than 2 operands
+* add code formatting
+* add exceptions
+* remove/change currying by default
 
 Version history:
 ----------------
+
+### 0.3
+
+* added "compile time" basic type checking
 
 ### 0.2.2
 
