@@ -44,7 +44,24 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
 Notice that function calls are done with the explicit *call* construct. 
 This was intially considered because it greatly simplified the parser and later because 
 it's very good as syntactic salt for preventing the common "I lost 15 minutes on a bug caused by a pair of rogue parantheses" 
- 
+
+
+###The type system
+MUPLEx is dynamically typed. Before doing any operation, the evaluator first checks that the arguments 
+are of the correct type and throws a runtime error if they are not.
+
+In addition to this, there is some type checking that is performed at "compile time", before launching the program. 
+This is done in order to filter out programs that would otherwise fail at runtime (but only if that code is reached). 
+Of course, this system cannot prevent every faulty program from being launched.
+
+**Examples of errors caught before launch:**
+
+```clojure
+(+ 10 #f)
+(+ (fst (pair unit 30)) 40)
+(call #t 20)
+(snd (record (a 1) (b 2)))
+```
 
 Planned features:
 -----------------
@@ -58,6 +75,10 @@ Planned features:
 
 Version history:
 ----------------
+
+### 0.3.1
+
+* added "compile time" checking for variables' definition
 
 ### 0.3
 

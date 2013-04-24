@@ -4,6 +4,7 @@ var _l = function(s) { return Tokenizer.chop(s); }
 var _p = function(s) { return RDP.tree(Tokenizer.chop(s)); }
 var _e = function(s) { return RDP.tree(Tokenizer.chop(s)).ev(Emp); }
 var _t = function(s) { return RDP.tree(Tokenizer.chop(s)).accept(new TypeCheck()); }
+var _v = function(s) { return RDP.tree(Tokenizer.chop(s)).accept(new VarCheck(), Emp); }
 
 module('tokenizer');
 test('Atomic tests', function() {
@@ -186,10 +187,45 @@ test('Type eval', function() {
 });
 
 test('Exceptions', function() {
-	throws(function() { return _t('(+ 4 #f)'); }, '+');
-	throws(function() { return _t('(and 4 #f)'); }, 'and');
 	throws(function() { return _t('(if 4 10 20)'); }, 'if');
+	
+	throws(function() { return _t('(num? (if 4 10 20))'); }, 'num? if num num num');
+	throws(function() { return _t('(+ 4 #f)'); }, '+');
+	throws(function() { return _t('(- #t #f)'); }, '-');
+	throws(function() { return _t('(* unit 5)'); }, '*');
+	throws(function() { return _t('(/ v unit)'); }, '/');
+	throws(function() { return _t('(% 4 (pair 1 2))'); }, '%');
+	
+	throws(function() { return _t('(bool? (if 4 10 20))'); }, 'bool? if num num num');
+	throws(function() { return _t('(not 1)'); }, 'and');
+	throws(function() { return _t('(and 4 #f)'); }, 'and');
+	throws(function() { return _t('(or unit #t)'); }, 'or');
+	throws(function() { return _t('(xor (pair 10 30) (pair 20 40))'); }, 'xor');
+	
+	throws(function() { return _t('(pair? (if 4 10 20))'); }, 'pair? if num num num');
+	throws(function() { return _t('(pair (if 4 10 20) 30)'); }, 'pair (if num num num) num');
+	throws(function() { return _t('(pair 30 (if 4 10 20))'); }, 'pair num (if num num num)');
 	throws(function() { return _t('(fst 90)'); }, 'fst num');
 	throws(function() { return _t('(fst (if #f 30 40))'); }, 'fst if num num');
 	throws(function() { return _t('(snd (if #f #f #f))'); }, 'snd if bool bool');
+	
+	throws(function() { return _t('(let x 40 (if 4 10 20))'); }, 'let num (if num num num)');
+	throws(function() { return _t('(let x (if 4 10 20) 40)'); }, 'let (if num num num) num');
+});
+//=============================================================================
+module('var checker');
+test('Basic tests', function() {
+	ok(_v('#f'), '#f');
+	ok(_v('424'), 'num');
+	ok(_v('(+ 30 12)'), '+');
+	ok(_v('(let a 10 (- a 10))'), 'let -');
+	ok(_v('(let b 10 (fun f (a) (+ a b)))'), 'let fun +');
+	ok(_v('(fun f (a) (call f a))'), 'fun call +');
+});
+
+test('Exceptions', function() {
+	throws(function() { return _v('a'); }, 'var');
+	throws(function() { return _v('(let a 10 b)'); }, 'let var');
+	throws(function() { return _v('(fun f (a) (+ a b))'); }, 'fun var');
+	throws(function() { return _v('(lambda (x) (call f x))'); }, 'fun var');
 });

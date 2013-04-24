@@ -15,6 +15,7 @@
 			function process() {
 				var hInExp = document.getElementById('in_exp');
 				var hOutParser = document.getElementById('out_parser');
+				var hComputeButton = document.getElementById('but_compute');
 
 				var expIn = hInExp.value;
 				var outParser = '';
@@ -28,8 +29,14 @@
 					
 					a.accept(new TypeCheck());
 					outParser += 'Type checker:\n-------------\nOK.\n\n';
+					
+					a.accept(new VarCheck());
+					outParser += 'Var checker:\n-------------\nOK.\n\n';
+					
+					hComputeButton.disabled = false;
 				} catch(err) {
 					outParser += err;
+					hComputeButton.disabled = true;
 				}
 
 				hOutParser.value = outParser;
@@ -103,6 +110,7 @@
   <script type="text/javascript" src="interpreter/types/TypeUnit.js"></script>
   
   <script type="text/javascript" src="interpreter/TypeCheck.js"></script>
+  <script type="text/javascript" src="interpreter/VarCheck.js"></script>
 
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>
@@ -145,7 +153,7 @@
 		<textarea id="out_parser" rows="10" cols="50" readonly="readonly"></textarea>		
  	
  	<br />
-  <input value="Compute" type="button" onclick="doEval()"/>
+  <input value="Compute" id="but_compute" type="button" onclick="doEval()"/>
   <br />
   <br />
   Interpreter output:
