@@ -438,6 +438,13 @@ RDP.tree.special._setsnd = function(token) {
 	return new SetSnd(setsndName, setsndValExp, setsndRetExp);
 }
 
+RDP.tree.special._print = function(token) {
+	var printPrintExp = RDP.tree.exp(token);
+	var printRetExp = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: print: Missing rpar');
+	return new Print(printPrintExp, printRetExp);
+}
+
 RDP.tree.special.bindings = [
 	new StrHandlerPair('if'       , RDP.tree.special._if        ),
 	new StrHandlerPair('cond'     , RDP.tree.special._ifStar    ),
@@ -471,7 +478,8 @@ RDP.tree.special.bindings = [
 	new StrHandlerPair('snd'      , RDP.tree.special._snd       ), 
 	new StrHandlerPair('set!'     , RDP.tree.special._set       ),
 	new StrHandlerPair('setfst!'  , RDP.tree.special._setfst    ),
-	new StrHandlerPair('setsnd!'  , RDP.tree.special._setsnd    )];
+	new StrHandlerPair('setsnd!'  , RDP.tree.special._setsnd    ),
+	new StrHandlerPair('print'  ,   RDP.tree.special._print     )];
 //=============================================================================
 function StrHandlerPair(s, h) {
 	this.s = s;
