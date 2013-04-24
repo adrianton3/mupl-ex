@@ -5,7 +5,7 @@ MUPLEx is a Scheme like language, a superset of MUPL. The original MUPL specific
 In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, branching and implicit currying.
 
 [Try it out](http://htmlpreview.github.com/?https://github.com/madflame991/muplex/blob/working/main.html)  
-\*the live demo will not work in Chrome/Safari
+\*the live demo will not work with the *github HTML preview* on Chrome/Safari
 
 **Examples:**
 
@@ -41,7 +41,7 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
    (call f 11))))
 ```
 
-Notice that function calls are done with the explicit *call* construct. 
+Notice that function calls are done with the explicit `call` construct. 
 This was intially considered because it greatly simplified the parser and later because 
 it's very good as syntactic salt for preventing the common "I lost 15 minutes on a bug caused by a pair of rogue parantheses" 
 
@@ -62,6 +62,9 @@ Of course, this system cannot prevent every faulty program from being launched.
 (call #t 20)
 (snd (record (a 1) (b 2)))
 ```
+
+Moreover, before launch, the program is checked to see if it contains references to undeclared variables.
+
 
 Planned features:
 -----------------
@@ -96,8 +99,8 @@ Version history:
 
 * added anonymous functions
 * added no-parameter functions
-* removed old *fun* and *call*
-* renamed *if\** to *cond*
+* removed old `fun` and `call`
+* renamed `if*` to `cond`
 
 ### 0.1
 

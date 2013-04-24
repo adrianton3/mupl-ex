@@ -30,7 +30,7 @@
 					a.accept(new TypeCheck());
 					outParser += 'Type checker:\n-------------\nOK.\n\n';
 					
-					a.accept(new VarCheck());
+					a.accept(new VarCheck(), Emp);
 					outParser += 'Var checker:\n-------------\nOK.\n\n';
 					
 					hComputeButton.disabled = false;
