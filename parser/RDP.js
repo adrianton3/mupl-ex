@@ -239,6 +239,12 @@ RDP.tree.special._callStar = function(token) {
 	return new callStar(callCallee, callParamList);
 }
 
+RDP.tree.special._closureQ = function(token) {
+	var closureE = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: closure?: Missing rpar');
+	return new ClosureQ(closureE);
+}
+
 RDP.tree.special._let = function(token) {
 	token.expect(RDP.tree.identifier, 'RDP: first let parameter must be an identifier');
 	var letName = token.past().s;
@@ -454,6 +460,7 @@ RDP.tree.special.bindings = [
 	new StrHandlerPair('lambda'   , RDP.tree.special._lambdaStar),
 	new StrHandlerPair('fun'      , RDP.tree.special._funStar   ),
 	new StrHandlerPair('call'     , RDP.tree.special._callStar  ),
+	new StrHandlerPair('closure?' , RDP.tree.special._closureQ  ),
 	new StrHandlerPair('record'   , RDP.tree.special._record    ),
 	new StrHandlerPair('record?'  , RDP.tree.special._recordQ   ),
 	new StrHandlerPair('contains?', RDP.tree.special._containsQ ),

@@ -1,3 +1,5 @@
+"use strict";
+
 function TokWhitespace(s) {
 	this.s = s;
 }
@@ -11,7 +13,7 @@ TokWhitespace.prototype.toString = function() {
 }
 
 TokWhitespace.prototype.toHTML = function(c) {
-	//if(this.s == '\n') return '<br />';
-	//else 
-	return '<span style="color:' + c.whitespace + '">' + this.s + '</span>';
+	if(this.s == '\n') return '<br />';
+	else if(this.s == ' ') return '<span style="color:' + c.whitespace + '">&nbsp;</span>';
+	else return '<span style="color:' + c.whitespace + '">' + this.s + '</span>';
 }

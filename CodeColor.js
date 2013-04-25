@@ -1,3 +1,5 @@
+"use strict";
+
 function CodeColor(str, commML, commSL, num, keyword, identifier, par, whitespace) {
 	this.str = str;
 	this.commML = commML;

@@ -1,6 +1,6 @@
-function TokLPar() {
-	
-}
+"use strict";
+
+function TokLPar() { }
 
 TokLPar.prototype.match = function(that) {
 	return that instanceof TokLPar;

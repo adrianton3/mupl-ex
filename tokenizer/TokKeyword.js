@@ -1,3 +1,5 @@
+"use strict";
+
 function TokKeyword(s) {
 	this.s = s;
 }
@@ -11,5 +13,5 @@ TokKeyword.prototype.toString = function() {
 }
 
 TokKeyword.prototype.toHTML = function(c) {
-	return '<span style="color:' + c.keyword + '">' + this.s + '</span>';
+	return '<span style="font-weight: 900;color:' + c.keyword + '">' + this.s + '</span>';
 }

@@ -1,3 +1,5 @@
+"use strict";
+
 function TokNum(s) {
 	this.n = parseFloat(s);
 }

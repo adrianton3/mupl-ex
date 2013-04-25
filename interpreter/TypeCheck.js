@@ -51,6 +51,11 @@ var TypeCheck = (function() {
 			call.pexp.accept(this);
 		return _tany;
 	}
+	
+	TypeCheck.prototype.visitClosureQ = function(closureQ) {
+		closureQ.e.accept(this);
+		return _tbool;
+	}
 
 	TypeCheck.prototype.visitContainsQ = function(containsQ) {
 		containsQ.e.accept(this);

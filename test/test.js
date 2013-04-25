@@ -114,6 +114,8 @@ test('Qs', function() {
 	deepEqual(_e('(pair? unit)'), new Bool(false), 'Pair?');
 	deepEqual(_e('(record? (pair 15 20))'), new Bool(false), 'Record?');
 	deepEqual(_e('(record? (record (a 11) (b 22)))'), new Bool(true), 'Record?');
+	deepEqual(_e('(closure? (pair 15 20))'), new Bool(false), 'Closure?');
+	deepEqual(_e('(closure? (lambda () (pair 15 20)))'), new Bool(true), 'Closure?');
 });
 
 test('Scope', function() {
