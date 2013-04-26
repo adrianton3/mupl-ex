@@ -1,3 +1,5 @@
+"use strict";
+
 function TokCommML(s) {
 	this.s = s;
 }

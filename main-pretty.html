@@ -2,8 +2,69 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-  <title>MUPLEx tests</title>
-  
+		<title>MUPLEx</title>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			"use strict";
+
+			window.onload = process;
+			var a;
+			
+			function process() {
+				var hInExp = document.getElementById('in_exp');
+				var hOutParser = document.getElementById('out_parser');
+				var hComputeButton = document.getElementById('but_compute');
+				var hOutPretty = document.getElementById('out_pretty');
+				var hOutPHTML = document.getElementById('out_phtml');
+				
+				var cc = new CodeColor('#A4F', '#082', '#0B4', '#248', '#A22', '#28D', '#000', '#0FF');
+
+				var expIn = hInExp.value;
+				var outParser = '';
+
+				try {
+					var t = Tokenizer.chop(expIn);
+					outParser += 'Tokens:\n-------\n' + t.join(', ') + '\n\n';
+
+					a = RDP.tree(t);
+					outParser += 'AST:\n----\n' + a.toString() + '\n\n';
+					
+					a.accept(new TypeCheck());
+					outParser += 'Type checker:\n-------------\nOK.\n\n';
+					
+					a.accept(new VarCheck(), Emp);
+					outParser += 'Var checker:\n-------------\nOK.\n\n';
+					
+					hComputeButton.disabled = false;
+					
+					var tp = Tokenizer.chop(expIn, true, true);
+					var shtml = tp.reduce(function(prev, cur) { return prev + cur.toHTML(cc); },'');
+					hOutPretty.innerHTML = shtml;
+					hOutPHTML.value = shtml;
+				} catch(err) {
+					outParser += err;
+					hComputeButton.disabled = true;
+				}
+
+				hOutParser.value = outParser;
+			}
+
+			function doEval() {
+				var hOutInterpreter = document.getElementById('out_interpreter');
+				
+				Out.reset();
+				var res = a.ev(Emp);
+				var istr = res.toString();
+				
+				istr += '\n---\n\n';
+				istr += Out.toString();
+				
+				hOutInterpreter.value = istr;
+			}
+		</script>
+		
 		<script type="text/javascript" src="interpreter/List.js"></script>
 		<script type="text/javascript" src="interpreter/Out.js"></script>
 
@@ -86,13 +147,40 @@
 
 		<script type="text/javascript" src="parser/RDP.js"></script>
 		<script type="text/javascript" src="parser/TokenList.js"></script>
-
-		<link rel="stylesheet" href="test/qunit-1.11.0.css">
-		<script type="text/javascript" src="test/qunit-1.11.0.js"></script>
-		<script type="text/javascript" src="test/test.js"></script>
-	</head>
-	<body>
-		<div id="qunit"></div>
-		<div id="qunit-fixture"></div>
+		
+		<h2>MUPLEx</h2>
+		
+		<table>
+			<tr>
+				<td style="vertical-align: top">
+					Code:<br />
+					<textarea id="in_exp" onkeyup="process()" rows="10" cols="50">(let a 10
+ (let f (lambda (x) (+ x a))
+  (set! a 3
+   (let a 100
+    (call f 11)))))</textarea>
+					<br />
+			
+					Parser output:
+					<br />
+					<textarea id="out_parser" rows="10" cols="50" readonly="readonly"></textarea>		
+			 	
+			 	<br />
+			  <input value="Compute" id="but_compute" type="button" onclick="doEval()"/>
+			  <br />
+			  <br />
+			  Interpreter output:
+					<br />
+					<textarea id="out_interpreter" rows="10" cols="50" readonly="readonly"></textarea>
+				</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td style="vertical-align: top">
+					Pretty code:<br />
+					<div id="out_pretty" style="font-family: Consolas, Courier, monospace;border: 1px solid grey; background-color: #FAFAFA;padding: 8px"></div><br />
+					Pretty code HTML:<br />
+					<textarea id="out_phtml" rows="10" cols="50" readonly="readonly"></textarea>
+				</td>
+			</tr>
+		</table>
 	</body>
 </html>

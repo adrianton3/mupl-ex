@@ -31,6 +31,11 @@ var VarCheck = (function() {
 			call.pexp.accept(this, state);
 		return true;
 	}
+	
+	VarCheck.prototype.visitClosureQ = function(closureQ, state) {
+		closureQ.e.accept(this, state);
+		return true;
+	}
 
 	VarCheck.prototype.visitContainsQ = function(containsQ, state) {
 		containsQ.e.accept(this, state);

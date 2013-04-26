@@ -75,9 +75,17 @@ Planned features:
 * add code formatting
 * add exceptions
 * remove/change currying by default
+* add better error messages
+* add line numbers in error messages
+* add contains? for more than 1 member
 
 Version history:
 ----------------
+
+### 0.3.2
+
+* added a simple syntax highlighter and export to HTML option
+* added `closure?`
 
 ### 0.3.1
 
@@ -93,7 +101,7 @@ Version history:
 
 ### 0.2.1
 
-* added /, %, not
+* added `/`, `%`, `not`
 
 ### 0.2
 

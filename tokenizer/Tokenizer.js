@@ -2,7 +2,10 @@ function Tokenizer() {
 
 }
 
-Tokenizer.chop = function(s) {
+Tokenizer.chop = function(s, ws, comm) {
+	if(ws == undefined) ws = false;
+	if(comm == undefined) comm = false;
+	
 	var str = new IterableString(s + ' ');
 	var tok = [];
 
@@ -18,10 +21,12 @@ Tokenizer.chop = function(s) {
 		else if(c == '/') {
 			var n = str.next();
 			if(n == '/') {
-				var tmp = Tokenizer.chop.commsl(str)
+				var tmp = Tokenizer.chop.commsl(str);
+				if(comm) tok.push(tmp);
 			}
 			else if(n == '*') {
 				var tmp = Tokenizer.chop.commml(str);
+				if(comm) tok.push(tmp);
 			}
 			else {
 				tok.push(Tokenizer.chop.alphanum(str));
@@ -42,8 +47,8 @@ Tokenizer.chop = function(s) {
 			tok.push(Tokenizer.chop.alphanum(str)); 
 		}
 		else {
-			str.adv(); 
-			//tok.push(Tokenizer.chop.whitespace(str)); 
+			var tmp = Tokenizer.chop.whitespace(str);
+			if(ws) tok.push(tmp); 
 		}
 	}
 	
@@ -158,7 +163,7 @@ Tokenizer.chop.alphanum.reserved = [
 	'unit',
 	'pair', 'pair?', 'list', 'fst', 'snd',
 	'record', 'record?', 'deref', 'contains?',
-	'fun', 'lambda', 'call',
+	'fun', 'lambda', 'call', 'closure?',
 	'+', '-', '*', '/', '%',
 	/*'<', '<=', '=', '>='*/, '>',
 	'not', 'and', 'or', 'xor',
@@ -168,8 +173,6 @@ Tokenizer.chop.alphanum.reserved = [
 	'print'];
 
 Tokenizer.chop.whitespace = function(str) {
-	str.setMarker();
-	
 	var tmp = str.cur();
 	str.adv(); 
 	return new TokWhitespace(tmp);

@@ -13,5 +13,5 @@ TokEnd.prototype.toString = function() {
 }
 
 TokEnd.prototype.toHTML = function(c) {
-	return '<span style="color:' + c.end + '">END</span>';
+	return '';
 }

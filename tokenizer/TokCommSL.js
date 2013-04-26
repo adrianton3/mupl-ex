@@ -1,3 +1,5 @@
+"use strict";
+
 function TokCommSL(s) {
 	this.s = s;
 }
@@ -7,5 +9,5 @@ TokCommSL.prototype.toString = function() {
 }
 
 TokCommSL.prototype.toHTML = function(c) {
-	return '<span style="color:' + c.commSL + '">' + this.s + '</span>';
+	return '<span style="color:' + c.commSL + '">' + this.s + '</span><br />';
 }

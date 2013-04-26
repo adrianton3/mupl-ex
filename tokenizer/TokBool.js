@@ -1,3 +1,5 @@
+"use strict";
+
 function TokBool(s) {
 	this.s = s;
 }
