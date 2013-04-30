@@ -10,28 +10,40 @@
 			"use strict";
 
 			window.onload = process;
-			var a;
+			var _parsedFreeExp;
+			
+			var _M; //moduleset
 			
 			function process() {
+				var hInMods = document.getElementById('in_mods');
 				var hInExp = document.getElementById('in_exp');
 				var hOutParser = document.getElementById('out_parser');
 				var hComputeButton = document.getElementById('but_compute');
 
+    var modsIn = hInMods.value;
 				var expIn = hInExp.value;
 				var outParser = '';
 
 				try {
-					var t = Tokenizer.chop(expIn);
-					outParser += 'Tokens:\n-------\n' + t.join(', ') + '\n\n';
-
-					a = RDP.tree(t);
-					outParser += 'AST:\n----\n' + a.toString() + '\n\n';
+					var toksMods = Tokenizer.chop(modsIn);
+					_M = RDP.tree(toksMods);
 					
-					a.accept(new TypeCheck());
-					outParser += 'Type checker:\n-------------\nOK.\n\n';
+					_M.accept(new TypeCheck());
+					outParser += 'Modules type check: OK.\n';
+					_M.acceptVarCheck(new VarCheck(), Emp);
+					outParser += 'Modules reference check: OK.\n';
 					
-					a.accept(new VarCheck(), Emp);
-					outParser += 'Var checker:\n-------------\nOK.\n\n';
+					var toksFreeExp = Tokenizer.chop(expIn);
+					outParser += 'Free exp tokens:\n-------\n' + toksFreeExp.join(', ') + '\n\n';
+					_parsedFreeExp = RDP.single(toksFreeExp);
+					
+					outParser += 'Free exp AST:\n----\n' + _parsedFreeExp.toString() + '\n\n';
+					
+					_parsedFreeExp.accept(new TypeCheck());
+					outParser += 'Free exp type check: OK.\n';
+					
+					_parsedFreeExp.accept(new VarCheck(), Emp);
+					outParser += 'Free exp reference check: OK.\n';
 					
 					hComputeButton.disabled = false;
 				} catch(err) {
@@ -45,12 +57,17 @@
 			function doEval() {
 				var hOutInterpreter = document.getElementById('out_interpreter');
 				
-				Out.reset();
-				var res = a.ev(Emp);
-				var istr = res.toString();
-				
-				istr += '\n---\n\n';
-				istr += Out.toString();
+				var istr = '';
+				try {
+					Out.reset();
+					var res = _parsedFreeExp.ev(Emp);
+					istr += res.toString();
+					
+					istr += '\n---\n\n';
+				 istr += Out.toString();
+				} catch(err) {
+					istr += 'Runtime exception: ' + err;
+				}
 				
 				hOutInterpreter.value = istr;
 			}
@@ -101,6 +118,10 @@
 		<script type="text/javascript" src="interpreter/nodes/Snd.js"></script>
 		
 		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/Def.js"></script>
+		
+		<script type="text/javascript" src="interpreter/Module.js"></script>
+		<script type="text/javascript" src="interpreter/ModuleSet.js"></script>
   
   <script type="text/javascript" src="interpreter/types/TypeAny.js"></script>
   <script type="text/javascript" src="interpreter/types/TypeBool.js"></script>
@@ -140,18 +161,27 @@
 		<script type="text/javascript" src="parser/TokenList.js"></script>
 		
 		<h2>MUPLEx</h2>
-		Code:
-		<br />
-		<textarea id="in_exp" onkeyup="process()" rows="10" cols="50">(let a 10
- (let f (lambda (x) (+ x a))
-  (set! a 3
-   (let a 100
-    (call f 11)))))</textarea>
+		Module definitions:<br />
+		<textarea id="in_mods" onkeyup="process()" rows="10" cols="50">(module m 
+ (public f (lambda (x) (* x x)))
+ (private g (lambda (x) (* (* x x) x)))
+ (public h (lambda (x) (+ x 10)))
+)
+
+(module n 
+ (public a (lambda (x) (call b x)))
+ (private b (lambda (x) (* (* x x) x)))
+ (public c (lambda (x) (+ 1 (call m.h x))))
+)</textarea><br />
+		Expression to evaluate:<br />
+		<textarea id="in_exp" onkeyup="process()" rows="6" cols="50">(let a 10
+ (+ (call m.f 5) a)
+)</textarea>
 		<br />
 
 		Parser output:
 		<br />
-		<textarea id="out_parser" rows="10" cols="50" readonly="readonly"></textarea>		
+		<textarea id="out_parser" rows="3" cols="50" readonly="readonly"></textarea>		
  	
  	<br />
   <input value="Compute" id="but_compute" type="button" onclick="doEval()"/>
@@ -159,6 +189,6 @@
   <br />
   Interpreter output:
 		<br />
-		<textarea id="out_interpreter" rows="10" cols="50" readonly="readonly"></textarea>
+		<textarea id="out_interpreter" rows="3" cols="50" readonly="readonly"></textarea>
 	</body>
 </html>

@@ -70,17 +70,23 @@ Planned features:
 -----------------
 
 * add strings
-* add namespaces or some equivalent construct
-* add +, \*, ... for more than 2 operands
+* add `+`, `*`, ... for more than 2 operands
 * add code formatting
 * add exceptions
 * remove/change currying by default
 * add better error messages
 * add line numbers in error messages
-* add contains? for more than 1 member
+* modify setfst, setsnd so that it takes an expression instead of a name
+* eliminate `_M` from global space
 
 Version history:
 ----------------
+
+### 0.4
+
+* added modules with public and private definitions
+* updated reference checking to work with modules
+* fixed bugs in main.html
 
 ### 0.3.2
 

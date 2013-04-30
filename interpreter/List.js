@@ -11,8 +11,8 @@ Emp.toString = function() { return '.'; };
 
 Emp.find = function() { throw 'Find failed'; }
 
-Emp.findBinding = function() { throw 'Find binding failed'; }
-Emp.setBinding = function() { throw 'Set binding failed'; }
+Emp.findBinding = function(s) { throw 'Find binding failed for ' + s; }
+Emp.setBinding = function(s) { throw 'Set binding failed for ' + s; }
 
 Emp.reverse = function() { return Emp; }
 Emp.append = function(that) { return new List(that, this); }

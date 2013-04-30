@@ -6,8 +6,21 @@ function Call(funexp, pexp) {
 }
 
 Call.prototype.ev = function(env) {
-	var evClos = this.funexp.ev(env); //evaluates to a closure
-	if(!(evClos instanceof Closure)) throw 'cannot call a non-function';
+	var evClos = this.funexp.ev(env);
+	
+	//extenral call
+	if(evClos instanceof Def) {
+		var newEnv = _M.getEnv(evClos.modName);
+		if(!(evClos.fun.pformal === false || this.pexp === false)) {
+			var evPexp = this.pexp.ev(env);
+			newEnv = newEnv.con(new Binding(evClos.fun.pformal, evPexp));
+		}
+		
+		return evClos.fun.body.ev(newEnv);
+	}
+
+	//local call
+	if(!(evClos instanceof Closure)) throw 'Cannot call a non-function';
 	
 	var envPlusPar;
 	if(evClos.fun.pformal === false || this.pexp === false)

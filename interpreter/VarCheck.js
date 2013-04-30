@@ -38,11 +38,21 @@ var VarCheck = (function() {
 	}
 
 	VarCheck.prototype.visitContainsQ = function(containsQ, state) {
+		for(var i in containsQ.list)
+			if(containsQ.list[i].indexOf('.') != -1) throw 'Member names can not contain "."';
+		
 		containsQ.e.accept(this, state);
 		return true;
 	}
 
+	VarCheck.prototype.visitDef = function(def, state) {
+		if(def.defName.indexOf('.') != -1) throw 'Def name can not contain "."';
+		def.fun.accept(this, state);
+		return true;
+	}
+
 	VarCheck.prototype.visitDeref = function(deref, state) {
+		if(deref.name.indexOf('.') != -1) throw 'Member names can not contain "."';
 		deref.exp.accept(this, state);
 		return true;
 	}
@@ -61,12 +71,16 @@ var VarCheck = (function() {
 	VarCheck.prototype.visitFun = function(fun, state) {
 		var nState = state;
 		
-		if(fun.name != false)
+		if(fun.name != false) {
+			if(fun.name.indexOf('.') != -1) throw 'Function name cannot contain a "."';
 			nState = nState.con(new Binding(fun.name));
-			
-		if(fun.pformal != false)
+		}
+		
+		if(fun.pformal != false) {
+			if(fun.pformal.indexOf('.') != -1) throw 'Function parameter cannot contain a "."';
 			nState = nState.con(new Binding(fun.pformal));
-			
+		}
+		
 		fun.body.accept(this, nState);
 		
 		return true;
@@ -86,6 +100,7 @@ var VarCheck = (function() {
 	}
 
 	VarCheck.prototype.visitLet = function(lete, state) {
+		if(lete.name.indexOf('.') != -1) throw 'Let binding cannot contain a "."';
 		lete.e.accept(this, state);
 		lete.body.accept(this, state.con(new Binding(lete.name)));
 		return true;
@@ -141,8 +156,10 @@ var VarCheck = (function() {
 	}
 
 	VarCheck.prototype.visitRecord = function(record, state) {
-		for(var i in record.map)
+		for(var i in record.map) {
+			if(record.map[i].name.indexOf('.') != -1) throw 'Record member name can not contain "."';
 			record.map[i].exp.accept(this, state);
+		}
 			
 		return true;
 	}
@@ -153,18 +170,21 @@ var VarCheck = (function() {
 	}
 
 	VarCheck.prototype.visitSet = function(set, state) {
+		if(set.name.indexOf('.') != -1) throw 'Set can be applied only on local variables';
 		set.e.accept(this, state);
 		set.body.accept(this, state);
 		return true;
 	}
 
 	VarCheck.prototype.visitSetFst = function(setFst, state) {
+		if(setFst.name.indexOf('.') != -1) throw 'SetFst can be applied only on local variables';
 		setFst.e.accept(this, state);
 		setFst.body.accept(this, state);
 		return true;
 	}
 
 	VarCheck.prototype.visitSetSnd = function(setSnd, state) {
+		if(setSnd.name.indexOf('.') != -1) throw 'SetSnd can be applied only on local variables';
 		setSnd.e.accept(this, state);
 		setSnd.body.accept(this, state);
 		return true;
@@ -191,7 +211,8 @@ var VarCheck = (function() {
 	}
 
 	VarCheck.prototype.visitVar = function(vare, state) {
-		state.findBinding(vare.name);
+		if(vare.extern) _M.getVal(vare.name);
+		else state.findBinding(vare.name);
 		return true;
 	}
 

@@ -62,6 +62,11 @@ var TypeCheck = (function() {
 		return _tbool;
 	}
 
+	TypeCheck.prototype.visitDef = function(def) {
+		def.fun.accept(this);
+		return _tany;
+	}
+
 	TypeCheck.prototype.visitDeref = function(deref) {
 		var et = deref.exp.accept(this);
 		if(!et.isRecord())
@@ -263,7 +268,8 @@ var TypeCheck = (function() {
 	}
 
 	TypeCheck.prototype.visitVar = function(vare) {
-		return _tany;
+		if(vare.extern) return _tfun;
+		else return _tany;
 	}
 
 	TypeCheck.prototype.visitXor = function(xor) {

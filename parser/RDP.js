@@ -1,6 +1,11 @@
 "use strict";
 
 /*
+ * start ->
+ * ( module name def_list )
+ * 
+ * def_list -> [ ( public | private name exp ) ]
+ * 
  * exp -> 
  *   ( special )
  * | id
@@ -44,11 +49,16 @@
  * contains_list -> name [ name ]
  */
 
-function RDP() {
-
-}
+var RDP = {};
 
 RDP.tree = function(tokenar) {
+	var token = new TokenList(tokenar);
+	var modSet = RDP.tree.start(token);
+	token.expect(new TokEnd(), 'RDP: expression not properly terminated');
+	return modSet;
+}
+
+RDP.single = function(tokenar) {
 	var token = new TokenList(tokenar);
 	var t = RDP.tree.exp(token);
 	token.expect(new TokEnd(), 'RDP: expression not properly terminated');
@@ -61,6 +71,54 @@ RDP.tree.bool = new TokBool();
 
 RDP.tree.lPar = new TokLPar();
 RDP.tree.rPar = new TokRPar();
+
+RDP.tree.start = function(token) {
+	var ret = [];
+	while(token.match(RDP.tree.lPar)) {
+		token.adv();
+		token.expect('module', 'RDP: module expected');
+		token.expect(RDP.tree.identifier, 'RDP: module name expected');
+		var name = token.past().s;
+		var list = RDP.tree.defList(token, name);
+		token.expect(RDP.tree.rPar, 'RDP: mod: Missing rpar');
+		
+		ret.push(new Module(name, list));
+	}
+	return new ModuleSet(ret);
+}
+
+RDP.tree.defList = function(token, modName) {
+	var ret = [];
+	while(token.match(RDP.tree.lPar)) {
+		token.adv();
+		
+		var pub;
+		if(token.match('public')) pub = true;
+		else if(token.match('private')) pub = false;
+		else throw 'RDP: def can be either public or private';
+		token.adv();
+		
+		token.expect(RDP.tree.identifier, 'RDP: def name expected');
+		var defName = token.past().s;
+		
+		token.expect(RDP.tree.lPar, 'RDP: def: Missing lpar');
+	
+		var fun;
+		if(token.match('fun')) {
+			token.adv();
+			fun = RDP.tree.special._funStar(token);
+		}
+		else if(token.match('lambda')) {
+			token.adv();
+			fun = RDP.tree.special._lambdaStar(token);
+		}
+		else throw 'RDP: def can bind only functions';
+		
+		ret.push(new Def(defName, modName, pub, fun));
+		token.expect(RDP.tree.rPar, 'RDP: def: Missing rpar');
+	}
+	return ret;
+}
 
 RDP.tree.exp = function(token) {
 	if(token.match(RDP.tree.lPar)) {
