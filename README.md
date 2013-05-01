@@ -11,7 +11,7 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
 
 1. The map function
 
- ```clojure
+ ```scheme
 (call 
 
  (fun map (l op)
@@ -25,7 +25,7 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
 
 2. Closures
 
- ```clojure
+ ```scheme
 (let* 
  ((f (lambda (x y) (+ x y)))
   (add10 (call f 10)))
@@ -34,7 +34,7 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
 
 3. Mutation
 
- ```clojure
+ ```scheme
 (let a 10
  (let f (lambda (x) (+ x a))
   (set! a 3
@@ -56,7 +56,7 @@ Of course, this system cannot prevent every faulty program from being launched.
 
 **Examples of errors caught before launch:**
 
-```clojure
+```scheme
 (+ 10 #f)
 (+ (fst (pair unit 30)) 40)
 (call #t 20)
@@ -65,6 +65,60 @@ Of course, this system cannot prevent every faulty program from being launched.
 
 Moreover, before launch, the program is checked to see if it contains references to undeclared variables.
 
+Usage:
+------
+
+This is the simplest way of evaluating an expression: 
+
+```js
+function ev(code) { return RDP.single(Tokenizer.chop(code)).ev(Emp, ModuleSet.getEmp()); }
+var result = ev('let a 10 (+ a 15))');
+```
+
+If, however, you require function definitions from a module, then use this:
+
+```js
+function ev(expCode, modSetCode) {
+ var modSet = RDP.tree(Tokenizer.chop(modSetCode));
+ return RDP.single(Tokenizer.chop(code)).ev(Emp, modSet); 
+}
+
+modSetCode = '(module m (public f (lambda (x) (* x x))))';
+expCode = '(let a 10 (+ a (call m.f 5)))';
+
+var result = ev(expCode, modSetCode);
+```
+
+If you wish to do some basic type checking that will catch some errors before launching the program, then use:
+
+```js
+try {
+ parsedExp.accept(new TypeCheck());
+} catch(e) {
+ alert(e);
+}
+```
+
+Furthermore, use the following to check for references to undeclared module definitions or variables and invalid names:
+
+```js
+try {
+ parsedExp.accept(new VarCheck(), new VarCheckState(Emp, modSet));
+} catch(e) {
+ alert(e);
+}
+```
+
+Module sets can also accept type checkers and reference checkers:
+
+```js
+try {
+ modSet.accept(new TypeCheck());
+ modSet.accept(new VarCheck(), new VarCheckState(Emp, modSet));
+} catch(e) {
+ alert(e);
+}
+```
 
 Planned features:
 -----------------
@@ -76,11 +130,15 @@ Planned features:
 * remove/change currying by default
 * add better error messages
 * add line numbers in error messages
-* modify setfst, setsnd so that it takes an expression instead of a name
-* eliminate `_M` from global space
+* modify setfst, setsnd so that they take an expression instead of a name
 
 Version history:
 ----------------
+
+### 0.4.1
+
+* removed `_M` from global scope
+* added a *Usage* section to this document
 
 ### 0.4
 

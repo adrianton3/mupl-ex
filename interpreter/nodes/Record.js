@@ -4,11 +4,11 @@ function Record(map) {
 	this.map = map;
 }
 
-Record.prototype.ev = function(env) {
+Record.prototype.ev = function(env, modSet) {
 	var mapEv = [];
 	
 	for(var i in this.map)
-		mapEv.push(new RecordPair(this.map[i].name, this.map[i].exp.ev(env)));
+		mapEv.push(new RecordPair(this.map[i].name, this.map[i].exp.ev(env, modSet)));
 	
 	return new Record(mapEv);
 }

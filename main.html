@@ -11,8 +11,7 @@
 
 			window.onload = process;
 			var _parsedFreeExp;
-			
-			var _M; //moduleset
+			var _modSet;
 			
 			function process() {
 				var hInMods = document.getElementById('in_mods');
@@ -26,11 +25,11 @@
 
 				try {
 					var toksMods = Tokenizer.chop(modsIn);
-					_M = RDP.tree(toksMods);
+					_modSet = RDP.tree(toksMods);
 					
-					_M.accept(new TypeCheck());
+					_modSet.accept(new TypeCheck());
 					outParser += 'Modules type check: OK.\n';
-					_M.acceptVarCheck(new VarCheck(), Emp);
+					_modSet.accept(new VarCheck(), new VarCheckState(Emp, _modSet));
 					outParser += 'Modules reference check: OK.\n';
 					
 					var toksFreeExp = Tokenizer.chop(expIn);
@@ -42,7 +41,7 @@
 					_parsedFreeExp.accept(new TypeCheck());
 					outParser += 'Free exp type check: OK.\n';
 					
-					_parsedFreeExp.accept(new VarCheck(), Emp);
+					_parsedFreeExp.accept(new VarCheck(), new VarCheckState(Emp, _modSet));
 					outParser += 'Free exp reference check: OK.\n';
 					
 					hComputeButton.disabled = false;
@@ -60,7 +59,7 @@
 				var istr = '';
 				try {
 					Out.reset();
-					var res = _parsedFreeExp.ev(Emp);
+					var res = _parsedFreeExp.ev(Emp, _modSet);
 					istr += res.toString();
 					
 					istr += '\n---\n\n';

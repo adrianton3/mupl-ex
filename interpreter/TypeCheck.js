@@ -152,6 +152,13 @@ var TypeCheck = (function() {
 
 		return _tnum;
 	}
+	
+	TypeCheck.prototype.visitModuleSet = function(modSet) {
+		for(var i in modSet.mods)
+			modSet.mods[i].accept(this);
+			
+		return _tany;
+	}
 
 	TypeCheck.prototype.visitMul = function(mul) {
 		var e1t = mul.e1.accept(this);

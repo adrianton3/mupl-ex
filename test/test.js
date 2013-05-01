@@ -1,13 +1,14 @@
 "use strict";
 
-var _M;
-
 var _l = function(s) { return Tokenizer.chop(s); }
 var _p = function(s) { return RDP.single(Tokenizer.chop(s)); }
-var _e = function(s) { return RDP.single(Tokenizer.chop(s)).ev(Emp); }
+var _e = function(s, modSet) { 
+	if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Emp, modSet);
+	else return RDP.single(Tokenizer.chop(s)).ev(Emp); 
+}
 var _t = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new TypeCheck()); }
-var _v = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new VarCheck(), Emp); }
-var _m = function(s) { _M = RDP.tree(Tokenizer.chop(s)); return true; }
+var _v = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new VarCheck(), new VarCheckState(Emp, null)); }
+var _m = function(s) { return RDP.tree(Tokenizer.chop(s)); }
 
 module('tokenizer');
 test('Atomic tests', function() {
@@ -254,22 +255,22 @@ test('Naming constraints', function() {
 //=============================================================================
 module('modules');
 test('Simple calls', function() {
-	_m('(module m (public f (lambda (x) (* x x))) (public g (lambda (x) (+ x 10))))');
-	deepEqual(_e('(call m.f 5)'), new Num(25), 'call');
-	deepEqual(_e('(call m.g 15)'), new Num(25), 'call');
+	var modSet = _m('(module m (public f (lambda (x) (* x x))) (public g (lambda (x) (+ x 10))))');
+	deepEqual(_e('(call m.f 5)', modSet), new Num(25), 'call');
+	deepEqual(_e('(call m.g 15)', modSet), new Num(25), 'call');
 	
-	_m('(module m (public f (lambda (x) (* x (call g x)))) (public g (lambda (x) (+ x 10))))');
-	deepEqual(_e('(call m.f 5)'), new Num(75), 'call');
+	modSet = _m('(module m (public f (lambda (x) (* x (call g x)))) (public g (lambda (x) (+ x 10))))');
+	deepEqual(_e('(call m.f 5)', modSet), new Num(75), 'call');
 	
-	_m('(module m (public f (lambda (x) (* x (call g x)))) (private g (lambda (x) (+ x 10))))');
-	deepEqual(_e('(call m.f 5)'), new Num(75), 'call');
-	throws(function() { _e('(call m.g 5)') }, 'call');
+	modSet = _m('(module m (public f (lambda (x) (* x (call g x)))) (private g (lambda (x) (+ x 10))))');
+	deepEqual(_e('(call m.f 5)', modSet), new Num(75), 'call');
+	throws(function() { _e('(call m.g 5)', modSet) }, 'call');
 });
 
 test('Environment reset', function() {
-	_m('(module m (public f (lambda (x) (* x a))))');
-	throws(function() { _e('(let a 10 (call m.f 5))') }, 'let call');
+	var modSet = _m('(module m (public f (lambda (x) (* x a))))');
+	throws(function() { _e('(let a 10 (call m.f 5))', modSet) }, 'let call');
 	
-	_m('(module m (public f (lambda (x) (let a 10 (call g x)))) (private g (lambda (x) (+ x a))))');
-	throws(function() { _e('(call m.f 5)') }, 'call let call');
+	modSet = _m('(module m (public f (lambda (x) (let a 10 (call g x)))) (private g (lambda (x) (+ x a))))');
+	throws(function() { _e('(call m.f 5)', modSet) }, 'call let call');
 });

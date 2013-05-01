@@ -5,7 +5,7 @@ function Closure(env, fun) {
 	this.fun = fun;
 }
 
-Closure.prototype.ev = function(env) {
+Closure.prototype.ev = function(env, modSet) {
 	return this;
 }
 

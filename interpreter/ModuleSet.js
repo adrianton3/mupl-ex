@@ -4,6 +4,10 @@ function ModuleSet(mods) {
 	this.mods = mods;
 }
 
+ModuleSet.getEmp = function() {
+	return new ModuleSet([]);
+}
+
 ModuleSet.prototype.getVal = function(name) {
 	var sepIndex = name.lastIndexOf('.');
 	var modName = name.substring(sepIndex, 0);
@@ -25,11 +29,5 @@ ModuleSet.prototype.getEnv = function(name) {
 }
 
 ModuleSet.prototype.accept = function(visitor, state) {
-	for(var i in this.mods)
-		this.mods[i].accept(visitor, state);
-}
-
-ModuleSet.prototype.acceptVarCheck = function(visitor) {
-	for(var i in this.mods) //TODO: rewrite this special case
-		this.mods[i].accept(visitor, this.mods[i].privateEnv);
+	visitor.visitModuleSet(this, state);
 }

@@ -5,8 +5,8 @@ function ContainsQ(exp, list) {
 	this.list = list;
 }
 
-ContainsQ.prototype.ev = function(env) {
-	var expEv = this.exp.ev(env);
+ContainsQ.prototype.ev = function(env, modSet) {
+	var expEv = this.exp.ev(env, modSet);
 	
 	if(!(expEv instanceof Record)) throw 'Can not apply contains? to a non-record';
 	

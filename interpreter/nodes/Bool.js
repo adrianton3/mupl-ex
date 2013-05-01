@@ -4,7 +4,7 @@ function Bool(v) {
 	this.v = v;
 }
 
-Bool.prototype.ev = function(env) {
+Bool.prototype.ev = function(env, modSet) {
 	return this;
 }
 

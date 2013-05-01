@@ -7,7 +7,7 @@ function Def(defName, modName, pub, fun) {
 	this.fun = fun;
 }
 
-Def.prototype.ev = function(env) {
+Def.prototype.ev = function(env, modSet) {
 	return this;
 }
 

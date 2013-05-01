@@ -4,8 +4,8 @@ function PairQ(e) {
 	this.e = e;
 }
 
-PairQ.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+PairQ.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	
 	if(eEv instanceof Pair) return new Bool(true);
 	else return new Bool(false);

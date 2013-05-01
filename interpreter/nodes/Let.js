@@ -6,10 +6,10 @@ function Let(name, e, body) {
 	this.body = body; 
 }
 
-Let.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+Let.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	
-	return this.body.ev(env.con(new Binding(this.name, eEv)));
+	return this.body.ev(env.con(new Binding(this.name, eEv)), modSet);
 }
 
 Let.prototype.compFreeVar = function(outSet, ownSet) {

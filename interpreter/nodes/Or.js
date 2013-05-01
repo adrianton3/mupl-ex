@@ -5,14 +5,14 @@ function Or(e1, e2) {
 	this.e2 = e2; 
 }
 
-Or.prototype.ev = function(env) {
-	var e1Ev = this.e1.ev(env);
+Or.prototype.ev = function(env, modSet) {
+	var e1Ev = this.e1.ev(env, modSet);
 	if(!(e1Ev instanceof Bool)) throw "Can not perform or on non-booleans";
 	
 	if(e1Ev.v)
 		return new Bool(true);
 	else {
-		var e2Ev = this.e2.ev(env);
+		var e2Ev = this.e2.ev(env, modSet);
 		if(!(e2Ev instanceof Bool)) throw "Can not perform or on non-booleans";
 	
 		return new Bool(e2Ev.v);

@@ -6,12 +6,12 @@ function SetSnd(name, e, body) {
 	this.body = body; 
 }
 
-SetSnd.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+SetSnd.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	var binding = env.getBinding(this.name);
 	if(!(binding.v instanceof Pair)) throw 'Cannot setsnd on non-pair';
 	binding.v.e2 = eEv;
-	return this.body.ev(env);
+	return this.body.ev(env, modSet);
 }
 
 SetSnd.prototype.accept = function(visitor, state) {

@@ -111,6 +111,12 @@ var VarCheck = (function() {
 		mod.e2.accept(this, state);
 		return true;
 	}
+	
+	VarCheck.prototype.visitModuleSet = function(modSet, state) {
+		for(var i in modSet.mods)
+			modSet.mods[i].accept(this, new VarCheckState(modSet.mods[i].privateEnv, state.modSet));
+		return true;
+	}
 
 	VarCheck.prototype.visitMul = function(mul, state) {
 		mul.e1.accept(this, state);
@@ -211,8 +217,8 @@ var VarCheck = (function() {
 	}
 
 	VarCheck.prototype.visitVar = function(vare, state) {
-		if(vare.extern) _M.getVal(vare.name);
-		else state.findBinding(vare.name);
+		if(vare.extern) state.modSet.getVal(vare.name);
+		else state.env.findBinding(vare.name);
 		return true;
 	}
 
@@ -223,4 +229,13 @@ var VarCheck = (function() {
 	}
 
 	return VarCheck;
-})(); 
+})();
+//=============================================================================
+function VarCheckState(env, modSet) {
+	this.env = env;
+	this.modSet = modSet;
+}
+
+VarCheckState.prototype.con = function(b) {
+	return new VarCheckState(this.env.con(b), this.modSet);
+}

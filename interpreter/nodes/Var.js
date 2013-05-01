@@ -5,8 +5,8 @@ function Var(name) {
 	this.extern = this.name.indexOf('.') != -1;	
 }
 
-Var.prototype.ev = function(env) {
-	if(this.extern) return _M.getVal(this.name);
+Var.prototype.ev = function(env, modSet) {
+	if(this.extern) return modSet.getVal(this.name);
 	else return env.findBinding(this.name);
 }
 

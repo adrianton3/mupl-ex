@@ -4,7 +4,7 @@ function Num(n) {
 	this.n = n;
 }
 
-Num.prototype.ev = function(env) {
+Num.prototype.ev = function(env, modSet) {
 	return this;
 }
 

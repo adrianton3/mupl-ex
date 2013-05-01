@@ -4,8 +4,8 @@ function Fst(e) {
 	this.e = e; 
 }
 
-Fst.prototype.ev = function(env) {
-	var ev = this.e.ev(env);
+Fst.prototype.ev = function(env, modSet) {
+	var ev = this.e.ev(env, modSet);
 	if(!(ev instanceof Pair))	throw "Can't do fst on non-pairs";
 	
 	return ev.e1;
