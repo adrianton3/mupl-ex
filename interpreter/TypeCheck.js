@@ -62,6 +62,11 @@ var TypeCheck = (function() {
 		return _tbool;
 	}
 
+	TypeCheck.prototype.visitDef = function(def) {
+		def.fun.accept(this);
+		return _tany;
+	}
+
 	TypeCheck.prototype.visitDeref = function(deref) {
 		var et = deref.exp.accept(this);
 		if(!et.isRecord())
@@ -146,6 +151,13 @@ var TypeCheck = (function() {
 			throw 'Expression does not type check: %';
 
 		return _tnum;
+	}
+	
+	TypeCheck.prototype.visitModuleSet = function(modSet) {
+		for(var i in modSet.mods)
+			modSet.mods[i].accept(this);
+			
+		return _tany;
 	}
 
 	TypeCheck.prototype.visitMul = function(mul) {
@@ -263,7 +275,8 @@ var TypeCheck = (function() {
 	}
 
 	TypeCheck.prototype.visitVar = function(vare) {
-		return _tany;
+		if(vare.extern) return _tfun;
+		else return _tany;
 	}
 
 	TypeCheck.prototype.visitXor = function(xor) {

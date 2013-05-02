@@ -5,9 +5,9 @@ function Pair(e1, e2) {
 	this.e2 = e2; 
 }
 
-Pair.prototype.ev = function(env) {
-	var e1Ev = this.e1.ev(env);
-	var e2Ev = this.e2.ev(env);
+Pair.prototype.ev = function(env, modSet) {
+	var e1Ev = this.e1.ev(env, modSet);
+	var e2Ev = this.e2.ev(env, modSet);
 	return new Pair(e1Ev, e2Ev);
 }
 

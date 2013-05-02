@@ -6,12 +6,12 @@ function If(cond, e1, e2) {
 	this.e2 = e2;
 }
 
-If.prototype.ev = function(env) {
-	var condEv = this.cond.ev(env);
+If.prototype.ev = function(env, modSet) {
+	var condEv = this.cond.ev(env, modSet);
 	if(!(condEv instanceof Bool)) throw 'if condition needs to be a boolean'; 
 	
-	if(condEv.v) return this.e1.ev(env);
-	else return this.e2.ev(env);
+	if(condEv.v) return this.e1.ev(env, modSet);
+	else return this.e2.ev(env, modSet);
 }
 
 If.prototype.accept = function(visitor, state) {

@@ -4,8 +4,8 @@ function NumQ(e) {
 	this.e = e;
 }
 
-NumQ.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+NumQ.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	
 	if(eEv instanceof Num) return new Bool(true);
 	else return new Bool(false);

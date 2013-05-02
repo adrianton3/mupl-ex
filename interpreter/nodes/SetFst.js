@@ -6,12 +6,12 @@ function SetFst(name, e, body) {
 	this.body = body; 
 }
 
-SetFst.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+SetFst.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	var binding = env.getBinding(this.name);
 	if(!(binding.v instanceof Pair)) throw 'Cannot setfst on non-pair';
 	binding.v.e1 = eEv;
-	return this.body.ev(env);
+	return this.body.ev(env, modSet);
 }
 
 SetFst.prototype.accept = function(visitor, state) {

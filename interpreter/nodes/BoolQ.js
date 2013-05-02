@@ -4,8 +4,8 @@ function BoolQ(e) {
 	this.e = e;
 }
 
-BoolQ.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+BoolQ.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	
 	if(eEv instanceof Bool) return new Bool(true);
 	else return new Bool(false);

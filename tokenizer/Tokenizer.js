@@ -170,7 +170,8 @@ Tokenizer.chop.alphanum.reserved = [
 	'let', 'let*', 'letrec', 'if', 'cond',
 	'set!', 'setfst!', 'setsnd!',
 	'num?', 'bool?', 'unit?',
-	'print'];
+	'print',
+	'module', 'public', 'private'];
 
 Tokenizer.chop.whitespace = function(str) {
 	var tmp = str.cur();

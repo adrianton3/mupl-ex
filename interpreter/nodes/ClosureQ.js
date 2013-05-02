@@ -4,8 +4,8 @@ function ClosureQ(e) {
 	this.e = e;
 }
 
-ClosureQ.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+ClosureQ.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	
 	if(eEv instanceof Closure) return new Bool(true);
 	else return new Bool(false);

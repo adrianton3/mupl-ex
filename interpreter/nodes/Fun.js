@@ -7,7 +7,7 @@ function Fun(name, pformal, body) {
 	this.freeVar = [];
 }
 
-Fun.prototype.ev = function(env) {
+Fun.prototype.ev = function(env, modSet) {
 	return new Closure(env, this);
 }
 

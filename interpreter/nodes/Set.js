@@ -6,10 +6,10 @@ function Set(name, e, body) {
 	this.body = body; 
 }
 
-Set.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+Set.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	env.setBinding(this.name, eEv);
-	return this.body.ev(env);
+	return this.body.ev(env, modSet);
 }
 
 Set.prototype.accept = function(visitor, state) {

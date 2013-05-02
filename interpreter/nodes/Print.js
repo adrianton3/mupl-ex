@@ -5,9 +5,9 @@ function Print(e, body) {
 	this.body = body; 
 }
 
-Print.prototype.ev = function(env) {
-	Out.print(this.e.ev(env));
-	return this.body.ev(env);
+Print.prototype.ev = function(env, modSet) {
+	Out.print(this.e.ev(env, modSet));
+	return this.body.ev(env, modSet);
 }
 
 Print.prototype.accept = function(visitor, state) {

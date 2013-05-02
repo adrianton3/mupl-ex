@@ -4,8 +4,8 @@ function Not(e) {
 	this.e = e;
 }
 
-Not.prototype.ev = function(env) {
-	var eEv = this.e.ev(env);
+Not.prototype.ev = function(env, modSet) {
+	var eEv = this.e.ev(env, modSet);
 	
 	if(!(eEv instanceof Bool)) throw "Can not perform not on non-booleans";
 	return new Bool(!eEv.v);

@@ -1,10 +1,14 @@
 "use strict";
 
 var _l = function(s) { return Tokenizer.chop(s); }
-var _p = function(s) { return RDP.tree(Tokenizer.chop(s)); }
-var _e = function(s) { return RDP.tree(Tokenizer.chop(s)).ev(Emp); }
-var _t = function(s) { return RDP.tree(Tokenizer.chop(s)).accept(new TypeCheck()); }
-var _v = function(s) { return RDP.tree(Tokenizer.chop(s)).accept(new VarCheck(), Emp); }
+var _p = function(s) { return RDP.single(Tokenizer.chop(s)); }
+var _e = function(s, modSet) { 
+	if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Emp, modSet);
+	else return RDP.single(Tokenizer.chop(s)).ev(Emp); 
+}
+var _t = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new TypeCheck()); }
+var _v = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new VarCheck(), new VarCheckState(Emp, null)); }
+var _m = function(s) { return RDP.tree(Tokenizer.chop(s)); }
 
 module('tokenizer');
 test('Atomic tests', function() {
@@ -50,10 +54,10 @@ test('Identifiers', function() {
 //=============================================================================
 module('parser');
 test('Atomic expressions', function() {
-	deepEqual(RDP.tree([new TokNum(234), new TokEnd()]), new Num(234), 'Number');
-	deepEqual(RDP.tree([new TokBool('#t'), new TokEnd()]), new Bool(true), 'Bool true');
-	deepEqual(RDP.tree([new TokBool('#f'), new TokEnd()]), new Bool(false), 'Bool false');
-	deepEqual(RDP.tree([new TokKeyword('unit'), new TokEnd()]), new Unit(), 'Unit');
+	deepEqual(RDP.single([new TokNum(234), new TokEnd()]), new Num(234), 'Number');
+	deepEqual(RDP.single([new TokBool('#t'), new TokEnd()]), new Bool(true), 'Bool true');
+	deepEqual(RDP.single([new TokBool('#f'), new TokEnd()]), new Bool(false), 'Bool false');
+	deepEqual(RDP.single([new TokKeyword('unit'), new TokEnd()]), new Unit(), 'Unit');
 });
 
 test('Simple expressions', function() {
@@ -215,7 +219,7 @@ test('Exceptions', function() {
 	throws(function() { return _t('(let x (if 4 10 20) 40)'); }, 'let (if num num num) num');
 });
 //=============================================================================
-module('var checker');
+module('var checker: references');
 test('Basic tests', function() {
 	ok(_v('#f'), '#f');
 	ok(_v('424'), 'num');
@@ -230,4 +234,43 @@ test('Exceptions', function() {
 	throws(function() { return _v('(let a 10 b)'); }, 'let var');
 	throws(function() { return _v('(fun f (a) (+ a b))'); }, 'fun var');
 	throws(function() { return _v('(lambda (x) (call f x))'); }, 'fun var');
+});
+
+test('Naming constraints', function() {
+	throws(function() { return _v('(contains? unit m.f)'); }, 'contains? 1');
+	throws(function() { return _v('(contains? unit f m.g)'); }, 'contains? 2');
+	throws(function() { return _v('(def a.f (lambda (x) x))'); }, 'def');
+	throws(function() { return _v('(deref unit m.f)'); }, 'deref');
+	throws(function() { return _v('(fun m.f (x) x)'); }, 'fun');
+	throws(function() { return _v('(fun f (x.t) 10)'); }, 'fun parameter');
+	throws(function() { return _v('(lambda (x.t) 10)'); }, 'lambda parameter');
+	throws(function() { return _v('(let m.f 10 15)'); }, 'let');
+	throws(function() { return _v('(fun m.f (x) x)'); }, 'fun');
+	throws(function() { return _v('(record (m.f 10))'); }, 'record 1');
+	throws(function() { return _v('(record (a 10) (m.f 15))'); }, 'record 2');
+	throws(function() { return _v('(set m.f 10 15)'); }, 'set');
+	throws(function() { return _v('(setfst m.f 10 15)'); }, 'setfst');
+	throws(function() { return _v('(setsnd m.f 10 15)'); }, 'setsnd');
+});
+//=============================================================================
+module('modules');
+test('Simple calls', function() {
+	var modSet = _m('(module m (public f (lambda (x) (* x x))) (public g (lambda (x) (+ x 10))))');
+	deepEqual(_e('(call m.f 5)', modSet), new Num(25), 'call');
+	deepEqual(_e('(call m.g 15)', modSet), new Num(25), 'call');
+	
+	modSet = _m('(module m (public f (lambda (x) (* x (call g x)))) (public g (lambda (x) (+ x 10))))');
+	deepEqual(_e('(call m.f 5)', modSet), new Num(75), 'call');
+	
+	modSet = _m('(module m (public f (lambda (x) (* x (call g x)))) (private g (lambda (x) (+ x 10))))');
+	deepEqual(_e('(call m.f 5)', modSet), new Num(75), 'call');
+	throws(function() { _e('(call m.g 5)', modSet) }, 'call');
+});
+
+test('Environment reset', function() {
+	var modSet = _m('(module m (public f (lambda (x) (* x a))))');
+	throws(function() { _e('(let a 10 (call m.f 5))', modSet) }, 'let call');
+	
+	modSet = _m('(module m (public f (lambda (x) (let a 10 (call g x)))) (private g (lambda (x) (+ x a))))');
+	throws(function() { _e('(call m.f 5)', modSet) }, 'call let call');
 });
