@@ -68,6 +68,7 @@ RDP.single = function(tokenar) {
 RDP.tree.num = new TokNum();
 RDP.tree.identifier = new TokIdentifier();
 RDP.tree.bool = new TokBool();
+RDP.tree.str = new TokStr();
 
 RDP.tree.lPar = new TokLPar();
 RDP.tree.rPar = new TokRPar();
@@ -132,6 +133,9 @@ RDP.tree.exp = function(token) {
 	}
 	else if(token.match(RDP.tree.num)) {
 		return new Num(token.next().n);
+	}
+	else if(token.match(RDP.tree.str)) {
+		return new Str(token.next().s);
 	}
 	else if(token.match('unit')) {
 		token.adv();
@@ -388,6 +392,12 @@ RDP.tree.special._containsQ = function(token) {
 	return new ContainsQ(containsList);
 }
 
+RDP.tree.special._strQ = function(token) {
+	var strQE = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: str?: Missing rpar');
+	return new StrQ(strQE);
+}
+
 RDP.tree.special._unitQ = function(token) {
 	var unitQE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: unit?: Missing rpar');
@@ -509,6 +519,12 @@ RDP.tree.special._print = function(token) {
 	return new Print(printPrintExp, printRetExp);
 }
 
+RDP.tree.special._err = function(token) {
+	var errExp = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: err: Missing rpar');
+	return new Err(errExp);
+}
+
 RDP.tree.special.bindings = [
 	new StrHandlerPair('if'       , RDP.tree.special._if        ),
 	new StrHandlerPair('cond'     , RDP.tree.special._ifStar    ),
@@ -532,7 +548,8 @@ RDP.tree.special.bindings = [
 	new StrHandlerPair('-'        , RDP.tree.special._sub       ), 
 	new StrHandlerPair('*'        , RDP.tree.special._mul       ),
 	new StrHandlerPair('/'        , RDP.tree.special._div       ),
-	new StrHandlerPair('%'        , RDP.tree.special._mod       ), 
+	new StrHandlerPair('%'        , RDP.tree.special._mod       ),
+	new StrHandlerPair('string?'  , RDP.tree.special._strQ      ), 
 	new StrHandlerPair('num?'     , RDP.tree.special._numQ      ), 
 	new StrHandlerPair('unit?'    , RDP.tree.special._unitQ     ),
 	new StrHandlerPair('bool?'    , RDP.tree.special._boolQ     ),
@@ -544,7 +561,8 @@ RDP.tree.special.bindings = [
 	new StrHandlerPair('set!'     , RDP.tree.special._set       ),
 	new StrHandlerPair('setfst!'  , RDP.tree.special._setfst    ),
 	new StrHandlerPair('setsnd!'  , RDP.tree.special._setsnd    ),
-	new StrHandlerPair('print'  ,   RDP.tree.special._print     )];
+	new StrHandlerPair('print'    , RDP.tree.special._print     ),
+	new StrHandlerPair('err'      , RDP.tree.special._err       )];
 //=============================================================================
 function StrHandlerPair(s, h) {
 	this.s = s;

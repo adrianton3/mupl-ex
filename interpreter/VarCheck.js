@@ -62,7 +62,12 @@ var VarCheck = (function() {
 		div.e2.accept(this, state);
 		return true;
 	}
-
+	
+	VarCheck.prototype.visitErr = function(err, state) {
+		err.e.accept(this, state);
+		return true;
+	}
+	
 	VarCheck.prototype.visitFst = function(fst, state) {
 		fst.e.accept(this, state);
 		return true;
@@ -198,6 +203,15 @@ var VarCheck = (function() {
 	
 	VarCheck.prototype.visitSnd = function(snd, state) {
 		snd.e.accept(this, state);
+		return true;
+	}
+
+	VarCheck.prototype.visitStr = function(str, state) {
+		return true;
+	}
+	
+	VarCheck.prototype.visitStrQ = function(strQ, state) {
+		strQ.e.accept(this, state);
 		return true;
 	}
 

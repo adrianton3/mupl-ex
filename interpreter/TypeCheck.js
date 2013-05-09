@@ -10,6 +10,7 @@ var TypeCheck = (function() {
 	var _tnum = new TypeNum();
 	var _tpair = new TypePair();
 	var _trecord = new TypeRecord();
+	var _tstr = new TypeStr();
 	var _tunit = new TypeUnit();
 
 	TypeCheck.prototype.visitAdd = function(add) {
@@ -86,7 +87,12 @@ var TypeCheck = (function() {
 			
 		return _tnum;
 	}
-
+	
+	TypeCheck.prototype.visitErr = function(err) {
+		err.e.accept(this);
+		return _tany;
+	}
+	
 	TypeCheck.prototype.visitFst = function(fst) {
 		var et = fst.e.accept(this);
 		if(!et.isPair())
@@ -253,6 +259,15 @@ var TypeCheck = (function() {
 		else return _tany;
 	}
 
+	TypeCheck.prototype.visitStr = function(str) {
+		return _tstr;
+	}
+	
+	TypeCheck.prototype.visitStrQ = function(strQ) {
+		strQ.e.accept(this);
+		return _tbool;
+	}
+	
 	TypeCheck.prototype.visitSub = function(sub) {
 		var e1t = sub.e1.accept(this);
 		if(!e1t.isNum())

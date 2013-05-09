@@ -34,7 +34,7 @@
 					_parsedFreeExp.accept(new TypeCheck());
 					outParser += 'Type checker:\n-------------\nOK.\n\n';
 					
-					_parsedFreeExp.accept(new VarCheck(), Emp);
+					_parsedFreeExp.accept(new VarCheck(), Env.Emp);
 					outParser += 'Var checker:\n-------------\nOK.\n\n';
 					
 					hComputeButton.disabled = false;
@@ -57,7 +57,7 @@
 				var istr = '';
 				try {
 					Out.reset();
-					var res = _parsedFreeExp.ev(Emp);
+					var res = _parsedFreeExp.ev(Env.Emp);
 					istr += res.toString();
 					
 					istr += '\n---\n\n';
@@ -70,7 +70,7 @@
 			}
 		</script>
 		
-		<script type="text/javascript" src="interpreter/List.js"></script>
+		<script type="text/javascript" src="interpreter/Env.js"></script>
 		<script type="text/javascript" src="interpreter/Out.js"></script>
 
 		<script type="text/javascript" src="interpreter/nodes/Unit.js"></script>
@@ -91,6 +91,8 @@
 		<script type="text/javascript" src="interpreter/nodes/ClosureQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Call.js"></script>
 
+		<script type="text/javascript" src="interpreter/nodes/Str.js"></script>
+ 	<script type="text/javascript" src="interpreter/nodes/StrQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Bool.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/BoolQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/If.js"></script>
@@ -115,6 +117,7 @@
 		<script type="text/javascript" src="interpreter/nodes/Snd.js"></script>
 		
 		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/Err.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Def.js"></script>
 		
 		<script type="text/javascript" src="interpreter/Module.js"></script>
@@ -126,6 +129,7 @@
   <script type="text/javascript" src="interpreter/types/TypeNum.js"></script>
   <script type="text/javascript" src="interpreter/types/TypePair.js"></script>
   <script type="text/javascript" src="interpreter/types/TypeRecord.js"></script>
+  <script type="text/javascript" src="interpreter/types/TypeStr.js"></script>
   <script type="text/javascript" src="interpreter/types/TypeUnit.js"></script>
   
   <script type="text/javascript" src="interpreter/TypeCheck.js"></script>

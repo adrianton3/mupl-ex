@@ -3,11 +3,11 @@
 var _l = function(s) { return Tokenizer.chop(s); }
 var _p = function(s) { return RDP.single(Tokenizer.chop(s)); }
 var _e = function(s, modSet) { 
-	if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Emp, modSet);
-	else return RDP.single(Tokenizer.chop(s)).ev(Emp); 
+	if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Env.Emp, modSet);
+	else return RDP.single(Tokenizer.chop(s)).ev(Env.Emp); 
 }
 var _t = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new TypeCheck()); }
-var _v = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new VarCheck(), new VarCheckState(Emp, null)); }
+var _v = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new VarCheck(), new VarCheckState(Env.Emp, null)); }
 var _m = function(s) { return RDP.tree(Tokenizer.chop(s)); }
 
 module('tokenizer');
@@ -78,9 +78,9 @@ test('Simple expressions', function() {
 //=============================================================================
 module('interpreter');
 test('Atomic trees', function() {
-	deepEqual(new Num(234).ev(Emp), new Num(234), 'Num');
-	deepEqual(new Bool(true).ev(Emp), new Bool(true), 'Bool');
-	deepEqual(new Unit().ev(Emp), new Unit(), 'Unit');
+	deepEqual(new Num(234).ev(Env.Emp), new Num(234), 'Num');
+	deepEqual(new Bool(true).ev(Env.Emp), new Bool(true), 'Bool');
+	deepEqual(new Unit().ev(Env.Emp), new Unit(), 'Unit');
 });
 
 test('Math ops', function() {
@@ -123,9 +123,8 @@ test('Qs', function() {
 });
 
 test('Scope', function() {
-	deepEqual(new Var('a').ev(Emp.con(new Binding('a', new Num(10)))), new Num(10), 'Simple lookup');
-	deepEqual(new Var('a').ev(Emp.con(new Binding('a', new Num(10)))
-															 .con(new Binding('a', new Num(20)))), new Num(20), 'Shadowing');
+	deepEqual(new Var('a').ev(new Env(new Binding('a', new Num(10)))), new Num(10), 'Simple lookup');
+	deepEqual(new Var('a').ev(new Env(new Binding('a', new Num(10))).con(new Binding('a', new Num(20)))), new Num(20), 'Shadowing');
 	deepEqual(_e('(let a 10 a)'), new Num(10), 'Let');
 	deepEqual(_e('(let a 10 (let a 20 a))'), new Num(20), 'Let');
 });
@@ -273,4 +272,19 @@ test('Environment reset', function() {
 	
 	modSet = _m('(module m (public f (lambda (x) (let a 10 (call g x)))) (private g (lambda (x) (+ x a))))');
 	throws(function() { _e('(call m.f 5)', modSet) }, 'call let call');
+});
+//=============================================================================
+module('err');
+test('Simple tests', function() {
+	throws(function() { return _e('(err "oh noes!")'); }, 'oh noes!', 'simple throw');
+	throws(function() { return _e('(if #f 10 (err 15))'); }, '15', 'if err');
+	throws(function() { return _e('(err (if #f "no err" "err"))'); }, 'err', 'err if');
+});
+//=============================================================================
+module('strings');
+test('Simple tests', function() {
+	deepEqual(_e('"a string"'), new Str('a string'), 'a string');
+	deepEqual(_e('(string? "str")'), new Bool(true), 'string? string');
+	deepEqual(_e('(string? unit)'), new Bool(false), 'string? unit');
+	deepEqual(_e('(string? 321)'), new Bool(false), 'string? num');
 });
