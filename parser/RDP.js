@@ -68,6 +68,7 @@ RDP.single = function(tokenar) {
 RDP.tree.num = new TokNum();
 RDP.tree.identifier = new TokIdentifier();
 RDP.tree.bool = new TokBool();
+RDP.tree.str = new TokStr();
 
 RDP.tree.lPar = new TokLPar();
 RDP.tree.rPar = new TokRPar();
@@ -132,6 +133,9 @@ RDP.tree.exp = function(token) {
 	}
 	else if(token.match(RDP.tree.num)) {
 		return new Num(token.next().n);
+	}
+	else if(token.match(RDP.tree.str)) {
+		return new Str(token.next().s);
 	}
 	else if(token.match('unit')) {
 		token.adv();
@@ -303,13 +307,22 @@ RDP.tree.special._closureQ = function(token) {
 	return new ClosureQ(closureE);
 }
 
+RDP.tree.special._mut = function(token) {
+	token.expect(RDP.tree.identifier, 'RDP: first mut parameter must be an identifier');
+	var mutName = token.past().s;
+	var mutExp = RDP.tree.exp(token);
+	var mutBody = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: mut: Missing rpar');
+	return new Let(mutName, mutExp, mutBody, false);
+}
+
 RDP.tree.special._let = function(token) {
 	token.expect(RDP.tree.identifier, 'RDP: first let parameter must be an identifier');
 	var letName = token.past().s;
 	var letExp = RDP.tree.exp(token);
 	var letBody = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: let: Missing rpar');
-	return new Let(letName, letExp, letBody);
+	return new Let(letName, letExp, letBody, true);
 }
 
 RDP.tree.special._letStar = function(token) {
@@ -386,6 +399,12 @@ RDP.tree.special._containsQ = function(token) {
 	var containsList = RDP.tree.containsList(token);
 	token.expect(RDP.tree.rPar, 'RDP: contains?: Missing rpar');
 	return new ContainsQ(containsList);
+}
+
+RDP.tree.special._strQ = function(token) {
+	var strQE = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: str?: Missing rpar');
+	return new StrQ(strQE);
 }
 
 RDP.tree.special._unitQ = function(token) {
@@ -509,10 +528,17 @@ RDP.tree.special._print = function(token) {
 	return new Print(printPrintExp, printRetExp);
 }
 
+RDP.tree.special._err = function(token) {
+	var errExp = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: err: Missing rpar');
+	return new Err(errExp);
+}
+
 RDP.tree.special.bindings = [
 	new StrHandlerPair('if'       , RDP.tree.special._if        ),
 	new StrHandlerPair('cond'     , RDP.tree.special._ifStar    ),
 	new StrHandlerPair('let'      , RDP.tree.special._let       ),
+	new StrHandlerPair('mut'      , RDP.tree.special._mut       ),
 	new StrHandlerPair('let*'     , RDP.tree.special._letStar   ),
 	new StrHandlerPair('letrec'   , RDP.tree.special._letrecStar),
 	new StrHandlerPair('lambda'   , RDP.tree.special._lambdaStar),
@@ -532,7 +558,8 @@ RDP.tree.special.bindings = [
 	new StrHandlerPair('-'        , RDP.tree.special._sub       ), 
 	new StrHandlerPair('*'        , RDP.tree.special._mul       ),
 	new StrHandlerPair('/'        , RDP.tree.special._div       ),
-	new StrHandlerPair('%'        , RDP.tree.special._mod       ), 
+	new StrHandlerPair('%'        , RDP.tree.special._mod       ),
+	new StrHandlerPair('string?'  , RDP.tree.special._strQ      ), 
 	new StrHandlerPair('num?'     , RDP.tree.special._numQ      ), 
 	new StrHandlerPair('unit?'    , RDP.tree.special._unitQ     ),
 	new StrHandlerPair('bool?'    , RDP.tree.special._boolQ     ),
@@ -544,7 +571,8 @@ RDP.tree.special.bindings = [
 	new StrHandlerPair('set!'     , RDP.tree.special._set       ),
 	new StrHandlerPair('setfst!'  , RDP.tree.special._setfst    ),
 	new StrHandlerPair('setsnd!'  , RDP.tree.special._setsnd    ),
-	new StrHandlerPair('print'  ,   RDP.tree.special._print     )];
+	new StrHandlerPair('print'    , RDP.tree.special._print     ),
+	new StrHandlerPair('err'      , RDP.tree.special._err       )];
 //=============================================================================
 function StrHandlerPair(s, h) {
 	this.s = s;

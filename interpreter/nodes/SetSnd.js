@@ -9,7 +9,7 @@ function SetSnd(name, e, body) {
 SetSnd.prototype.ev = function(env, modSet) {
 	var eEv = this.e.ev(env, modSet);
 	var binding = env.getBinding(this.name);
-	if(!(binding.v instanceof Pair)) throw 'Cannot setsnd on non-pair';
+	if(!(binding.v instanceof Pair)) throw 'Cannot apply setsnd! on non-pair';
 	binding.v.e2 = eEv;
 	return this.body.ev(env, modSet);
 }

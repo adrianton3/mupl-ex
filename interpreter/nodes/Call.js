@@ -13,7 +13,7 @@ Call.prototype.ev = function(env, modSet) {
 		var newEnv = modSet.getEnv(evClos.modName);
 		if(!(evClos.fun.pformal === false || this.pexp === false)) {
 			var evPexp = this.pexp.ev(env, modSet);
-			newEnv = newEnv.con(new Binding(evClos.fun.pformal, evPexp));
+			newEnv = newEnv.con(new VarBinding(evClos.fun.pformal, evPexp, true));
 		}
 		
 		return evClos.fun.body.ev(newEnv, modSet);
@@ -27,13 +27,13 @@ Call.prototype.ev = function(env, modSet) {
 		envPlusPar = evClos.env;
 	else {
 		var evPexp = this.pexp.ev(env, modSet); //evaluate the parameter
-		envPlusPar = evClos.env.con(new Binding(evClos.fun.pformal, evPexp));
+		envPlusPar = evClos.env.con(new VarBinding(evClos.fun.pformal, evPexp));
 	}
 	
 	if(evClos.fun.name == false)
 		return evClos.fun.body.ev(envPlusPar, modSet);
 	else
-		return evClos.fun.body.ev(envPlusPar.con(new Binding(evClos.fun.name, evClos)), modSet);
+		return evClos.fun.body.ev(envPlusPar.con(new VarBinding(evClos.fun.name, evClos, true)), modSet);
 }
 
 Call.prototype.accept = function(visitor, state) {

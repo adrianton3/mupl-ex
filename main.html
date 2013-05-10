@@ -27,10 +27,8 @@
 					var toksMods = Tokenizer.chop(modsIn);
 					_modSet = RDP.tree(toksMods);
 					
-					_modSet.accept(new TypeCheck());
-					outParser += 'Modules type check: OK.\n';
-					_modSet.accept(new VarCheck(), new VarCheckState(Emp, _modSet));
-					outParser += 'Modules reference check: OK.\n';
+					_modSet.accept(new TypeCheck(), new VarCheckState(Env.Emp, _modSet));
+					outParser += 'Modules type/reference check: OK.\n';
 					
 					var toksFreeExp = Tokenizer.chop(expIn);
 					outParser += 'Free exp tokens:\n-------\n' + toksFreeExp.join(', ') + '\n\n';
@@ -38,11 +36,8 @@
 					
 					outParser += 'Free exp AST:\n----\n' + _parsedFreeExp.toString() + '\n\n';
 					
-					_parsedFreeExp.accept(new TypeCheck());
-					outParser += 'Free exp type check: OK.\n';
-					
-					_parsedFreeExp.accept(new VarCheck(), new VarCheckState(Emp, _modSet));
-					outParser += 'Free exp reference check: OK.\n';
+					_parsedFreeExp.accept(new TypeCheck(), new VarCheckState(Env.Emp, _modSet));
+					outParser += 'Free exp type/reference check: OK.\n';
 					
 					hComputeButton.disabled = false;
 				} catch(err) {
@@ -59,7 +54,7 @@
 				var istr = '';
 				try {
 					Out.reset();
-					var res = _parsedFreeExp.ev(Emp, _modSet);
+					var res = _parsedFreeExp.ev(Env.Emp, _modSet);
 					istr += res.toString();
 					
 					istr += '\n---\n\n';
@@ -72,9 +67,10 @@
 			}
 		</script>
 		
-		<script type="text/javascript" src="interpreter/List.js"></script>
+		<script type="text/javascript" src="interpreter/Env.js"></script>
 		<script type="text/javascript" src="interpreter/Out.js"></script>
 
+  <script type="text/javascript" src="interpreter/nodes/Any.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Unit.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/UnitQ.js"></script>
 
@@ -93,6 +89,8 @@
 		<script type="text/javascript" src="interpreter/nodes/ClosureQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Call.js"></script>
 
+ 	<script type="text/javascript" src="interpreter/nodes/Str.js"></script>
+ 	<script type="text/javascript" src="interpreter/nodes/StrQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Bool.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/BoolQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/If.js"></script>
@@ -117,6 +115,7 @@
 		<script type="text/javascript" src="interpreter/nodes/Snd.js"></script>
 		
 		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/Err.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Def.js"></script>
 		
 		<script type="text/javascript" src="interpreter/Module.js"></script>
@@ -128,10 +127,10 @@
   <script type="text/javascript" src="interpreter/types/TypeNum.js"></script>
   <script type="text/javascript" src="interpreter/types/TypePair.js"></script>
   <script type="text/javascript" src="interpreter/types/TypeRecord.js"></script>
+  <script type="text/javascript" src="interpreter/types/TypeStr.js"></script>
   <script type="text/javascript" src="interpreter/types/TypeUnit.js"></script>
   
   <script type="text/javascript" src="interpreter/TypeCheck.js"></script>
-  <script type="text/javascript" src="interpreter/VarCheck.js"></script>
 
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>

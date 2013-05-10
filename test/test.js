@@ -3,11 +3,11 @@
 var _l = function(s) { return Tokenizer.chop(s); }
 var _p = function(s) { return RDP.single(Tokenizer.chop(s)); }
 var _e = function(s, modSet) { 
-	if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Emp, modSet);
-	else return RDP.single(Tokenizer.chop(s)).ev(Emp); 
+	if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Env.Emp, modSet);
+	else return RDP.single(Tokenizer.chop(s)).ev(Env.Emp); 
 }
-var _t = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new TypeCheck()); }
-var _v = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new VarCheck(), new VarCheckState(Emp, null)); }
+var _t = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new TypeCheck(), new VarCheckState(Env.Emp, null)); }
+//var _v = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new VarCheck(), new VarCheckState(Env.Emp, null)); }
 var _m = function(s) { return RDP.tree(Tokenizer.chop(s)); }
 
 module('tokenizer');
@@ -78,9 +78,9 @@ test('Simple expressions', function() {
 //=============================================================================
 module('interpreter');
 test('Atomic trees', function() {
-	deepEqual(new Num(234).ev(Emp), new Num(234), 'Num');
-	deepEqual(new Bool(true).ev(Emp), new Bool(true), 'Bool');
-	deepEqual(new Unit().ev(Emp), new Unit(), 'Unit');
+	deepEqual(new Num(234).ev(Env.Emp), new Num(234), 'Num');
+	deepEqual(new Bool(true).ev(Env.Emp), new Bool(true), 'Bool');
+	deepEqual(new Unit().ev(Env.Emp), new Unit(), 'Unit');
 });
 
 test('Math ops', function() {
@@ -123,9 +123,8 @@ test('Qs', function() {
 });
 
 test('Scope', function() {
-	deepEqual(new Var('a').ev(Emp.con(new Binding('a', new Num(10)))), new Num(10), 'Simple lookup');
-	deepEqual(new Var('a').ev(Emp.con(new Binding('a', new Num(10)))
-															 .con(new Binding('a', new Num(20)))), new Num(20), 'Shadowing');
+	deepEqual(new Var('a').ev(new Env(new VarBinding('a', new Num(10)))), new Num(10), 'Simple lookup');
+	deepEqual(new Var('a').ev(new Env(new VarBinding('a', new Num(10))).con(new VarBinding('a', new Num(20)))), new Num(20), 'Shadowing');
 	deepEqual(_e('(let a 10 a)'), new Num(10), 'Let');
 	deepEqual(_e('(let a 10 (let a 20 a))'), new Num(20), 'Let');
 });
@@ -143,7 +142,7 @@ test('Fun', function() {
 });
 
 test('Set!', function() {
-	deepEqual(_e('(let a 15 (set! a 33 a))'), new Num(33), 'Set!');
+	deepEqual(_e('(mut a 15 (set! a 33 a))'), new Num(33), 'Set!');
 	deepEqual(_e('(let a (pair 11 22) (setfst! a 33 (fst a)))'), new Num(33), 'SetFst!');
 	deepEqual(_e('(let a (pair 11 22) (setfst! a 33 (snd a)))'), new Num(22), 'SetFst!');
 	deepEqual(_e('(let a (pair 11 22) (setsnd! a 33 (snd a)))'), new Num(33), 'SetSnd!');
@@ -221,36 +220,57 @@ test('Exceptions', function() {
 //=============================================================================
 module('var checker: references');
 test('Basic tests', function() {
-	ok(_v('#f'), '#f');
-	ok(_v('424'), 'num');
-	ok(_v('(+ 30 12)'), '+');
-	ok(_v('(let a 10 (- a 10))'), 'let -');
-	ok(_v('(let b 10 (fun f (a) (+ a b)))'), 'let fun +');
-	ok(_v('(fun f (a) (call f a))'), 'fun call +');
+	ok(_t('#f'), '#f');
+	ok(_t('424'), 'num');
+	ok(_t('(+ 30 12)'), '+');
+	ok(_t('(let a 10 (- a 10))'), 'let -');
+	ok(_t('(let b 10 (fun f (a) (+ a b)))'), 'let fun +');
+	ok(_t('(fun f (a) (call f a))'), 'fun call');
 });
 
 test('Exceptions', function() {
-	throws(function() { return _v('a'); }, 'var');
-	throws(function() { return _v('(let a 10 b)'); }, 'let var');
-	throws(function() { return _v('(fun f (a) (+ a b))'); }, 'fun var');
-	throws(function() { return _v('(lambda (x) (call f x))'); }, 'fun var');
+	throws(function() { return _t('a'); }, 'var');
+	throws(function() { return _t('(let a 10 b)'); }, 'let var');
+	throws(function() { return _t('(fun f (a) (+ a b))'); }, 'fun +');
+	throws(function() { return _t('(lambda (x) (call f x))'); }, 'lambda call');
+	throws(function() { return _t('(set! a 10 (+ 10 10))'); }, 'set!');
+	throws(function() { return _t('(setfst! a 10 (+ 10 10))'); }, 'setfst!');
+	throws(function() { return _t('(setsnd! a 10 (+ 10 10))'); }, 'setsnd!');
+});
+
+test('Let exceptions', function() {
+	throws(function() { return _t('(let a 10 (+ a unit))'); }, 'let num + var unit');
+	throws(function() { return _t('(let a unit (+ a 10))'); }, 'let unit + var num');
+	_t('(let* ((a 10) (b (+ a 10))) (+ b 10))'); ok(true, 'let* 1');
+	throws(function() { return _t('(let* ((a #f) (b (if #t a #f))) (+ b 10))'); }, 'let* 2');
 });
 
 test('Naming constraints', function() {
-	throws(function() { return _v('(contains? unit m.f)'); }, 'contains? 1');
-	throws(function() { return _v('(contains? unit f m.g)'); }, 'contains? 2');
-	throws(function() { return _v('(def a.f (lambda (x) x))'); }, 'def');
-	throws(function() { return _v('(deref unit m.f)'); }, 'deref');
-	throws(function() { return _v('(fun m.f (x) x)'); }, 'fun');
-	throws(function() { return _v('(fun f (x.t) 10)'); }, 'fun parameter');
-	throws(function() { return _v('(lambda (x.t) 10)'); }, 'lambda parameter');
-	throws(function() { return _v('(let m.f 10 15)'); }, 'let');
-	throws(function() { return _v('(fun m.f (x) x)'); }, 'fun');
-	throws(function() { return _v('(record (m.f 10))'); }, 'record 1');
-	throws(function() { return _v('(record (a 10) (m.f 15))'); }, 'record 2');
-	throws(function() { return _v('(set m.f 10 15)'); }, 'set');
-	throws(function() { return _v('(setfst m.f 10 15)'); }, 'setfst');
-	throws(function() { return _v('(setsnd m.f 10 15)'); }, 'setsnd');
+	throws(function() { return _t('(contains? unit m.f)'); }, 'contains? 1');
+	throws(function() { return _t('(contains? unit f m.g)'); }, 'contains? 2');
+	throws(function() { return _t('(def a.f (lambda (x) x))'); }, 'def');
+	throws(function() { return _t('(deref unit m.f)'); }, 'deref');
+	throws(function() { return _t('(fun m.f (x) x)'); }, 'fun');
+	throws(function() { return _t('(fun f (x.t) 10)'); }, 'fun parameter');
+	throws(function() { return _t('(lambda (x.t) 10)'); }, 'lambda parameter');
+	throws(function() { return _t('(let m.f 10 15)'); }, 'let');
+	throws(function() { return _t('(fun m.f (x) x)'); }, 'fun');
+	throws(function() { return _t('(record (m.f 10))'); }, 'record 1');
+	throws(function() { return _t('(record (a 10) (m.f 15))'); }, 'record 2');
+	throws(function() { return _t('(set m.f 10 15)'); }, 'set');
+	throws(function() { return _t('(setfst m.f 10 15)'); }, 'setfst');
+	throws(function() { return _t('(setsnd m.f 10 15)'); }, 'setsnd');
+});
+
+test('Mut and Let', function() {
+	_t('(mut a 10 (set! a 20 (+ a a)))'); ok(true,'mut set +');
+	throws(function() { return _t('(let a 10 (set! a 20 (+ a a)))'); }, 'let set +');
+	throws(function() { return _t('(lambda (x) (set! x 20 (+ x x)))'); }, 'lambda set +');
+	throws(function() { return _t('(fun f (x) (set! f 20 (+ x x)))'); }, 'fun set +');
+	_t('(letrec ((a 10)) (+ a 10))'); ok(true,'letrec num +');
+	throws(function() { return _t('(letrec ((a unit)) (+ a 10))'); }, 'letrec unit +');
+	_t('(letrec ((a 10) (b a)) (+ b 10))'); ok(true,'letrec num var +');
+	_t('(letrec ((a b) (b a)) (+ b 10))'); ok(true,'letrec var var +');
 });
 //=============================================================================
 module('modules');
@@ -273,4 +293,19 @@ test('Environment reset', function() {
 	
 	modSet = _m('(module m (public f (lambda (x) (let a 10 (call g x)))) (private g (lambda (x) (+ x a))))');
 	throws(function() { _e('(call m.f 5)', modSet) }, 'call let call');
+});
+//=============================================================================
+module('err');
+test('Simple tests', function() {
+	throws(function() { return _e('(err "oh noes!")'); }, 'oh noes!', 'simple throw');
+	throws(function() { return _e('(if #f 10 (err 15))'); }, '15', 'if err');
+	throws(function() { return _e('(err (if #f "no err" "err"))'); }, 'err', 'err if');
+});
+//=============================================================================
+module('strings');
+test('Simple tests', function() {
+	deepEqual(_e('"a string"'), new Str('a string'), 'a string');
+	deepEqual(_e('(string? "str")'), new Bool(true), 'string? string');
+	deepEqual(_e('(string? unit)'), new Bool(false), 'string? unit');
+	deepEqual(_e('(string? 321)'), new Bool(false), 'string? num');
 });

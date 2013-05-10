@@ -5,6 +5,7 @@ TypeUnit.prototype.isFun = function() { return false; }
 TypeUnit.prototype.isNum = function() { return false; }
 TypeUnit.prototype.isPair = function() { return false; }
 TypeUnit.prototype.isRecord = function() { return false; }
+TypeUnit.prototype.isStr = function() { return false; }
 TypeUnit.prototype.isUnit = function() { return true; }
 
 TypeUnit.prototype.same = function(that) {

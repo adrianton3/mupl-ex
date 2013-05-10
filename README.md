@@ -71,8 +71,8 @@ Usage:
 This is the simplest way of evaluating an expression: 
 
 ```js
-function ev(code) { return RDP.single(Tokenizer.chop(code)).ev(Emp, ModuleSet.getEmp()); }
-var result = ev('let a 10 (+ a 15))');
+function ev(code) { return RDP.single(Tokenizer.chop(code)).ev(Env.Emp, ModuleSet.getEmp()); }
+var result = ev('(let a 10 (+ a 15))');
 ```
 
 If, however, you require function definitions from a module, then use this:
@@ -80,7 +80,7 @@ If, however, you require function definitions from a module, then use this:
 ```js
 function ev(expCode, modSetCode) {
  var modSet = RDP.tree(Tokenizer.chop(modSetCode));
- return RDP.single(Tokenizer.chop(code)).ev(Emp, modSet); 
+ return RDP.single(Tokenizer.chop(code)).ev(Env.Emp, modSet); 
 }
 
 modSetCode = '(module m (public f (lambda (x) (* x x))))';
@@ -103,7 +103,7 @@ Furthermore, use the following to check for references to undeclared module defi
 
 ```js
 try {
- parsedExp.accept(new VarCheck(), new VarCheckState(Emp, modSet));
+ parsedExp.accept(new VarCheck(), new VarCheckState(Env.Emp, modSet));
 } catch(e) {
  alert(e);
 }
@@ -114,7 +114,7 @@ Module sets can also accept type checkers and reference checkers:
 ```js
 try {
  modSet.accept(new TypeCheck());
- modSet.accept(new VarCheck(), new VarCheckState(Emp, modSet));
+ modSet.accept(new VarCheck(), new VarCheckState(Env.Emp, modSet));
 } catch(e) {
  alert(e);
 }
@@ -123,17 +123,34 @@ try {
 Planned features:
 -----------------
 
-* add strings
 * add `+`, `*`, ... for more than 2 operands
 * add code formatting
-* add exceptions
 * remove/change currying by default
 * add better error messages
 * add line numbers in error messages
-* modify setfst, setsnd so that they take an expression instead of a name
+* add `sametype?`
+* add = for numbers and deepEq? for pairs and records
+* add basic operations for strings
+* add mpair
 
 Version history:
 ----------------
+
+### 0.4.3
+
+* unified *TypeCheck.js* and *VarCheck.js*
+* expressions keep their type when they're bound
+* `let` now defines immutable bindings
+* added `mut` for declaring mutable bindings
+* added more static checking 
+* improved some error messages
+* fixed a bug in index-pretty.html
+
+### 0.4.2
+
+* added strings
+* added "exceptions" via `err`
+* cleaned up *List.js*
 
 ### 0.4.1
 

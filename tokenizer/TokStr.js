@@ -13,5 +13,5 @@ TokStr.prototype.toString = function() {
 }
 
 TokStr.prototype.toHTML = function(c) {
-	return '<span style="color:' + c.str + '">' + this.s + '</span>';
+	return '<span style="color:' + c.str + '">\'' + this.s + '\'</span>';
 }

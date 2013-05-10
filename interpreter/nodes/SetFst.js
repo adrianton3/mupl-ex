@@ -9,7 +9,7 @@ function SetFst(name, e, body) {
 SetFst.prototype.ev = function(env, modSet) {
 	var eEv = this.e.ev(env, modSet);
 	var binding = env.getBinding(this.name);
-	if(!(binding.v instanceof Pair)) throw 'Cannot setfst on non-pair';
+	if(!(binding.v instanceof Pair)) throw 'Cannot apply setfst! on non-pair';
 	binding.v.e1 = eEv;
 	return this.body.ev(env, modSet);
 }
