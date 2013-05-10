@@ -27,10 +27,8 @@
 					var toksMods = Tokenizer.chop(modsIn);
 					_modSet = RDP.tree(toksMods);
 					
-					_modSet.accept(new TypeCheck());
-					outParser += 'Modules type check: OK.\n';
-					_modSet.accept(new VarCheck(), new VarCheckState(Env.Emp, _modSet));
-					outParser += 'Modules reference check: OK.\n';
+					_modSet.accept(new TypeCheck(), new VarCheckState(Env.Emp, _modSet));
+					outParser += 'Modules type/reference check: OK.\n';
 					
 					var toksFreeExp = Tokenizer.chop(expIn);
 					outParser += 'Free exp tokens:\n-------\n' + toksFreeExp.join(', ') + '\n\n';
@@ -38,11 +36,8 @@
 					
 					outParser += 'Free exp AST:\n----\n' + _parsedFreeExp.toString() + '\n\n';
 					
-					_parsedFreeExp.accept(new TypeCheck());
-					outParser += 'Free exp type check: OK.\n';
-					
-					_parsedFreeExp.accept(new VarCheck(), new VarCheckState(Env.Emp, _modSet));
-					outParser += 'Free exp reference check: OK.\n';
+					_parsedFreeExp.accept(new TypeCheck(), new VarCheckState(Env.Emp, _modSet));
+					outParser += 'Free exp type/reference check: OK.\n';
 					
 					hComputeButton.disabled = false;
 				} catch(err) {
@@ -75,6 +70,7 @@
 		<script type="text/javascript" src="interpreter/Env.js"></script>
 		<script type="text/javascript" src="interpreter/Out.js"></script>
 
+  <script type="text/javascript" src="interpreter/nodes/Any.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Unit.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/UnitQ.js"></script>
 
@@ -135,7 +131,6 @@
   <script type="text/javascript" src="interpreter/types/TypeUnit.js"></script>
   
   <script type="text/javascript" src="interpreter/TypeCheck.js"></script>
-  <script type="text/javascript" src="interpreter/VarCheck.js"></script>
 
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>

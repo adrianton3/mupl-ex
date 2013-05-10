@@ -128,19 +128,29 @@ Planned features:
 * remove/change currying by default
 * add better error messages
 * add line numbers in error messages
-* modify setfst, setsnd so that they take an expression instead of a name
 * add `sametype?`
 * add = for numbers and deepEq? for pairs and records
 * add basic operations for strings
+* add mpair
 
 Version history:
 ----------------
+
+### 0.4.3
+
+* unified *TypeCheck.js* and *VarCheck.js*
+* expressions keep their type when they're bound
+* `let` now defines immutable bindings
+* added `mut` for declaring mutable bindings
+* added more static checking 
+* improved some error messages
+* fixed a bug in index-pretty.html
 
 ### 0.4.2
 
 * added strings
 * added "exceptions" via `err`
-* cleaned up "List.js"
+* cleaned up *List.js*
 
 ### 0.4.1
 

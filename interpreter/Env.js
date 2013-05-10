@@ -15,7 +15,7 @@ Env.prototype.toString = function() { return this.n.toString() + this.tail.toStr
 
 Env.prototype.getBinding = function(s) { 
 		if(this.n.s == s) return this.n;
-		else return this.tail.findBinding(s);
+		else return this.tail.getBinding(s);
 }
 
 Env.prototype.findBinding = function(s) { 
@@ -24,8 +24,15 @@ Env.prototype.findBinding = function(s) {
 }
 
 Env.prototype.setBinding = function(s, nv) { 
-		if(this.n.s == s) this.n.v = nv;
+		if(this.n.s == s)
+			if(this.n.final) throw this.n.s + ' is final';
+			else this.n.v = nv;
 		else return this.tail.setBinding(s, nv);
+}
+
+Env.prototype.setBindingBang = function(s, nv) { 
+		if(this.n.s == s) this.n.v = nv;
+		else return this.tail.setBindingBang(s, nv);
 }
 
 Env.Emp = {
@@ -39,11 +46,18 @@ Env.Emp = {
 	setBinding: function(s) { throw 'Set binding failed for ' + s; },
 }
 //=============================================================================
-function Binding(s, v) {
+function VarBinding(s, v, final) {
 	this.s = s;
 	this.v = v;
+	this.final = final;
 }
 
-Binding.prototype.toString = function() {
-	return this.s + ' := ' + this.v;
+VarBinding.prototype.set = function(nv) {
+	if(this.final) throw this.s + ' is final';
+	else this.v = nv;
+}
+
+VarBinding.prototype.toString = function() {
+	if(this.final) return this.s + ' := ' + this.v;
+	else return this.s + ' *= ' + this.v;
 }

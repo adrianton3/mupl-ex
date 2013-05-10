@@ -18,7 +18,7 @@ Module.getPub = function(defs) {
 Module.getEnv = function(defs) {
 	var old = Env.Emp;
 	for(var i in defs)
-		old = old.con(new Binding(defs[i].defName, new Closure(Env.Emp, defs[i].fun)));
+		old = old.con(new VarBinding(defs[i].defName, new Closure(Env.Emp, defs[i].fun), true));
 	
 	return old;
 }

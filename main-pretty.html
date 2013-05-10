@@ -31,11 +31,8 @@
 					_parsedFreeExp = RDP.single(t);
 					outParser += 'AST:\n----\n' + _parsedFreeExp.toString() + '\n\n';
 					
-					_parsedFreeExp.accept(new TypeCheck());
-					outParser += 'Type checker:\n-------------\nOK.\n\n';
-					
-					_parsedFreeExp.accept(new VarCheck(), Env.Emp);
-					outParser += 'Var checker:\n-------------\nOK.\n\n';
+					_parsedFreeExp.accept(new TypeCheck(), new VarCheckState(Env.Emp, null));
+					outParser += 'Type/reference check: OK.\n';
 					
 					hComputeButton.disabled = false;
 					
@@ -73,6 +70,7 @@
 		<script type="text/javascript" src="interpreter/Env.js"></script>
 		<script type="text/javascript" src="interpreter/Out.js"></script>
 
+  <script type="text/javascript" src="interpreter/nodes/Any.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Unit.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/UnitQ.js"></script>
 
@@ -133,7 +131,6 @@
   <script type="text/javascript" src="interpreter/types/TypeUnit.js"></script>
   
   <script type="text/javascript" src="interpreter/TypeCheck.js"></script>
-  <script type="text/javascript" src="interpreter/VarCheck.js"></script>
 
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>

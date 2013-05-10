@@ -307,13 +307,22 @@ RDP.tree.special._closureQ = function(token) {
 	return new ClosureQ(closureE);
 }
 
+RDP.tree.special._mut = function(token) {
+	token.expect(RDP.tree.identifier, 'RDP: first mut parameter must be an identifier');
+	var mutName = token.past().s;
+	var mutExp = RDP.tree.exp(token);
+	var mutBody = RDP.tree.exp(token);
+	token.expect(RDP.tree.rPar, 'RDP: mut: Missing rpar');
+	return new Let(mutName, mutExp, mutBody, false);
+}
+
 RDP.tree.special._let = function(token) {
 	token.expect(RDP.tree.identifier, 'RDP: first let parameter must be an identifier');
 	var letName = token.past().s;
 	var letExp = RDP.tree.exp(token);
 	var letBody = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: let: Missing rpar');
-	return new Let(letName, letExp, letBody);
+	return new Let(letName, letExp, letBody, true);
 }
 
 RDP.tree.special._letStar = function(token) {
@@ -529,6 +538,7 @@ RDP.tree.special.bindings = [
 	new StrHandlerPair('if'       , RDP.tree.special._if        ),
 	new StrHandlerPair('cond'     , RDP.tree.special._ifStar    ),
 	new StrHandlerPair('let'      , RDP.tree.special._let       ),
+	new StrHandlerPair('mut'      , RDP.tree.special._mut       ),
 	new StrHandlerPair('let*'     , RDP.tree.special._letStar   ),
 	new StrHandlerPair('letrec'   , RDP.tree.special._letrecStar),
 	new StrHandlerPair('lambda'   , RDP.tree.special._lambdaStar),

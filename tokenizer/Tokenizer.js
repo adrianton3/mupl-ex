@@ -167,7 +167,7 @@ Tokenizer.chop.alphanum.reserved = [
 	'+', '-', '*', '/', '%',
 	/*'<', '<=', '=', '>='*/, '>',
 	'not', 'and', 'or', 'xor',
-	'let', 'let*', 'letrec', 'if', 'cond',
+	'let', 'mut', 'let*', 'letrec', 'if', 'cond',
 	'set!', 'setfst!', 'setsnd!',
 	'num?', 'bool?', 'unit?', 'string?',
 	'print', 'err',
