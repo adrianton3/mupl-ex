@@ -1,8 +1,9 @@
 "use strict";
 
-function Call(funexp, pexp) {
+function Call(funexp, pexp, tokenCoords) {
 	this.funexp = funexp;
 	this.pexp = pexp;
+	this.tokenCoords = tokenCoords;
 }
 
 Call.prototype.ev = function(env, modSet) {
@@ -20,7 +21,7 @@ Call.prototype.ev = function(env, modSet) {
 	}
 
 	//local call
-	if(!(evClos instanceof Closure)) throw 'Cannot call a non-function';
+	if(!(evClos instanceof Closure)) throw 'Cannot call a non-function ' + this.tokenCoords;
 	
 	var envPlusPar;
 	if(evClos.fun.pformal === false || this.pexp === false)

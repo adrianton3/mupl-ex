@@ -1,7 +1,8 @@
 "use strict";
 
-function TokNum(s) {
+function TokNum(s, coords) {
 	this.n = parseFloat(s);
+	this.coords = coords;
 }
 
 TokNum.prototype.match = function(that) {

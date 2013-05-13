@@ -1,9 +1,10 @@
 "use strict";
 
-function SetSnd(name, e, body) {
+function SetSnd(name, e, body, tokenCoords) {
 	this.name = name;
 	this.e = e;
 	this.body = body; 
+	this.tokenCoords = tokenCoords;
 }
 
 SetSnd.prototype.ev = function(env, modSet) {

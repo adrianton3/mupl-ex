@@ -1,13 +1,14 @@
 "use strict";
 
-function Not(e) {
+function Not(e, tokenCoords) {
 	this.e = e;
+	this.tokenCoords = tokenCoords;
 }
 
 Not.prototype.ev = function(env, modSet) {
 	var eEv = this.e.ev(env, modSet);
 	
-	if(!(eEv instanceof Bool)) throw "Can not perform not on non-booleans";
+	if(!(eEv instanceof Bool)) throw 'Can not perform not-op on non-booleans ' + this.tokenCoords;
 	return new Bool(!eEv.v);
 }
 

@@ -1,8 +1,9 @@
 "use strict";
 
-function Deref(exp, name) {
+function Deref(exp, name, tokenCoords) {
 	this.exp = exp;
 	this.name = name;
+	this.tokenCoords = tokenCoords;
 }
 
 Deref.prototype.accept = function(visitor, state) {
@@ -12,7 +13,7 @@ Deref.prototype.accept = function(visitor, state) {
 Deref.prototype.ev = function(env, modSet) {
 	var expEv = this.exp.ev(env, modSet);
 	
-	if(!(expEv instanceof Record)) throw 'Can not dereferentiate a non-record';
+	if(!(expEv instanceof Record)) throw 'Can not dereferentiate a non-record ' + this.tokenCoords;
 	
 	return expEv.get(this.name);
 }

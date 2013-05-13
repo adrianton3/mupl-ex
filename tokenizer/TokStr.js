@@ -1,7 +1,8 @@
 "use strict";
 
-function TokStr(s) {
+function TokStr(s, coords) {
 	this.s = s;
+	this.coords = coords;
 }
 
 TokStr.prototype.match = function(that) {

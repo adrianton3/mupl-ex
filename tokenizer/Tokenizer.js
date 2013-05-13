@@ -1,6 +1,4 @@
-function Tokenizer() {
-
-}
+function Tokenizer() { }
 
 Tokenizer.chop = function(s, ws, comm) {
 	if(ws == undefined) ws = false;
@@ -15,7 +13,7 @@ Tokenizer.chop = function(s, ws, comm) {
 		if(c == "'") {
 			tok.push(Tokenizer.chop.strs(str)); 
 		}
-		else if(c == '"') { 
+		else if(c == '"') {
 			tok.push(Tokenizer.chop.strd(str)); 
 		}
 		else if(c == '/') {
@@ -65,30 +63,33 @@ Tokenizer.chop.strUnescape = function(s) {
 }
 
 Tokenizer.chop.strs = function(str) {
+	var coords = str.getCoords();
 	str.setMarker();
 	str.adv();
 	
 	while(true) {
 		if(str.cur() == '\\') str.adv();
-		else if(str.cur() == "'") { str.adv(); return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1))); }
-		else if(str.cur() == '\n' || !str.hasNext()) throw "String did not end well";
+		else if(str.cur() == "'") { str.adv(); return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords); }
+		else if(str.cur() == '\n' || !str.hasNext()) throw 'String did not end well ' + str.getCoords();
 		str.adv();
 	}
 }
 
 Tokenizer.chop.strd = function(str) {
+	var coords = str.getCoords();
 	str.setMarker();
 	str.adv();
 	
 	while(true) {
 		if(str.cur() == '\\') str.adv();
-		else if(str.cur() == '"') { str.adv(); return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1))); }
-		else if(str.cur() == '\n' || !str.hasNext()) throw "String did not end well";
+		else if(str.cur() == '"') { str.adv(); return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords); }
+		else if(str.cur() == '\n' || !str.hasNext()) throw 'String did not end well ' + str.getCoords();;
 		str.adv();
 	}
 }
 
 Tokenizer.chop.num = function(str) {
+	var coords = str.getCoords();
 	str.setMarker();
 
 	var tmp = str.cur();
@@ -106,12 +107,13 @@ Tokenizer.chop.num = function(str) {
 		}
 	}
 	
-	if(') \n\t'.indexOf(str.cur()) == -1) throw "Unexpected character '" + str.cur() + "' after \"" + str.getMarked() + '"';
+	if(') \n\t'.indexOf(str.cur()) == -1) throw "Unexpected character '" + str.cur() + "' after \"" + str.getMarked() + '" ' + str.getCoords();
 	
-	return new TokNum(str.getMarked());
+	return new TokNum(str.getMarked(), coords);
 }
 
 Tokenizer.chop.commml = function(str) {
+	var coords = str.getCoords();
 	str.setMarker(); 
 	str.adv();
 	str.adv();
@@ -120,16 +122,17 @@ Tokenizer.chop.commml = function(str) {
 		if(str.cur() == '*' && str.next() == '/') { 
 			str.adv();
 			str.adv();
-			return new TokCommML(str.getMarked()); 
+			return new TokCommML(str.getMarked(), coords); 
 		}
 		else if(str.hasNext()) {
 			str.adv();
 		}
-		else throw 'Multiline comment not properly terminated';
+		else throw 'Multiline comment not properly terminated ' + str.getCoords();;
 	}
 }
 
 Tokenizer.chop.commsl = function(str) {
+	var coords = str.getCoords();
 	str.setMarker(); 
 	str.adv();
 	str.adv(2);
@@ -137,13 +140,14 @@ Tokenizer.chop.commsl = function(str) {
 	while(true) {
 		if(str.cur() == '\n' || !str.hasNext()) { 
 			str.adv();
-			return new TokCommSL(str.getMarked()); 
+			return new TokCommSL(str.getMarked(), coords); 
 		}
 		else str.adv();
 	}
 }
 
 Tokenizer.chop.alphanum = function(str) {
+	var coords = str.getCoords();
 	str.setMarker();
 
 	var tmp = str.cur();
@@ -154,9 +158,9 @@ Tokenizer.chop.alphanum = function(str) {
 	
 	tmp = str.getMarked();
 	
-	if(tmp == '#t' || tmp == '#f') return new TokBool(tmp);
-	if(Tokenizer.chop.alphanum.reserved.indexOf(tmp) != -1) return new TokKeyword(tmp);
-	else return new TokIdentifier(tmp);
+	if(tmp == '#t' || tmp == '#f') return new TokBool(tmp, coords);
+	if(Tokenizer.chop.alphanum.reserved.indexOf(tmp) != -1) return new TokKeyword(tmp, coords);
+	else return new TokIdentifier(tmp, coords);
 }
 
 Tokenizer.chop.alphanum.reserved = [

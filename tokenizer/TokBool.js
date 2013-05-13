@@ -1,7 +1,8 @@
 "use strict";
 
-function TokBool(s) {
+function TokBool(s, coords) {
 	this.s = s;
+	this.coords = coords;
 }
 
 TokBool.prototype.match = function(that) {

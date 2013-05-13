@@ -89,32 +89,22 @@ expCode = '(let a 10 (+ a (call m.f 5)))';
 var result = ev(expCode, modSetCode);
 ```
 
-If you wish to do some basic type checking that will catch some errors before launching the program, then use:
+Use the following snippet if you want to do some basic type checking, to check for references to 
+undeclared module definitions or variables and invalid names, etc:
 
 ```js
 try {
- parsedExp.accept(new TypeCheck());
+ parsedExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, modSet));
 } catch(e) {
  alert(e);
 }
 ```
 
-Furthermore, use the following to check for references to undeclared module definitions or variables and invalid names:
+Module sets can also accept type/reference checkers:
 
 ```js
 try {
- parsedExp.accept(new VarCheck(), new VarCheckState(Env.Emp, modSet));
-} catch(e) {
- alert(e);
-}
-```
-
-Module sets can also accept type checkers and reference checkers:
-
-```js
-try {
- modSet.accept(new TypeCheck());
- modSet.accept(new VarCheck(), new VarCheckState(Env.Emp, modSet));
+ modSet.accept(new StaticCheck(), new VarCheckState(Env.Emp, modSet));
 } catch(e) {
  alert(e);
 }
@@ -126,15 +116,20 @@ Planned features:
 * add `+`, `*`, ... for more than 2 operands
 * add code formatting
 * remove/change currying by default
-* add better error messages
-* add line numbers in error messages
 * add `sametype?`
-* add = for numbers and deepEq? for pairs and records
+* add `=` for numbers and `deepEq?` for pairs and records
 * add basic operations for strings
 * add mpair
+* rename `deref` to `dot` or something more appropriate
 
 Version history:
 ----------------
+
+### 0.4.4
+
+* added line numbers in error messages
+* updated *Usage* examples
+* renamed *TypeCheck.js* to *StaticCheck.js*
 
 ### 0.4.3
 
@@ -144,7 +139,7 @@ Version history:
 * added `mut` for declaring mutable bindings
 * added more static checking 
 * improved some error messages
-* fixed a bug in index-pretty.html
+* fixed a bug in *index-pretty.html*
 
 ### 0.4.2
 
@@ -161,7 +156,7 @@ Version history:
 
 * added modules with public and private definitions
 * updated reference checking to work with modules
-* fixed bugs in main.html
+* fixed bugs in *main.html*
 
 ### 0.3.2
 

@@ -1,7 +1,8 @@
 "use strict";
 
-function TokIdentifier(s) {
+function TokIdentifier(s, coords) {
 	this.s = s;
+	this.coords = coords;
 }
 
 TokIdentifier.prototype.match = function(that) {
@@ -9,7 +10,7 @@ TokIdentifier.prototype.match = function(that) {
 }
 
 TokIdentifier.prototype.toString = function() {
-	return "Identifier(" + this.s + ")";
+	return "Identifier(" + this.s + ' ' + this.coords + ")";
 }
 
 TokIdentifier.prototype.toHTML = function(c) {
