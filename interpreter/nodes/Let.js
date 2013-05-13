@@ -1,10 +1,11 @@
 "use strict";
 
-function Let(name, e, body, final) {
+function Let(name, e, body, final, tokenCoords) {
 	this.name = name;
 	this.e = e;
 	this.body = body; 
 	this.final = final;
+	this.tokenCoords = tokenCoords;
 }
 
 Let.prototype.ev = function(env, modSet) {

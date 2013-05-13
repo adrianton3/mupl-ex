@@ -1,7 +1,8 @@
 "use strict";
 
-function TokKeyword(s) {
+function TokKeyword(s, coords) {
 	this.s = s;
+	this.coords = coords;
 }
 
 TokKeyword.prototype.match = function(that) {
@@ -9,7 +10,7 @@ TokKeyword.prototype.match = function(that) {
 }
 
 TokKeyword.prototype.toString = function() {
-	return "Keyword(" + this.s + ")";
+	return "Keyword(" + this.s + ' ' + this.coords + ")";
 }
 
 TokKeyword.prototype.toHTML = function(c) {

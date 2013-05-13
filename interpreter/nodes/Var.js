@@ -1,8 +1,9 @@
 "use strict";
 
-function Var(name) {
+function Var(name, tokenCoords) {
 	this.name = name;
-	this.extern = this.name.indexOf('.') != -1;	
+	this.extern = this.name.indexOf('.') != -1;
+	this.tokenCoords = tokenCoords;
 }
 
 Var.prototype.ev = function(env, modSet) {

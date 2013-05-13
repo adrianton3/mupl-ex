@@ -1,10 +1,11 @@
 "use strict";
 
-function Set(name, e, body, bang) {
+function Set(name, e, body, bang, tokenCoords) {
 	this.name = name;
 	this.e = e;
 	this.body = body;
 	this.bang = bang;
+	this.tokenCoords = tokenCoords;
 }
 
 Set.prototype.ev = function(env, modSet) {

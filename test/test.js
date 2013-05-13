@@ -6,8 +6,7 @@ var _e = function(s, modSet) {
 	if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Env.Emp, modSet);
 	else return RDP.single(Tokenizer.chop(s)).ev(Env.Emp); 
 }
-var _t = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new TypeCheck(), new VarCheckState(Env.Emp, null)); }
-//var _v = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new VarCheck(), new VarCheckState(Env.Emp, null)); }
+var _t = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new StaticCheck(), new VarCheckState(Env.Emp, null)); }
 var _m = function(s) { return RDP.tree(Tokenizer.chop(s)); }
 
 module('tokenizer');
@@ -19,15 +18,15 @@ test('Atomic tests', function() {
 	deepEqual(_l('//sl comment'), [new TokEnd()], 'SL comment parse');
 	deepEqual(_l('/*ml comment*/'), [new TokEnd()], 'ML comment parse');
 	deepEqual(_l('/*ml\ncomment*/'), [new TokEnd()], 'ML comment with NL parse');
-	deepEqual(_l('/'), [new TokKeyword('/'), new TokEnd()], 'Slash');
-  deepEqual(_l('764'), [new TokNum(764), new TokEnd()], 'Num int parse');
-  deepEqual(_l('764.432'), [new TokNum(764.432), new TokEnd()], 'Num float parse');
-  deepEqual(_l('#t'), [new TokBool('#t'), new TokEnd()], 'Bool true parse');
-  deepEqual(_l('#f'), [new TokBool('#f'), new TokEnd()], 'Bool false parse');
-  deepEqual(_l("'string'"), [new TokStr('string'), new TokEnd()], 'Single quoted string parse');
-  deepEqual(_l('"string"'), [new TokStr('string'), new TokEnd()], 'Double quoted string parse');
-  deepEqual(_l("'str\\\'ing'"), [new TokStr('str\'ing'), new TokEnd()], 'Single quoted string with \\\' parse');
-  deepEqual(_l('"str\\\"ing"'), [new TokStr('str\"ing'), new TokEnd()], 'Double quoted string with \\\" parse');
+	deepEqual(_l('/'), [new TokKeyword('/', new TokenCoords(0, 0)), new TokEnd()], 'Slash');
+  deepEqual(_l('764'), [new TokNum(764, new TokenCoords(0, 0)), new TokEnd()], 'Num int parse');
+  deepEqual(_l('764.432'), [new TokNum(764.432, new TokenCoords(0, 0)), new TokEnd()], 'Num float parse');
+  deepEqual(_l('#t'), [new TokBool('#t', new TokenCoords(0, 0)), new TokEnd()], 'Bool true parse');
+  deepEqual(_l('#f'), [new TokBool('#f', new TokenCoords(0, 0)), new TokEnd()], 'Bool false parse');
+  deepEqual(_l("'string'"), [new TokStr('string', new TokenCoords(0, 0)), new TokEnd()], 'Single quoted string parse');
+  deepEqual(_l('"string"'), [new TokStr('string', new TokenCoords(0, 0)), new TokEnd()], 'Double quoted string parse');
+  deepEqual(_l("'str\\\'ing'"), [new TokStr('str\'ing', new TokenCoords(0, 0)), new TokEnd()], 'Single quoted string with \\\' parse');
+  deepEqual(_l('"str\\\"ing"'), [new TokStr('str\"ing', new TokenCoords(0, 0)), new TokEnd()], 'Double quoted string with \\\" parse');
   deepEqual(_l('('), [new TokLPar(), new TokEnd()], 'LPar parse');
   deepEqual(_l(')'), [new TokRPar(), new TokEnd()], 'RPar parse');
 });
@@ -43,13 +42,13 @@ test('Exceptions', function() {
 });
 
 test('Identifiers', function() {
-	deepEqual(_l('iden'), [new TokIdentifier('iden'), new TokEnd()], 'Identifier');
-	deepEqual(_l('iden10'), [new TokIdentifier('iden10'), new TokEnd()], 'Identifier');
-	deepEqual(_l('iden10th'), [new TokIdentifier('iden10th'), new TokEnd()], 'Identifier');
-	deepEqual(_l('iden-a'), [new TokIdentifier('iden-a'), new TokEnd()], 'Identifier');
-	deepEqual(_l('iden?'), [new TokIdentifier('iden?'), new TokEnd()], 'Identifier');
-	deepEqual(_l('iden'), [new TokIdentifier('iden'), new TokEnd()], 'Identifier');
-	deepEqual(_l('++'), [new TokIdentifier('++'), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden'), [new TokIdentifier('iden', new TokenCoords(0, 0)), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden10'), [new TokIdentifier('iden10', new TokenCoords(0, 0)), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden10th'), [new TokIdentifier('iden10th', new TokenCoords(0, 0)), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden-a'), [new TokIdentifier('iden-a', new TokenCoords(0, 0)), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden?'), [new TokIdentifier('iden?', new TokenCoords(0, 0)), new TokEnd()], 'Identifier');
+	deepEqual(_l('iden'), [new TokIdentifier('iden', new TokenCoords(0, 0)), new TokEnd()], 'Identifier');
+	deepEqual(_l('++'), [new TokIdentifier('++', new TokenCoords(0, 0)), new TokEnd()], 'Identifier');
 });
 //=============================================================================
 module('parser');
@@ -61,19 +60,33 @@ test('Atomic expressions', function() {
 });
 
 test('Simple expressions', function() {
-	deepEqual(_p('234'), new Num(234), 'Num');
-	deepEqual(_p('asd'), new Var('asd'), 'Var');
+	deepEqual(_p('234'), new Num(234, new TokenCoords(0, 0)), 'Num');
+	deepEqual(_p('asd'), new Var('asd', new TokenCoords(0, 0)), 'Var');
 	
-	deepEqual(_p('(if #t 11 22)'), new If(new Bool(true), new Num(11), new Num(22)), 'If');
+	deepEqual(_p('(if #t 11 22)'), new If(new Bool(true, new TokenCoords(0, 4)), 
+	                                      new Num(11, new TokenCoords(0, 7)), 
+	                                      new Num(22, new TokenCoords(0, 10)), 
+	                                      new TokenCoords(0, 1)), 'If');
 	
-	deepEqual(_p('(unit? unit)'), new UnitQ(new Unit()));
-	deepEqual(_p('(bool? 234)'), new BoolQ(new Num(234)));
-	deepEqual(_p('(num? #f)'), new NumQ(new Bool(false)));
+	deepEqual(_p('(unit? unit)'), new UnitQ(new Unit()), 'unit? unit');
+	deepEqual(_p('(bool? 234)'), new BoolQ(new Num(234, new TokenCoords(0, 7)), new TokenCoords(0, 1)), 'bool? 234');
+	deepEqual(_p('(num? #f)'), new NumQ(new Bool(false, new TokenCoords(0, 6)), new TokenCoords(0, 1)), 'num? bool');
 	
-	deepEqual(_p('(pair 11 22)'), new Pair(new Num(11), new Num(22)));
-	deepEqual(_p('(pair? (pair 11 22))'), new PairQ(new Pair(new Num(11), new Num(22))));
-	deepEqual(_p('(fst (pair 11 22))'), new Fst(new Pair(new Num(11), new Num(22))));
-	deepEqual(_p('(snd (pair 11 22))'), new Snd(new Pair(new Num(11), new Num(22))));
+	deepEqual(_p('(pair 11 22)'), new Pair(new Num(11, new TokenCoords(0, 6)), 
+	                                       new Num(22, new TokenCoords(0, 9)), 
+	                                       new TokenCoords(0, 1)), 'pair num num');
+	deepEqual(_p('(pair? (pair 11 22))'), new PairQ(new Pair(new Num(11, new TokenCoords(0, 13)), 
+	                                                         new Num(22, new TokenCoords(0, 16)),
+	                                                         new TokenCoords(0, 8)), 
+	                                                new TokenCoords(0, 1)), 'pair? pair num num');
+	deepEqual(_p('(fst (pair 11 22))'), new Fst(new Pair(new Num(11, new TokenCoords(0, 11)), 
+	                                                     new Num(22, new TokenCoords(0, 14)),
+	                                                     new TokenCoords(0, 6)), 
+	                                            new TokenCoords(0, 1)), 'fst pair num num');
+	deepEqual(_p('(snd (pair 11 22))'), new Snd(new Pair(new Num(11, new TokenCoords(0, 11)), 
+	                                                     new Num(22, new TokenCoords(0, 14)),
+	                                                     new TokenCoords(0, 6)), 
+	                                            new TokenCoords(0, 1)), 'snd pair num num');
 });
 //=============================================================================
 module('interpreter');

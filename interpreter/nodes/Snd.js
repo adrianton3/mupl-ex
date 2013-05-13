@@ -1,12 +1,13 @@
 "use strict";
 
-function Snd(e) {
+function Snd(e, tokenCoords) {
 	this.e = e; 
+	this.tokenCoords = tokenCoords;
 }
 
 Snd.prototype.ev = function(env, modSet) {
 	var ev = this.e.ev(env, modSet);
-	if(!(ev instanceof Pair))	throw "Can't do snd on non-pairs";
+	if(!(ev instanceof Pair))	throw 'Can not get second member of on non-pair ' + this.tokenCoords;
 	
 	return ev.e2;
 }

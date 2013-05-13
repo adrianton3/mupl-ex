@@ -1,10 +1,11 @@
 "use strict";
 
-function Def(defName, modName, pub, fun) {
+function Def(defName, modName, pub, fun, tokenCoords) {
 	this.defName = defName;
 	this.modName = modName;
 	this.pub = pub;
 	this.fun = fun;
+	this.tokenCoords = tokenCoords;
 }
 
 Def.prototype.ev = function(env, modSet) {

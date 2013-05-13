@@ -1,8 +1,6 @@
 "use strict";
 
-function TokEnd() {
-
-}
+function TokEnd() { }
 
 TokEnd.prototype.match = function(that) {
 	return that instanceof TokEnd;

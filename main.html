@@ -27,7 +27,7 @@
 					var toksMods = Tokenizer.chop(modsIn);
 					_modSet = RDP.tree(toksMods);
 					
-					_modSet.accept(new TypeCheck(), new VarCheckState(Env.Emp, _modSet));
+					_modSet.accept(new StaticCheck(), new VarCheckState(Env.Emp, _modSet));
 					outParser += 'Modules type/reference check: OK.\n';
 					
 					var toksFreeExp = Tokenizer.chop(expIn);
@@ -36,7 +36,7 @@
 					
 					outParser += 'Free exp AST:\n----\n' + _parsedFreeExp.toString() + '\n\n';
 					
-					_parsedFreeExp.accept(new TypeCheck(), new VarCheckState(Env.Emp, _modSet));
+					_parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, _modSet));
 					outParser += 'Free exp type/reference check: OK.\n';
 					
 					hComputeButton.disabled = false;
@@ -130,7 +130,7 @@
   <script type="text/javascript" src="interpreter/types/TypeStr.js"></script>
   <script type="text/javascript" src="interpreter/types/TypeUnit.js"></script>
   
-  <script type="text/javascript" src="interpreter/TypeCheck.js"></script>
+  <script type="text/javascript" src="interpreter/StaticCheck.js"></script>
 
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>
@@ -143,6 +143,8 @@
 
 		<script type="text/javascript" src="tokenizer/IterableString.js"></script>
 		<script type="text/javascript" src="tokenizer/Tokenizer.js"></script>
+		<script type="text/javascript" src="tokenizer/TokenCoords.js"></script>
+		
 		<script type="text/javascript" src="tokenizer/TokBool.js"></script>
 		<script type="text/javascript" src="tokenizer/TokCommML.js"></script>
 		<script type="text/javascript" src="tokenizer/TokCommSL.js"></script>

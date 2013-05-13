@@ -1,9 +1,10 @@
 "use strict";
 
-function SetFst(name, e, body) {
+function SetFst(name, e, body, tokenCoords) {
 	this.name = name;
 	this.e = e;
 	this.body = body; 
+	this.tokenCoords = tokenCoords;
 }
 
 SetFst.prototype.ev = function(env, modSet) {

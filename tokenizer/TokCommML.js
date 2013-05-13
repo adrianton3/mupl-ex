@@ -1,7 +1,8 @@
 "use strict";
 
-function TokCommML(s) {
+function TokCommML(s, coords) {
 	this.s = s;
+	this.coords = coords;
 }
 
 TokCommML.prototype.toString = function() {

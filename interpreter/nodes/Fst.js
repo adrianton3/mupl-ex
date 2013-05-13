@@ -1,12 +1,13 @@
 "use strict";
 
-function Fst(e) {
+function Fst(e, tokenCoords) {
 	this.e = e; 
+	this.tokenCoords = tokenCoords;
 }
 
 Fst.prototype.ev = function(env, modSet) {
 	var ev = this.e.ev(env, modSet);
-	if(!(ev instanceof Pair))	throw "Can't do fst on non-pairs";
+	if(!(ev instanceof Pair))	throw 'Can not get first member of on non-pair ' + this.tokenCoords;
 	
 	return ev.e1;
 }

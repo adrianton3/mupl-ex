@@ -2,7 +2,7 @@
 
 function Pair(e1, e2) {
 	this.e1 = e1;
-	this.e2 = e2; 
+	this.e2 = e2;
 }
 
 Pair.prototype.ev = function(env, modSet) {

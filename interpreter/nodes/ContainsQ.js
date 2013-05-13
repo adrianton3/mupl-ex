@@ -1,14 +1,15 @@
 "use strict";
 
-function ContainsQ(exp, list) {
+function ContainsQ(exp, list, tokenCoords) {
 	this.exp = exp;
 	this.list = list;
+	this.tokenCoords = tokenCoords;
 }
 
 ContainsQ.prototype.ev = function(env, modSet) {
 	var expEv = this.exp.ev(env, modSet);
 	
-	if(!(expEv instanceof Record)) throw 'Can not apply contains? to a non-record';
+	if(!(expEv instanceof Record)) throw 'Can not apply contains? to a non-record ' + this.tokenCoords;
 	
 	//TODO: optimize this
 	for(i in this.list)

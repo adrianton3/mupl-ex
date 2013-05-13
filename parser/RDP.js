@@ -142,7 +142,8 @@ RDP.tree.exp = function(token) {
 		return new Unit();
 	}
 	else if(token.match(RDP.tree.identifier)) {
-		return new Var(token.next().s);
+		var vTok = token.next();
+		return new Var(vTok.s, vTok.coords);
 	}
 	else
 		throw 'RDP: err ' + token.cur().toString();
@@ -256,34 +257,38 @@ RDP.tree.special = function(token) {
 
 	throw 'RDP: unknown function: ' + token.cur();
 }
-
+//-----------------------------------------------------------------------------
 RDP.tree.special._if = function(token) {
+	var ifTok = token.past();
 	var ifCond = RDP.tree.exp(token);
 	var ifThen = RDP.tree.exp(token);
 	var ifElse = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: if: Missing rpar');
-	return new If(ifCond, ifThen, ifElse);
+	return new If(ifCond, ifThen, ifElse, ifTok.coords);
 }
 
 RDP.tree.special._ifStar = function(token) {
+	var ifStarTok = token.past();
 	token.expect(RDP.tree.lPar, 'RDP: if* missing lpar');
 	var ifList = RDP.tree.ifList(token);
 	token.expect(RDP.tree.rPar, 'RDP: if* missing rpar');
 	var ifDef = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: if*: Missing rpar');
-	return ifStar(ifList, ifDef);
+	return ifStar(ifList, ifDef, ifStarTok.coords);
 }
 
 RDP.tree.special._lambdaStar = function(token) {
+	var lambdaStarTok = token.past();
 	token.expect(RDP.tree.lPar, 'RDP: lambda missing lpar');
 	var funParamList = RDP.tree.funParamList(token);
 	token.expect(RDP.tree.rPar, 'RDP: lambda missing rpar');
 	var funBody = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: lambda: Missing rpar');
-	return new funStar(false, funParamList, funBody);
+	return new funStar(false, funParamList, funBody, lambdaStarTok.coords);
 }
 
 RDP.tree.special._funStar = function(token) {
+	var funStarTok = token.past();
 	token.expect(RDP.tree.identifier, 'RDP: first fun parameter must be an identifier');
 	var funName = token.past().s;
 	token.expect(RDP.tree.lPar, 'RDP: fun missing lpar');
@@ -291,247 +296,281 @@ RDP.tree.special._funStar = function(token) {
 	token.expect(RDP.tree.rPar, 'RDP: fun missing rpar');
 	var funBody = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: fun: Missing rpar');
-	return new funStar(funName, funParamList, funBody);
+	return new funStar(funName, funParamList, funBody, funStarTok.coords);
 }
 
 RDP.tree.special._callStar = function(token) {
+	var callStarTok = token.past();
 	var callCallee = RDP.tree.exp(token);
 	var callParamList = RDP.tree.callParamList(token);
 	token.expect(RDP.tree.rPar, 'RDP: call*: Missing rpar');
-	return new callStar(callCallee, callParamList);
+	return new callStar(callCallee, callParamList, callStarTok.coords);
 }
 
 RDP.tree.special._closureQ = function(token) {
+	var closureQTok = token.past();
 	var closureE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: closure?: Missing rpar');
-	return new ClosureQ(closureE);
+	return new ClosureQ(closureE, closureQTok.coords);
 }
 
 RDP.tree.special._mut = function(token) {
+	var mutTok = token.past();
 	token.expect(RDP.tree.identifier, 'RDP: first mut parameter must be an identifier');
 	var mutName = token.past().s;
 	var mutExp = RDP.tree.exp(token);
 	var mutBody = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: mut: Missing rpar');
-	return new Let(mutName, mutExp, mutBody, false);
+	return new Let(mutName, mutExp, mutBody, false, mutTok.coords);
 }
 
 RDP.tree.special._let = function(token) {
+	var letTok = token.past();
 	token.expect(RDP.tree.identifier, 'RDP: first let parameter must be an identifier');
 	var letName = token.past().s;
 	var letExp = RDP.tree.exp(token);
 	var letBody = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: let: Missing rpar');
-	return new Let(letName, letExp, letBody, true);
+	return new Let(letName, letExp, letBody, true, letTok.coords);
 }
 
 RDP.tree.special._letStar = function(token) {
+	var letStarTok = token.past();
 	token.expect(RDP.tree.lPar, 'RDP: let* missing lpar');
 	var letList = RDP.tree.letList(token);
 	token.expect(RDP.tree.rPar, 'RDP: let* missing rpar');
 	var letBody = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: let*: Missing rpar');
-	return letStar(letList, letBody);
+	return letStar(letList, letBody, letStarTok.coords);
 }
 
 RDP.tree.special._letrecStar = function(token) {
+	var letrecStarTok = token.past();
 	token.expect(RDP.tree.lPar, 'RDP: letrec missing lpar');
 	var letrecList = RDP.tree.letrecList(token);
 	token.expect(RDP.tree.rPar, 'RDP: letrec missing rpar');
 	var letrecBody = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: letrec: Missing rpar');
-	return letrecStar(letrecList, letrecBody);
+	return letrecStar(letrecList, letrecBody, letrecStarTok.coords);
 }
 
 RDP.tree.special._pair = function(token) {
+	var pairTok = token.past();
 	var pairE1 = RDP.tree.exp(token);
 	var pairE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: pair: Missing rpar');
-	return new Pair(pairE1, pairE2);
+	return new Pair(pairE1, pairE2, pairTok.coords);
 }
 
 RDP.tree.special._pairQ = function(token) {
+	var pairQTok = token.past();
 	var pairE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: pair?: Missing rpar');
-	return new PairQ(pairE);
+	return new PairQ(pairE, pairQTok.coords);
 }
 
 RDP.tree.special._fst = function(token) {
+	var fstTok = token.past();
 	var fstE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: fst: Missing rpar');
-	return new Fst(fstE);
+	return new Fst(fstE, fstTok.coords);
 }
 
 RDP.tree.special._snd = function(token) {
+	var sndTok = token.past();
 	var sndE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: snd: Missing rpar');
-	return new Snd(sndE);
+	return new Snd(sndE, sndTok.coords);
 }
 
 RDP.tree.special._list = function(token) {
+	var listTok = token.past();
 	var pairList = RDP.tree.pairList(token);
 	token.expect(RDP.tree.rPar, 'RDP: list: Missing rpar');
-	return pairStar(pairList);
+	return pairStar(pairList, listTok.coords);
 }
 
 RDP.tree.special._record = function(token) {
+	var recordTok = token.past();
 	var recordList = RDP.tree.recordList(token);
 	token.expect(RDP.tree.rPar, 'RDP: record: Missing rpar');
-	return new Record(recordList);
+	return new Record(recordList, recordTok.coords);
 }
 
 RDP.tree.special._recordQ = function(token) {
+	var recordQTok = token.past();
 	var recordQE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: record?: Missing rpar');
-	return new RecordQ(recordQE);
+	return new RecordQ(recordQE, recordQTok.coords);
 }
 
 RDP.tree.special._deref = function(token) {
+	var derefTok = token.past();
 	var derefExp = RDP.tree.exp(token);
 	token.expect(RDP.tree.identifier, 'RDP: second deref parameter must be an identifier');
 	var derefName = token.past().s;
 	token.expect(RDP.tree.rPar, 'RDP: deref: Missing rpar');
-	return new Deref(derefExp, derefName);
+	return new Deref(derefExp, derefName, derefTok, derefTok.coords);
 }
 
 RDP.tree.special._containsQ = function(token) {
+	var containsQTok = token.past();
 	var containsExp = RDP.tree.exp(token);
 	var containsList = RDP.tree.containsList(token);
 	token.expect(RDP.tree.rPar, 'RDP: contains?: Missing rpar');
-	return new ContainsQ(containsList);
+	return new ContainsQ(containsList, containsQTok.coords);
 }
 
 RDP.tree.special._strQ = function(token) {
+	var strQTok = token.past();
 	var strQE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: str?: Missing rpar');
-	return new StrQ(strQE);
+	return new StrQ(strQE, strQTok.coords);
 }
 
 RDP.tree.special._unitQ = function(token) {
+	var unitQTok = token.past();
 	var unitQE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: unit?: Missing rpar');
-	return new UnitQ(unitQE);
+	return new UnitQ(unitQE, unitQTok.coords);
 }
 
 RDP.tree.special._boolQ = function(token) {
+	var boolQTok = token.past();
 	var boolQE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: bool?: Missing rpar');
-	return new BoolQ(boolQE);
+	return new BoolQ(boolQE, boolQTok.coords);
 }
 
 RDP.tree.special._numQ = function(token) {
+	var numQTok = token.past();
 	var numQE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: num?: Missing rpar');
-	return new NumQ(numQE);
+	return new NumQ(numQE, numQTok.coords);
 }
 
 RDP.tree.special._add = function(token) {
+	var addTok = token.past();
 	var addE1 = RDP.tree.exp(token);
 	var addE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: +: Missing rpar');
-	return new Add(addE1, addE2);
+	return new Add(addE1, addE2, addTok.coords);
 }
 
 RDP.tree.special._sub = function(token) {
+	var subTok = token.past();
 	var subE1 = RDP.tree.exp(token);
 	var subE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: -: Missing rpar');
-	return new Sub(subE1, subE2);
+	return new Sub(subE1, subE2, subTok.coords);
 }
 
 RDP.tree.special._mul = function(token) {
+	var mulTok = token.past();
 	var mulE1 = RDP.tree.exp(token);
 	var mulE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: *: Missing rpar');
-	return new Mul(mulE1, mulE2);
+	return new Mul(mulE1, mulE2, mulTok.coords);
 }
 
 RDP.tree.special._div = function(token) {
+	var divTok = token.past();
 	var divE1 = RDP.tree.exp(token);
 	var divE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: /: Missing rpar');
-	return new Div(divE1, divE2);
+	return new Div(divE1, divE2, divTok.coords);
 }
 
 RDP.tree.special._mod = function(token) {
+	var modTok = token.past();
 	var modE1 = RDP.tree.exp(token);
 	var modE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: %: Missing rpar');
-	return new Mod(modE1, modE2);
+	return new Mod(modE1, modE2, modTok.coords);
 }
 
 RDP.tree.special._greater = function(token) {
+	var greaterTok = token.past();
 	var greaterE1 = RDP.tree.exp(token);
 	var greaterE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: >: Missing rpar');
-	return new Greater(greaterE1, greaterE2);
+	return new Greater(greaterE1, greaterE2, greaterTok.coords);
 }
 
 RDP.tree.special._not = function(token) {
+	var notTok = token.past();
 	var notE = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: not: Missing rpar');
-	return new Not(notE);
+	return new Not(notE, notTok.coords);
 }
 
 RDP.tree.special._and = function(token) {
+	var andTok = token.past();
 	var andE1 = RDP.tree.exp(token);
 	var andE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: and: Missing rpar');
-	return new And(andE1, andE2);
+	return new And(andE1, andE2, andTok.coords);
 }
 
 RDP.tree.special._or = function(token) {
+	var orTok = token.past();
 	var orE1 = RDP.tree.exp(token);
 	var orE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: or: Missing rpar');
-	return new Or(orE1, orE2);
+	return new Or(orE1, orE2, orTok.coords);
 }
 
 RDP.tree.special._xor = function(token) {
+	var xorTok = token.past();
 	var xorE1 = RDP.tree.exp(token);
 	var xorE2 = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: xor: Missing rpar');
-	return new Xor(xorE1, xorE2);
+	return new Xor(xorE1, xorE2, xorTok.coords);
 }
 
 RDP.tree.special._set = function(token) {
+	var setTok = token.past();
 	token.expect(RDP.tree.identifier, 'RDP: first set parameter must be an identifier');
 	var setName = token.past().s;
 	var setValExp = RDP.tree.exp(token);
 	var setRetExp = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: set: Missing rpar');
-	return new Set(setName, setValExp, setRetExp);
+	return new Set(setName, setValExp, setRetExp, false, setTok.coords);
 }
 
 RDP.tree.special._setfst = function(token) {
+	var setfstTok = token.past();
 	token.expect(RDP.tree.identifier, 'RDP: first setfst parameter must be an identifier');
 	var setfstName = token.past().s;
 	var setfstValExp = RDP.tree.exp(token);
 	var setfstRetExp = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: setfst: Missing rpar');
-	return new SetFst(setfstName, setfstValExp, setfstRetExp);
+	return new SetFst(setfstName, setfstValExp, setfstRetExp, setfstTok.coords);
 }
 
 RDP.tree.special._setsnd = function(token) {
+	var setsndTok = token.past();
 	token.expect(RDP.tree.identifier, 'RDP: first setsnd parameter must be an identifier');
 	var setsndName = token.past().s;
 	var setsndValExp = RDP.tree.exp(token);
 	var setsndRetExp = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: setsnd: Missing rpar');
-	return new SetSnd(setsndName, setsndValExp, setsndRetExp);
+	return new SetSnd(setsndName, setsndValExp, setsndRetExp, setsndTok.coords);
 }
 
 RDP.tree.special._print = function(token) {
+	var printTok = token.past();
 	var printPrintExp = RDP.tree.exp(token);
 	var printRetExp = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: print: Missing rpar');
-	return new Print(printPrintExp, printRetExp);
+	return new Print(printPrintExp, printRetExp, printTok.coords);
 }
 
 RDP.tree.special._err = function(token) {
+	var errTok = token.past();
 	var errExp = RDP.tree.exp(token);
 	token.expect(RDP.tree.rPar, 'RDP: err: Missing rpar');
-	return new Err(errExp);
+	return new Err(errExp, errTok.coords);
 }
 
 RDP.tree.special.bindings = [

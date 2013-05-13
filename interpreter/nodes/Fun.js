@@ -1,9 +1,10 @@
 "use strict";
 
-function Fun(name, pformal, body) {
+function Fun(name, pformal, body, tokenCoords) {
 	this.name = name;
 	this.pformal = pformal;
 	this.body = body;
+	this.tokenCoords = tokenCoords;
 }
 
 Fun.prototype.ev = function(env, modSet) {
