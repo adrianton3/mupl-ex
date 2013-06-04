@@ -40,9 +40,14 @@
 					outParser += 'Free exp type/reference check: OK.\n';
 					
 					hComputeButton.disabled = false;
+					
+					doTranslate();
 				} catch(err) {
 					outParser += err;
 					hComputeButton.disabled = true;
+					
+					var hOutJS = document.getElementById('out_js');
+					hOutJS.value = 'Parsing failed ==> nothing to translate\nCheck "parser output"';
 				}
 
 				hOutParser.value = outParser;
@@ -64,6 +69,19 @@
 				}
 				
 				hOutInterpreter.value = istr;
+			}
+			
+			function doTranslate() {
+				var hOutJS = document.getElementById('out_js');
+				
+				var js = '';
+			 try {
+			  js = _parsedFreeExp.accept(new ToJS());
+				}	catch(err) {
+					js += '\n\nTranslation exception: ' + err;
+				}
+				
+				hOutJS.value = js;
 			}
 		</script>
 		
@@ -131,6 +149,7 @@
   <script type="text/javascript" src="interpreter/types/TypeUnit.js"></script>
   
   <script type="text/javascript" src="interpreter/StaticCheck.js"></script>
+  <script type="text/javascript" src="interpreter/ToJS.js"></script>
 
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>
@@ -161,7 +180,11 @@
 		<script type="text/javascript" src="parser/TokenList.js"></script>
 		
 		<h2>MUPLEx</h2>
-		Module definitions:<br />
+		
+		<table>
+			<tr>
+				<td style="vertical-align: top">
+Module definitions:<br />
 		<textarea id="in_mods" onkeyup="process()" rows="10" cols="50">(module m 
  (public f (lambda (x) (* x x)))
  (private g (lambda (x) (* (* x x) x)))
@@ -174,7 +197,7 @@
  (public c (lambda (x) (+ 1 (call m.h x))))
 )</textarea><br />
 		Expression to evaluate:<br />
-		<textarea id="in_exp" onkeyup="process()" rows="6" cols="50">(let a 10
+		<textarea id="in_exp" onkeyup="process();" rows="6" cols="50">(let a 10
  (+ (call m.f 5) a)
 )</textarea>
 		<br />
@@ -190,5 +213,13 @@
   Interpreter output:
 		<br />
 		<textarea id="out_interpreter" rows="3" cols="50" readonly="readonly"></textarea>
+		</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td style="vertical-align: top">					
+					JavaScript translation:<br />
+					<textarea id="out_js" rows="10" cols="50" readonly="readonly"></textarea>
+				</td>
+			</tr>
+		</table>
 	</body>
 </html>

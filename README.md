@@ -35,7 +35,7 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
 3. Mutation
 
  ```scheme
-(let a 10
+(mut a 10
  (let f (lambda (x) (+ x a))
   (set! a 3
    (call f 11))))
@@ -118,12 +118,20 @@ Planned features:
 * remove/change currying by default
 * add `sametype?`
 * add `=` for numbers and `deepEq?` for pairs and records
-* add basic operations for strings
+* add basic operations for strings: `charAt`, `concat`, `charCode`, `fromCharCode`
 * add mpair
 * rename `deref` to `dot` or something more appropriate
+* add more type checking
+* tidy up *RDP.js*
+* do extensive testing on the translator
+* prettify index.html
 
 Version history:
 ----------------
+
+### 0.5.0
+
+* added experimental *toJS* translator
 
 ### 0.4.4
 
