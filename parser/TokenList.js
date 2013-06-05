@@ -1,7 +1,6 @@
 "use strict";
 
 function TokenList(token) {
-	//token list
 	this.token = token;
 	this.pointer = 0;
 }
@@ -28,7 +27,7 @@ TokenList.prototype.matchAnySeq = function(token) {
 
 TokenList.prototype.expect = function(token, exMessage) {
 	if(this.match(token)) this.adv();
-	else throw exMessage;
+	else throw exMessage + this.cur().coords;
 }
 
 TokenList.prototype.adv = function() {

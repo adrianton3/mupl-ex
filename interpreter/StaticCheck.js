@@ -66,7 +66,7 @@ var StaticCheck = (function() {
 		for(var i in containsQ.list)
 			if(containsQ.list[i].indexOf('.') != -1) throw 'Member names (' + containsQ.list[i] + ') can not contain "." ' + add.tokenCoords;
 			
-		containsQ.e.accept(this, state);
+		containsQ.exp.accept(this, state);
 		return _tbool;
 	}
 

@@ -19,7 +19,9 @@ var ToJS = (function() {
 			'function _Record() { for(var i = 0, _len = arguments.length; i < _len; i += 2) '+
 				'this[arguments[i]] = arguments[i+1]; }\n' +
 			'function _recordQ(e) { return e instanceof _Record; }\n' +
-			'function _xor(e1, e2) { return (e1 && !e2) || (!e1 && e2); }';
+			'function _xor(e1, e2) { return (e1 && !e2) || (!e1 && e2); }\n' +
+			'function _containsQ(e, list) { for(var i in list) ' +
+				'if(typeof e[list[i]] === "undefined") return false; return true; }';
 	}
 
 	ToJS.prototype.visitAdd = function(add, state) {
@@ -65,14 +67,14 @@ var ToJS = (function() {
 	}
 
 	ToJS.prototype.visitContainsQ = function(containsQ, state) {
-		throw 'containsQ to JS not supported';
-		/*
+		var containsQj = '';
+		
 		for(var i in containsQ.list)
-			if(containsQ.list[i].indexOf('.') != -1) throw 'Member names (' + containsQ.list[i] + ') can not contain "." ' + add.tokenCoords;
+			containsQj += '"' + containsQ.list[i] + '", ';
 			
-		containsQ.e.accept(this, state);
-		return _tbool;
-		*/
+		var expj = containsQ.exp.accept(this, state);
+		
+		return '_containsQ(' + expj + ', [' + containsQj.slice(0, -2) + '])';
 	}
 
 	ToJS.prototype.visitDef = function(def, state) {
