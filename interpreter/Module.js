@@ -31,6 +31,5 @@ Module.prototype.getVal = function(name) {
 }
 
 Module.prototype.accept = function(visitor, state) {
-	for(var i in this.defs)
-		this.defs[i].accept(visitor, state);
+	return visitor.visitModule(this, state);
 }

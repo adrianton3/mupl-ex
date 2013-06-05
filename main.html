@@ -73,10 +73,14 @@
 			
 			function doTranslate() {
 				var hOutJS = document.getElementById('out_js');
+				var hHeadJS = document.getElementById('chk_headjs');
+				var hModJS = document.getElementById('chk_modjs');
 				
 				var js = '';
 			 try {
-			  js = _parsedFreeExp.accept(new ToJS());
+			 	if(hHeadJS.checked) js += ToJS.header() + '\n\n';
+			  if(hModJS.checked) js += _modSet.accept(new ToJS());
+			  js += _parsedFreeExp.accept(new ToJS());
 				}	catch(err) {
 					js += '\n\nTranslation exception: ' + err;
 				}
@@ -215,7 +219,9 @@ Module definitions:<br />
 		<textarea id="out_interpreter" rows="3" cols="50" readonly="readonly"></textarea>
 		</td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td style="vertical-align: top">					
+				<td style="vertical-align: top">
+					<input id="chk_headjs" type="checkbox" onchange="doTranslate();">Header
+					<input id="chk_modjs" type="checkbox" onchange="doTranslate();">Modules<br />					
 					JavaScript translation:<br />
 					<textarea id="out_js" rows="10" cols="50" readonly="readonly"></textarea>
 				</td>

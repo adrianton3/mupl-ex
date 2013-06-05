@@ -188,6 +188,13 @@ var StaticCheck = (function() {
 		return _tnum;
 	}
 	
+	StaticCheck.prototype.visitModule = function(module, state) {
+		for(var i in module.defs)
+			module.defs[i].accept(this, state);
+			
+		return _tany;
+	}
+	
 	StaticCheck.prototype.visitModuleSet = function(modSet, state) {
 		for(var i in modSet.mods)
 			modSet.mods[i].accept(this, 

@@ -29,5 +29,5 @@ ModuleSet.prototype.getEnv = function(name) {
 }
 
 ModuleSet.prototype.accept = function(visitor, state) {
-	visitor.visitModuleSet(this, state);
+	return visitor.visitModuleSet(this, state);
 }

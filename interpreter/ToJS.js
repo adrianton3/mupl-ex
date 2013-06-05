@@ -3,21 +3,39 @@
 var ToJS = (function() {
 
 	function ToJS() { }
-	
+
+	ToJS.header = function() {
+		return '' +
+			'function _Any() {}\n' +
+			'var _any = new _Any();\n' +
+			'function _Unit() {}\n' +
+			'var _unit = new _Unit();\n' +
+			'function _unitQ(e) { return e instanceof _Unit; }\n' +
+			'function _numQ(e) { return typeof e === "number"; }\n' +
+			'function _boolQ(e) { return typeof e === "boolean"; }\n' +
+			'function _strQ(e) { return typeof e === "string"; }\n' +
+			'function _Pair(f, s) { this._f = f; this._s = s; }\n' +
+			'function _pairQ(e) { return e instanceof _Pair; }\n' +
+			'function _Record() { for(var i = 0, _len = arguments.length; i < _len; i += 2) '+
+				'this[arguments[i]] = arguments[i+1]; }\n' +
+			'function _recordQ(e) { return e instanceof _Record; }\n' +
+			'function _xor(e1, e2) { return (e1 && !e2) || (!e1 && e2); }';
+	}
+
 	ToJS.prototype.visitAdd = function(add, state) {
 		var e1j = add.e1.accept(this, state);
 		var e2j = add.e2.accept(this, state);
 		
-		return e1j + ' + ' + e2j;
+		return '(' + e1j + ' + ' + e2j + ')';
 	}
 
 	ToJS.prototype.visitAnd = function(and, state) {
 		var e1j = and.e1.accept(this, state);
 		var e2j = and.e2.accept(this, state);
 		
-		return e1j + ' && ' + e2j;
+		return '(' + e1j + ' && ' + e2j + ')';
 	}
-	
+
 	ToJS.prototype.visitAny = function(unit, state) {
 		return '_any';
 	}
@@ -28,7 +46,7 @@ var ToJS = (function() {
 
 	ToJS.prototype.visitBoolQ = function(boolQ, state) {
 		var ej = boolQ.e.accept(this, state);
-		return 'boolQ(' + ej + ')';
+		return '_boolQ(' + ej + ')';
 	}
 
 	ToJS.prototype.visitCall = function(call, state) {
@@ -40,10 +58,10 @@ var ToJS = (function() {
 		else 
 			return funexpj + '()';
 	}
-	
+
 	ToJS.prototype.visitClosureQ = function(closureQ, state) {
 		var ej = closureQ.e.accept(this, state);
-		return 'closureQ(' + ej + ')';
+		return '_closureQ(' + ej + ')';
 	}
 
 	ToJS.prototype.visitContainsQ = function(containsQ, state) {
@@ -58,12 +76,13 @@ var ToJS = (function() {
 	}
 
 	ToJS.prototype.visitDef = function(def, state) {
-		throw 'def to JS not supported';
-		/*
-		if(def.defName.indexOf('.') != -1) throw 'Def name (' + def.defName + ') can not contain "."';
-		def.fun.accept(this, state);
-		return _tany;
-		*/
+		var funj = def.fun.accept(this, state);
+		var namej = def.defName;
+		
+		if(def.pub)
+			return '_module.' + namej + ' = ' + funj + ';\n\n';
+		else
+			return 'var ' + namej + ' = ' + funj + ';\n\n';
 	}
 
 	ToJS.prototype.visitDeref = function(deref, state) {
@@ -76,14 +95,14 @@ var ToJS = (function() {
 		var e1j = div.e1.accept(this, state);
 		var e2j = div.e2.accept(this, state);
 		
-		return e1j + ' / ' + e2j;
+		return '(' + e1j + ' / ' + e2j + ')';
 	}
-	
+
 	ToJS.prototype.visitErr = function(err, state) {
 		var ej = err.e.accept(this, state);
 		return '(function() { throw ' + ej + '; })()';
 	}
-	
+
 	ToJS.prototype.visitFst = function(fst, state) {
 		var ej = fst.e.accept(this, state);
 		
@@ -130,31 +149,39 @@ var ToJS = (function() {
 		var e1j = mod.e1.accept(this, state);
 		var e2j = mod.e2.accept(this, state);
 		
-		return e1j + ' % ' + e2j;
+		return '(' + e1j + ' % ' + e2j + ')';
+	}
+	
+	ToJS.prototype.visitModule = function(module, state) {
+		var namej = module.name;
+		var defsj = '';
+		
+		for(var i in module.defs)
+			defsj += module.defs[i].accept(this, state);
+			
+		return 'var ' + namej + ' = {};\n(function(_module) {\n' + defsj + '})(' + namej + ');';
 	}
 	
 	ToJS.prototype.visitModuleSet = function(modSet, state) {
-		throw 'ModuleSet to JS not supported';
-		/*
+		var modSetj = '';
+		
 		for(var i in modSet.mods)
-			modSet.mods[i].accept(this, 
-				new VarCheckState(modSet.mods[i].privateEnv, state.modSet));
+			modSetj += modSet.mods[i].accept(this, state) + '\n\n';
 			
-		return _tany;
-		*/
+		return modSetj;
 	}
 
 	ToJS.prototype.visitMul = function(mul, state) {
 		var e1j = mul.e1.accept(this, state);
 		var e2j = mul.e2.accept(this, state);
 		
-		return e1j + ' * ' + e2j;
+		return '(' + e1j + ' * ' + e2j + ')';
 	}
 
 	ToJS.prototype.visitNot = function(not, state) {
 		var ej = not.e1.accept(this, state);
 		
-		return '!' + ej;
+		return '!(' + ej + ')';
 	}
 
 	ToJS.prototype.visitNum = function(num, state) {
@@ -164,26 +191,26 @@ var ToJS = (function() {
 	ToJS.prototype.visitNumQ = function(numQ, state) {
 		var ej = numQ.e.accept(this, state);
 		
-		return 'numQ(' + ej + ')';
+		return '_numQ(' + ej + ')';
 	}
 
 	ToJS.prototype.visitOr = function(or, state) {
 		var e1j = or.e1.accept(this, state);
 		var e2j = or.e2.accept(this, state);
 		
-		return e1j + ' || ' + e2j;
+		return '(' + e1j + ' || ' + e2j + ')';
 	}
 
 	ToJS.prototype.visitPair = function(pair, state) {
 		var e1j = pair.e1.accept(this, state);
 		var e2j = pair.e2.accept(this, state);
-		return '{ _f: ' + e1j + ', _s: ' + e2j + '}';
+		return '(new _Pair(' + e1j + ', ' + e2j + '))';
 	}
 
 	ToJS.prototype.visitPairQ = function(pairQ, state) {
 		var ej = pairQ.e.accept(this, state);
 		
-		return 'pairQ(' + ej + ')';
+		return '_pairQ(' + ej + ')';
 	}
 
 	ToJS.prototype.visitPrint = function(print, state) {
@@ -198,16 +225,16 @@ var ToJS = (function() {
 		for(var i in record.map) {
 			var namej = record.map[i].name;
 			var expj = record.map[i].exp.accept(this, state);
-			recordj += namej + ': ' + expj + ', '
+			recordj += '"' + namej + '", ' + expj + ', '
 		}
 			
-		return '{' + recordj.slice(0, -2) + '}';
+		return '(new _Record(' + recordj.slice(0, -2) + '))';
 	}
 
 	ToJS.prototype.visitRecordQ = function(recordQ, state) {
 		var ej = recordQ.e.accept(this, state);
 		
-		return 'recordQ(' + ej + ')';
+		return '_recordQ(' + ej + ')';
 	}
 
 	ToJS.prototype.visitSet = function(set, state) {
@@ -245,14 +272,14 @@ var ToJS = (function() {
 	ToJS.prototype.visitStrQ = function(strQ, state) {
 		var ej = strQ.e.accept(this, state);
 		
-		return 'strQ(' + ej + ')';
+		return '_strQ(' + ej + ')';
 	}
 	
 	ToJS.prototype.visitSub = function(sub, state) {
 		var e1j = sub.e1.accept(this, state);
 		var e2j = sub.e2.accept(this, state);
 		
-		return e1j + ' - ' + e2j;
+		return '(' + e1j + ' - ' + e2j + ')';
 	}
 
 	ToJS.prototype.visitUnit = function(unit, state) {
@@ -262,7 +289,7 @@ var ToJS = (function() {
 	ToJS.prototype.visitUnitQ = function(unitQ, state) {
 		var ej = unitQ.e.accept(this, state);
 		
-		return 'unitQ(' + ej + ')';
+		return '_unitQ(' + ej + ')';
 	}
 
 	ToJS.prototype.visitVar = function(vare, state) {
@@ -273,7 +300,7 @@ var ToJS = (function() {
 		var e1j = xor.e1.accept(this, state);
 		var e2j = xor.e2.accept(this, state);
 		
-		return 'xor(' + e1j + ',' + e2j + ')';
+		return '_xor(' + e1j + ',' + e2j + ')';
 	}
 
 	return ToJS;
