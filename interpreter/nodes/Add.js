@@ -8,6 +8,7 @@ function Add(e1, e2, tokenCoords) {
 
 Add.prototype.ev = function(env, modSet) {
 	var e1Ev = this.e1.ev(env, modSet);
+	
 	if(!(e1Ev instanceof Num)) throw 'First argument of addition is not a number ' + this.tokenCoords;
 	
 	var e2Ev = this.e2.ev(env, modSet);

@@ -125,9 +125,14 @@ Planned features:
 * add more type checking
 * do extensive testing on the translator
 * prettify *index.html*
+* add documentation
 
 Version history:
 ----------------
+
+### 0.5.2
+
+* added more test for *toJS*
 
 ### 0.5.1
 

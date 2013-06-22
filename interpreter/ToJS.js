@@ -15,6 +15,7 @@ var ToJS = (function() {
 			'function _boolQ(e) { return typeof e === "boolean"; }\n' +
 			'function _strQ(e) { return typeof e === "string"; }\n' +
 			'function _Pair(f, s) { this._f = f; this._s = s; }\n' +
+			'_Pair.prototype.toString = function() { return "(" + this._f + ", " + this._s + ")"; }\n' +
 			'function _pairQ(e) { return e instanceof _Pair; }\n' +
 			'function _Record() { for(var i = 0, _len = arguments.length; i < _len; i += 2) '+
 				'this[arguments[i]] = arguments[i+1]; }\n' +

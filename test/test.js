@@ -6,8 +6,15 @@ var _e = function(s, modSet) {
 	if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Env.Emp, modSet);
 	else return RDP.single(Tokenizer.chop(s)).ev(Env.Emp); 
 }
+var _ej = function(s) { return eval(s); }
 var _t = function(s) { return RDP.single(Tokenizer.chop(s)).accept(new StaticCheck(), new VarCheckState(Env.Emp, null)); }
 var _m = function(s) { return RDP.tree(Tokenizer.chop(s)); }
+
+var _tr = function(s) { 
+	var exp = RDP.single(Tokenizer.chop(s)).ev(Env.Emp); 
+	return ToJS.header() + '\n\n' + exp.accept(new ToJS()); 
+}
+var _eqnj = function(s) { return _e(s).getValue() == _ej(_tr(s)); }
 
 module('tokenizer');
 test('Atomic tests', function() {
@@ -321,4 +328,36 @@ test('Simple tests', function() {
 	deepEqual(_e('(string? "str")'), new Bool(true), 'string? string');
 	deepEqual(_e('(string? unit)'), new Bool(false), 'string? unit');
 	deepEqual(_e('(string? 321)'), new Bool(false), 'string? num');
+});
+//=============================================================================
+module('toJS');
+test('Primitives', function() {
+	ok(_eqnj('25'), 'num');
+	ok(_eqnj('#f'), 'bool');
+	ok(_eqnj('"asd"'), 'str');
+});
+
+test('Simple functions', function() {
+	ok(_eqnj('(+ 23 54)'), '+ num num');
+	ok(_eqnj('(- 23 54)'), '- num num');
+	ok(_eqnj('(* 23 54)'), '* num num');
+	ok(_eqnj('(/ 23 54)'), '/ num num');
+	ok(_eqnj('(% 23 54)'), '% num num');
+	
+	ok(_eqnj('(not #t)'), 'not bool');
+	ok(_eqnj('(or #t #f)'), 'or bool bool');
+	ok(_eqnj('(and #t #f)'), 'and bool bool');
+	ok(_eqnj('(xor #t #f)'), 'xor bool bool');
+	
+	ok(_eqnj('(if #t 30 20)'), 'if #t');
+	ok(_eqnj('(if #f 30 20)'), 'if #f');
+});
+
+test('Let, Let*, Letrec, Fun, Call', function() {
+	ok(_eqnj('(let a 10 (+ a 3))'), 'let');
+	ok(_eqnj('(let* ((a 10) (b (+ a 3))) (+ b 3))'), 'let*');
+	ok(_eqnj('(letrec ((a c) (b 22) (c b)) c)'), 'letrec');
+	ok(_eqnj('(letrec ((f1 (lambda (x) (+ (call f2 (- x 1)) 2))) (f2 (lambda (x) (if (> x 0) (* (call f1 (- x 1)) 2) 5)))) (call f1 7))'), 'letrec');
+	ok(_eqnj('(let a 10 (call (lambda (x) (+ a x)) 4))'), 'closure');
+	ok(_eqnj('(let f (lambda (x y) (+ x y)) (call f 10 20))'), 'fun par1 par2');
 });
