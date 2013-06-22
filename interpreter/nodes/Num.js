@@ -16,6 +16,8 @@ Num.prototype.accept = function(visitor, state) {
 	return visitor.visitNum(this, state);
 }
 
+Num.prototype.getValue = function() { return this.n; }
+
 Num.prototype.toString = function() {
 	return this.n.toString();
 }

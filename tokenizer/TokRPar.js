@@ -1,6 +1,8 @@
 "use strict";
 
-function TokRPar() { }
+function TokRPar(coords) {
+	this.coords = coords; 
+}
 
 TokRPar.prototype.match = function(that) {
 	return that instanceof TokRPar;

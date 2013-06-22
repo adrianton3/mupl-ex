@@ -3,6 +3,7 @@ MUPLEx
 
 MUPLEx is a Scheme like language, a superset of MUPL. The original MUPL specification was provided by Dan Grossman.
 In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, branching and implicit currying.
+As of version 0.5.1 MUPLEx programs can be either interpreted or translated into JavaScript via the experimental translator.
 
 [Try it out](http://htmlpreview.github.com/?https://github.com/madflame991/muplex/blob/working/main.html)  
 \*the live demo will not work with the *github HTML preview* on Chrome/Safari
@@ -35,7 +36,7 @@ In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, bran
 3. Mutation
 
  ```scheme
-(let a 10
+(mut a 10
  (let f (lambda (x) (+ x a))
   (set! a 3
    (call f 11))))
@@ -118,12 +119,33 @@ Planned features:
 * remove/change currying by default
 * add `sametype?`
 * add `=` for numbers and `deepEq?` for pairs and records
-* add basic operations for strings
+* add basic operations for strings: `charAt`, `concat`, `charCode`, `fromCharCode`
 * add mpair
 * rename `deref` to `dot` or something more appropriate
+* add more type checking
+* do extensive testing on the translator
+* prettify *index.html*
+* add documentation
 
 Version history:
 ----------------
+
+### 0.5.2
+
+* added more test for *toJS*
+
+### 0.5.1
+
+* *toJS* translator now supports modules
+* added necessary helper functions for *toJS*
+* lexer and parser output can be turned on or off
+* improved error messages
+* cleaned up *RDP.js*
+* fixed a `contains?` not parsing properly
+
+### 0.5.0
+
+* added experimental *toJS* translator
 
 ### 0.4.4
 

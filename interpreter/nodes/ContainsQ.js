@@ -12,7 +12,7 @@ ContainsQ.prototype.ev = function(env, modSet) {
 	if(!(expEv instanceof Record)) throw 'Can not apply contains? to a non-record ' + this.tokenCoords;
 	
 	//TODO: optimize this
-	for(i in this.list)
+	for(var i in this.list)
 		if(!expEv.contains(this.list[i])) return new Bool(false);
 	
 	return new Bool(true);

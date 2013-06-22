@@ -66,7 +66,7 @@ var StaticCheck = (function() {
 		for(var i in containsQ.list)
 			if(containsQ.list[i].indexOf('.') != -1) throw 'Member names (' + containsQ.list[i] + ') can not contain "." ' + add.tokenCoords;
 			
-		containsQ.e.accept(this, state);
+		containsQ.exp.accept(this, state);
 		return _tbool;
 	}
 
@@ -186,6 +186,13 @@ var StaticCheck = (function() {
 			throw 'Expression does not type check: % ' + add.tokenCoords;
 
 		return _tnum;
+	}
+	
+	StaticCheck.prototype.visitModule = function(module, state) {
+		for(var i in module.defs)
+			module.defs[i].accept(this, state);
+			
+		return _tany;
 	}
 	
 	StaticCheck.prototype.visitModuleSet = function(modSet, state) {

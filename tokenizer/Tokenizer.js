@@ -34,11 +34,11 @@ Tokenizer.chop = function(s, ws, comm) {
 			tok.push(Tokenizer.chop.num(str)); 
 		}
 		else if(c == '(') { 
-			tok.push(new TokLPar());
+			tok.push(new TokLPar(str.getCoords()));
 			str.adv();
 		}
 		else if(c == ')') {
-			tok.push(new TokRPar());
+			tok.push(new TokRPar(str.getCoords()));
 			str.adv();
 		}
 		else if(c > ' ' && c <= '~') { 
@@ -50,7 +50,7 @@ Tokenizer.chop = function(s, ws, comm) {
 		}
 	}
 	
-	tok.push(new TokEnd());
+	tok.push(new TokEnd(str.getCoords()));
 	
 	return tok;
 }
