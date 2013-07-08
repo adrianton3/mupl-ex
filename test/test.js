@@ -16,6 +16,17 @@ var _tr = function(s) {
 }
 var _eqnj = function(s) { return _e(s).getValue() == _ej(_tr(s)); }
 
+var _tvid     = new Type(false, false, false, false, false, false, false, false);
+var _tany     = new Type( true, false, false, false, false, false, false, false);
+var _tbool    = new Type(false,  true, false, false, false, false, false, false);
+var _tnum     = new Type(false, false,  true, false, false, false, false, false);
+var _tstr     = new Type(false, false, false,  true, false, false, false, false);
+var _tunit    = new Type(false, false, false, false,  true, false, false, false);
+var _tpair    = new Type(false, false, false, false, false,  true, false, false);
+var _trecord  = new Type(false, false, false, false, false, false,  true, false);
+var _tfun     = new Type(false, false, false, false, false, false, false, _tvid);
+var _tfun_num = new Type(false, false, false, false, false, false, false, _tnum);
+
 module('tokenizer');
 test('Atomic tests', function() {
 	deepEqual(_l(''), [new TokEnd(new TokenCoords(0, 1))], 'Void parse');
@@ -193,22 +204,31 @@ test('Extendibles', function() {
 //=============================================================================
 module('type checker');
 test('Basic type eval', function() {
-	ok(_t('#f') instanceof TypeBool, 'TypeBool');
-	ok(_t('234') instanceof TypeNum, 'TypeNum');
-	ok(_t('unit') instanceof TypeUnit, 'TypeUnit');
-	ok(_t('(fun f (x) 10)') instanceof TypeFun, 'TypeFun');
-	ok(_t('(pair 10 20)') instanceof TypePair, 'TypePair');
-	ok(_t('(record (a 10) (y 20))') instanceof TypeRecord, 'TypeRecord');
+	ok(_t('#f').equals(_tbool), 'TypeBool');
+	ok(_t('234').equals(_tnum), 'TypeNum');
+	ok(_t('unit').equals(_tunit), 'TypeUnit');
+	ok(_t('(fun f (x) 10)').equals(
+		new Type(false, false, false, false, false, false, false, 
+			new Type(false, false, true, false, false, false, false, false))), 'TypeFun');
+	ok(_t('(pair 10 20)').equals(_tpair), 'TypePair');
+	ok(_t('(record (a 10) (y 20))').equals(_trecord), 'TypeRecord');
 });
 
 test('Type eval', function() {
-	ok(_t('(and #t #f)') instanceof TypeBool, 'and');
-	ok(_t('(+ 10 20)') instanceof TypeNum, '+');
-	ok(_t('(fst (pair 10 #f))') instanceof TypeNum, 'fst pair');
-	ok(_t('(snd (pair 10 #f))') instanceof TypeBool, 'snd pair');
-	ok(_t('(if #t 10 20)') instanceof TypeNum, 'if num num');
-	ok(_t('(if #t 10 #f)') instanceof TypeAny, 'if num bool');
-	ok(_t('(if #t #f #t)') instanceof TypeBool, 'if bool bool');
+	ok(_t('(and #t #f)').equals(_tbool), 'and');
+	ok(_t('(+ 10 20)').equals(_tnum), '+');
+	ok(_t('(fst (pair 10 #f))').equals(_tnum), 'fst pair');
+	ok(_t('(snd (pair 10 #f))').equals(_tbool), 'snd pair');
+	ok(_t('(if #t 10 20)').equals(_tnum), 'if num num');
+	ok(_t('(if #t 10 #f)').equals(_tnum.or(_tbool)), 'if num bool');
+	ok(_t('(if #t #f #t)').equals(_tbool), 'if bool bool');
+});
+
+test('Fun type eval', function() {
+	ok(_t('(call (lambda (x) (and x #f)) #t)').equals(_tbool), 'call lambda and');
+	ok(_t('(call (lambda (x y) (+ x y)) 4 7)').equals(_tnum), 'call lambda lambda +');
+	ok(_t('(call (lambda (x y) (+ x y)) 4)').equals(_tfun_num), 'call lambda lambda +');
+	throws(function() { return _t('(call (lambda (x) (and x #f)) #t #f)'); }, 'call call lambda and');
 });
 
 test('Exceptions', function() {
@@ -266,8 +286,8 @@ test('Let exceptions', function() {
 });
 
 test('Naming constraints', function() {
-	throws(function() { return _t('(contains? unit m.f)'); }, 'contains? 1');
-	throws(function() { return _t('(contains? unit f m.g)'); }, 'contains? 2');
+	throws(function() { return _t('(contains? (record (a 10)) m.f)'); }, 'contains? 1');
+	throws(function() { return _t('(contains? (record (a 10)) m.g)'); }, 'contains? 2');
 	throws(function() { return _t('(def a.f (lambda (x) x))'); }, 'def');
 	throws(function() { return _t('(deref unit m.f)'); }, 'deref');
 	throws(function() { return _t('(fun m.f (x) x)'); }, 'fun');

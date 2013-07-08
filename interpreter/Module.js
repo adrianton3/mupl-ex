@@ -27,6 +27,7 @@ Module.prototype.getVal = function(name) {
 	for(var i in this.publicDefs)
 		if(this.publicDefs[i].defName == name)
 			return this.publicDefs[i];
+			
 	throw 'Could not find ' + name + ' in module ' + this.name;
 }
 

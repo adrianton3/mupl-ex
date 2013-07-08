@@ -116,23 +116,28 @@ Planned features:
 
 * add `+`, `*`, ... for more than 2 operands
 * add code formatting
-* remove/change currying by default
 * add `sametype?`
 * add `=` for numbers and `deepEq?` for pairs and records
 * add basic operations for strings: `charAt`, `concat`, `charCode`, `fromCharCode`
 * add mpair
 * rename `deref` to `dot` or something more appropriate
-* add more type checking
 * do extensive testing on the translator
 * prettify *index.html*
 * add documentation
+* add a way of calling JS functions
+* add a way of accessing JS array elements
+* add type checking for function parameters
 
 Version history:
 ----------------
 
+### 0.5.3
+
+* added better type-checking
+
 ### 0.5.2
 
-* added more test for *toJS*
+* added more tests for *toJS*
 
 ### 0.5.1
 
