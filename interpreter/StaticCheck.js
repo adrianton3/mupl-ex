@@ -1,6 +1,11 @@
-"use strict";
-
-var StaticCheck = (function() {
+exports.StaticCheck = (function() {
+	"use strict";
+	
+	var Closure = require('./nodes/Closure.js').Closure;
+	var Type = require('./types/Type.js').Type;
+	var TypeBinding = require('./TypeBinding.js').TypeBinding;
+	var VarCheckState = require('./VarCheckState.js').VarCheckState;
+	var TokenCoords = require('../tokenizer/TokenCoords.js').TokenCoords;
 
 	function StaticCheck() { }
 
@@ -378,24 +383,3 @@ var StaticCheck = (function() {
 
 	return StaticCheck;
 })();
-//=============================================================================
-function TypeBinding(s, v, final) {
-	this.s = s;
-	this.v = v;
-	this.final = final;
-}
-
-TypeBinding.prototype.toString = function() {
-	if(this.final) return this.s + ' :: ' + this.v;
-	else return this.s + ' *: ' + this.v;
-}
-//=============================================================================
-function VarCheckState(env, modSet) {
-	this.env = env;
-	this.modSet = modSet;
-}
-
-VarCheckState.prototype.con = function(b) {
-	return new VarCheckState(this.env.con(b), this.modSet);
-}
- 

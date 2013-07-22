@@ -1,17 +1,21 @@
-"use strict";
-
-function Any() {
+exports.Any = (function () {
+	"use strict";
 	
-}
-
-Any.prototype.ev = function(env, modSet) {
-	return this;
-}
-
-Any.prototype.accept = function(visitor, state) {
-	return visitor.visitAny(this, state);
-}
-
-Any.prototype.toString = function() {
-	return 'any';
-}
+	function Any() {
+		
+	}
+	
+	Any.prototype.ev = function(env, modSet) {
+		return this;
+	}
+	
+	Any.prototype.accept = function(visitor, state) {
+		return visitor.visitAny(this, state);
+	}
+	
+	Any.prototype.toString = function() {
+		return 'any';
+	}
+	
+	return Any;
+})();

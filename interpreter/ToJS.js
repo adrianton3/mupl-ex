@@ -1,7 +1,6 @@
-"use strict";
-
-var ToJS = (function() {
-
+exports.ToJS = (function() {
+	"use strict";
+		
 	function ToJS() { }
 
 	ToJS.header = function() {
