@@ -12,9 +12,11 @@ exports.RDP = (function () {
 	
 	var Add = require('../interpreter/nodes/Add.js').Add;
 	var And = require('../interpreter/nodes/And.js').And;
+	var ArrJS = require('../interpreter/nodes/ArrJS.js').ArrJS;
 	var Bool = require('../interpreter/nodes/Bool.js').Bool;
 	var BoolQ = require('../interpreter/nodes/BoolQ.js').BoolQ;
 	var Call = require('../interpreter/nodes/Call.js').Call;
+	var CallJS = require('../interpreter/nodes/CallJS.js').CallJS;
 	var ClosureQ = require('../interpreter/nodes/ClosureQ.js').ClosureQ;
 	var ContainsQ = require('../interpreter/nodes/ContainsQ.js').ContainsQ;
 	var Def = require('../interpreter/nodes/Def.js').Def;
@@ -43,7 +45,6 @@ exports.RDP = (function () {
 	var Xor = require('../interpreter/nodes/Xor.js').Xor;
 	
 	var Any = require('../interpreter/nodes/Any.js').Any;
-	var RecordPair = require('../interpreter/nodes/RecordPair.js').RecordPair;
 	
 	var RDP = { };
 	
@@ -216,7 +217,7 @@ exports.RDP = (function () {
 	}
 	
 	RDP.tree.recordList = function(token) {
-		var list = [];
+		var map = {};
 		while(!token.match(RDP.tree.rPar)) {
 			token.adv();
 			token.expect(RDP.tree.identifier, 'RDP: first record pair member must be an identifier');
@@ -224,9 +225,9 @@ exports.RDP = (function () {
 			var exp = RDP.tree.exp(token);
 			token.expect(RDP.tree.rPar, 'RDP: record: Missing rpar');
 			
-			list.push(new RecordPair(name, exp));
+			map[name] = exp;
 		}
-		return list;
+		return map;
 	}
 	
 	RDP.tree.containsList = function(token) {
@@ -240,6 +241,24 @@ exports.RDP = (function () {
 			list.push(token.past().s);
 		}
 		
+		return list;
+	}
+	
+	RDP.tree.arrJSList = function(token) {
+		var list = [];
+		while(!token.match(RDP.tree.rPar)) {
+			var exp = RDP.tree.exp(token);
+			list.push(exp);
+		}
+		return list;
+	}
+	
+	RDP.tree.callJSList = function(token) {
+		var list = [];
+		while(!token.match(RDP.tree.rPar)) {
+			var exp = RDP.tree.exp(token);
+			list.push(exp);
+		}
 		return list;
 	}
 	
@@ -270,6 +289,15 @@ exports.RDP = (function () {
 		return new And(andE1, andE2, andTok.coords);
 	}
 	
+	RDP.tree.special._arrJS = function(token) {
+		var arrJSTok = token.past();
+		token.expect(RDP.tree.identifier, 'RDP: first arrjs parameter must be an identifier');
+		var arrJSName = token.past().s;
+		var arrJSList = RDP.tree.arrJSList(token);
+		token.expect(RDP.tree.rPar, 'RDP: arrJS: Missing rpar');
+		return new ArrJS(arrJSName, arrJSList, arrJSTok.coords);
+	}
+	
 	RDP.tree.special._boolQ = function(token) {
 		var boolQTok = token.past();
 		var boolQE = RDP.tree.exp(token);
@@ -283,6 +311,15 @@ exports.RDP = (function () {
 		var callParamList = RDP.tree.callParamList(token);
 		token.expect(RDP.tree.rPar, 'RDP: call*: Missing rpar');
 		return callStar(callCallee, callParamList, callStarTok.coords);
+	}
+	
+	RDP.tree.special._callJS = function(token) {
+		var callJSTok = token.past();
+		token.expect(RDP.tree.identifier, 'RDP: first calljs parameter must be an identifier');
+		var callJSName = token.past().s;
+		var callJSList = RDP.tree.callJSList(token);
+		token.expect(RDP.tree.rPar, 'RDP: calljs: Missing rpar');
+		return new CallJS(callJSName, callJSList, callJSTok.coords);
 	}
 	
 	RDP.tree.special._closureQ = function(token) {
@@ -572,8 +609,10 @@ exports.RDP = (function () {
 	RDP.tree.special.bindings = [
 		new StrHandlerPair('+'        , RDP.tree.special._add       ),
 		new StrHandlerPair('and'      , RDP.tree.special._and       ),
+		new StrHandlerPair('arrjs'    , RDP.tree.special._arrJS     ),
 		new StrHandlerPair('bool?'    , RDP.tree.special._boolQ     ),
 		new StrHandlerPair('call'     , RDP.tree.special._callStar  ),
+		new StrHandlerPair('calljs'   , RDP.tree.special._callJS    ),
 		new StrHandlerPair('closure?' , RDP.tree.special._closureQ  ),
 		new StrHandlerPair('cond'     , RDP.tree.special._cond      ),
 		new StrHandlerPair('contains?', RDP.tree.special._containsQ ),

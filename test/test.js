@@ -412,6 +412,10 @@ test('Primitives', function() {
 	ok(_eqnj('25'), 'num');
 	ok(_eqnj('#f'), 'bool');
 	ok(_eqnj('"asd"'), 'str');
+	ok(_eqnj('(fst (pair 32 54))'), 'pair 1');
+	ok(_eqnj('(snd (pair 32 54))'), 'pair 2');
+	ok(_eqnj('(deref (record (a 10) (dsa 32)) dsa)'), 'record 1');
+	ok(_eqnj('(deref (record (a 10) (dsa 32)) a)'), 'record 2');
 });
 
 test('Simple functions', function() {

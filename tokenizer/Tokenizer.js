@@ -183,6 +183,7 @@ exports.Tokenizer = (function () {
 		'pair', 'pair?', 'list', 'fst', 'snd',
 		'record', 'record?', 'deref', 'contains?',
 		'fun', 'lambda', 'call', 'closure?',
+		'calljs', 'arrjs',
 		'+', '-', '*', '/', '%',
 		/*'<', '<=', '=', '>='*/, '>',
 		'not', 'and', 'or', 'xor',

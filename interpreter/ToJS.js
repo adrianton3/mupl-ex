@@ -41,6 +41,15 @@ exports.ToJS = (function() {
 	ToJS.prototype.visitAny = function(unit, state) {
 		return '_any';
 	}
+	
+	ToJS.prototype.visitArrJS = function(arrJS, state) {
+		var indexAr = [];
+		for(var i in arrJS.indexExps) {
+			indexAr.push(arrJS.indexExps[i].accept(this, state));
+		}
+		var indexStr = indexAr.join('][');
+		return arrJS.arrIdentifier + '[' + indexStr + ']';
+	}
 
 	ToJS.prototype.visitBool = function(bool, state) {
 		return bool.v.toString();
@@ -59,6 +68,15 @@ exports.ToJS = (function() {
 		}
 		else 
 			return funexpj + '()';
+	}
+	
+	ToJS.prototype.visitCallJS = function(callJS, state) {
+		var parameterAr = [];
+		for(var i in callJS.parameterExps) {
+			parameterAr.push(callJS.parameterExps[i].accept(this, state));
+		}
+		var parameterStr = parameterAr.join(',');
+		return callJS.funIdentifier + '(' + parameterStr + ')';
 	}
 
 	ToJS.prototype.visitClosureQ = function(closureQ, state) {
@@ -224,9 +242,9 @@ exports.ToJS = (function() {
 
 	ToJS.prototype.visitRecord = function(record, state) {
 		var recordj = '';
-		for(var i in record.map) {
-			var namej = record.map[i].name;
-			var expj = record.map[i].exp.accept(this, state);
+		for(var key in record.map) {
+			var namej = key;
+			var expj = record.map[key].accept(this, state);
 			recordj += '"' + namej + '", ' + expj + ', '
 		}
 			

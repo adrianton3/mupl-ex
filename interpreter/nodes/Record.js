@@ -1,33 +1,27 @@
 exports.Record = (function () {
 	"use strict";
 	
-	var RecordPair = require('./RecordPair.js').RecordPair;
-	
 	function Record(map) {
 		this.map = map;
 	}
 	
 	Record.prototype.ev = function(env, modSet) {
-		var mapEv = [];
+		var mapEv = { };
 		
-		for(var i in this.map)
-			mapEv.push(new RecordPair(this.map[i].name, this.map[i].exp.ev(env, modSet)));
+		for(var key in this.map)
+			mapEv[key] = this.map[key].ev(env, modSet);
 		
 		return new Record(mapEv);
 	}
 	
 	Record.prototype.contains = function(name) {
-		for(var i in this.map)
-			if(this.map[i].name == name)
-				return true;
-		
-		return false;
+		return this.map[name] !== undefined;
 	}
 	
 	Record.prototype.get = function(name) {
-		for(var i in this.map)
-			if(this.map[i].name == name)
-				return this.map[i].exp;
+		if(this.contains(name)) {
+			return this.map[name];
+		}
 				
 		throw 'Record does not contain ' + name;
 	}
@@ -38,8 +32,8 @@ exports.Record = (function () {
 	
 	Record.prototype.toString = function() {
 		var ls = '';
-		for(var i in this.map)
-			ls += ' ' + this.map[i].toString();
+		for(var key in this.map)
+			ls += ' ' + key + ': ' + this.map[key].toString();
 		
 		return '(record' + ls + ')';
 	}

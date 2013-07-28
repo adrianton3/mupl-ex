@@ -46,6 +46,13 @@ exports.StaticCheck = (function() {
 	StaticCheck.prototype.visitAny = function(unit, state) {
 		return _tany;
 	}
+	
+	StaticCheck.prototype.visitArrJS = function(arrJS, state) {
+		for(var i in arrJS.indexExps) {
+			arrJS.indexExps[i].accept(this, state);
+		}
+		return _tany;
+	}
 
 	StaticCheck.prototype.visitBool = function(bool, state) {
 		return _tbool;
@@ -77,6 +84,13 @@ exports.StaticCheck = (function() {
 		
 		if(funexpt.isAny()) return _tany;
 		return funexpt.fun;
+	}
+	
+	StaticCheck.prototype.visitCallJS = function(callJS, state) {
+		for(var i in callJS.parameterExps) {
+			callJS.parameterExps[i].accept(this, state);
+		}
+		return _tany;
 	}
 	
 	StaticCheck.prototype.visitClosureQ = function(closureQ, state) {
@@ -273,9 +287,9 @@ exports.StaticCheck = (function() {
 	}
 
 	StaticCheck.prototype.visitRecord = function(record, state) {
-		for(var i in record.map) {
-			if(record.map[i].name.indexOf('.') != -1) throw 'Record member name (' + record.map[i].name + ')can not contain "." ' + record.tokenCoords;
-			record.map[i].exp.accept(this, state);
+		for(var key in record.map) {
+			if(key.indexOf('.') !== -1) throw 'Record member name (' + key + ')can not contain "." ' + record.tokenCoords;
+			record.map[key].accept(this, state);
 		}
 			
 		return _trecord;
@@ -287,7 +301,7 @@ exports.StaticCheck = (function() {
 	}
 
 	StaticCheck.prototype.visitSet = function(set, state) {
-		if(set.name.indexOf('.') != -1) throw 'Set can be applied only on local variables ' + set.tokenCoords;
+		if(set.name.indexOf('.') !== -1) throw 'Set can be applied only on local variables ' + set.tokenCoords;
 		
 		var binding = state.env.getBinding(set.name);
 		if(binding.final && !set.bang) throw set.name + ' is final ' + set.tokenCoords;

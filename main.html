@@ -66,6 +66,11 @@
 		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Err.js"></script>
 		
+		<script type="text/javascript" src="interpreter/nodes/interjm.js"></script>
+		
+		<script type="text/javascript" src="interpreter/nodes/ArrJS.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/CallJS.js"></script>
+		
 		<script type="text/javascript" src="interpreter/Module.js"></script>
 		<script type="text/javascript" src="interpreter/ModuleSet.js"></script>
   
@@ -73,14 +78,14 @@
   
   <script type="text/javascript" src="interpreter/StaticCheck.js"></script>
   <script type="text/javascript" src="interpreter/ToJS.js"></script>
-
+<!--
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>
 		<script type="text/javascript" src="expansion/cond.js"></script>
 		<script type="text/javascript" src="expansion/letStar.js"></script>
 		<script type="text/javascript" src="expansion/letrecStar.js"></script>
 		<script type="text/javascript" src="expansion/pairStar.js"></script>
-
+-->
 		<script type="text/javascript" src="CodeColor.js"></script>
 
 		<script type="text/javascript" src="tokenizer/IterableString.js"></script>
@@ -165,16 +170,16 @@
 				var hOutInterpreter = document.getElementById('out_interpreter');
 				
 				var istr = '';
-				try {
+				//try {
 					Out.reset();
 					var res = _parsedFreeExp.ev(Env.Emp, _modSet);
 					istr += res.toString();
 					
 					istr += '\n---\n\n';
 				 istr += Out.toString();
-				} catch(err) {
-					istr += 'Runtime exception: ' + err;
-				}
+				//} catch(err) {
+				//	istr += 'Runtime exception: ' + err;
+				//}
 				
 				hOutInterpreter.value = istr;
 			}
