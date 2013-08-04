@@ -1,9 +1,9 @@
-MUPLEx
+MUPLex
 ======
 
-MUPLEx is a Scheme like language, a superset of MUPL. The original MUPL specification was provided by Dan Grossman.
-In addition to MUPL, MUPLEx supports records, mutability, letrec, booleans, branching and implicit currying.
-As of version 0.5.1 MUPLEx programs can be either interpreted or translated into JavaScript via the experimental translator.
+MUPLex is a Scheme like language, a superset of MUPL. The original MUPL specification was provided by Dan Grossman.
+In addition to MUPL, MUPLex supports records, mutability, letrec, booleans, branching and implicit currying.
+As of version 0.5.1 MUPLex programs can be either interpreted or translated into JavaScript via the experimental translator.
 
 [Try it out](http://htmlpreview.github.com/?https://github.com/madflame991/muplex/blob/working/main.html)  
 \*the live demo will not work with the *github HTML preview* on Chrome/Safari
@@ -48,7 +48,7 @@ it's very good as syntactic salt for preventing the common "I lost 15 minutes on
 
 
 ###The type system
-MUPLEx is dynamically typed. Before doing any operation, the evaluator first checks that the arguments 
+MUPLex is dynamically typed. Before doing any operation, the evaluator first checks that the arguments 
 are of the correct type and throws a runtime error if they are not.
 
 In addition to this, there is some type checking that is performed at "compile time", before launching the program. 
@@ -116,23 +116,26 @@ Planned features:
 
 * add `+`, `*`, ... for more than 2 operands
 * add code formatting
-* remove/change currying by default
 * add `sametype?`
 * add `=` for numbers and `deepEq?` for pairs and records
 * add basic operations for strings: `charAt`, `concat`, `charCode`, `fromCharCode`
 * add mpair
 * rename `deref` to `dot` or something more appropriate
-* add more type checking
 * do extensive testing on the translator
 * prettify *index.html*
 * add documentation
+* add type checking for function parameters
 
 Version history:
 ----------------
 
+### 0.5.3
+
+* added better type-checking
+
 ### 0.5.2
 
-* added more test for *toJS*
+* added more tests for *toJS*
 
 ### 0.5.1
 

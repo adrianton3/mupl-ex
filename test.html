@@ -2,16 +2,30 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-  <title>MUPLEx tests</title>
-  
+  <title>MUPLex tests</title>
+		<link rel="stylesheet" href="test/qunit-1.11.0.css">
+	</head>
+	<body>
+		
+		<script type="text/javascript" src="test/qunit-1.11.0.js"></script>
+		<script type="text/javascript" src="Require.js"></script>
+		
+		<script type="text/javascript" src="tokenizer/TokenCoords.js"></script>
+		
+		<script type="text/javascript" src="interpreter/TypeBinding.js"></script>
+		<script type="text/javascript" src="interpreter/VarBinding.js"></script>
+		<script type="text/javascript" src="interpreter/VarCheckState.js"></script>
+		
 		<script type="text/javascript" src="interpreter/Env.js"></script>
 		<script type="text/javascript" src="interpreter/Out.js"></script>
 
   <script type="text/javascript" src="interpreter/nodes/Any.js"></script>
+  <script type="text/javascript" src="interpreter/nodes/Bool.js"></script>
+  <script type="text/javascript" src="interpreter/nodes/Num.js"></script>
+  <script type="text/javascript" src="interpreter/nodes/Str.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Unit.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/UnitQ.js"></script>
 
-		<script type="text/javascript" src="interpreter/nodes/Num.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/NumQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Add.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Sub.js"></script>
@@ -19,16 +33,16 @@
 		<script type="text/javascript" src="interpreter/nodes/Div.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Mod.js"></script>
 		
+		<script type="text/javascript" src="interpreter/nodes/Def.js"></script>
+		
 		<script type="text/javascript" src="interpreter/nodes/Let.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Var.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Fun.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Closure.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/Fun.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/ClosureQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Call.js"></script>
 
-  <script type="text/javascript" src="interpreter/nodes/Str.js"></script>
  	<script type="text/javascript" src="interpreter/nodes/StrQ.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Bool.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/BoolQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/If.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Greater.js"></script>
@@ -53,19 +67,11 @@
 		
 		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Err.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Def.js"></script>
 		
 		<script type="text/javascript" src="interpreter/Module.js"></script>
 		<script type="text/javascript" src="interpreter/ModuleSet.js"></script>
   
-  <script type="text/javascript" src="interpreter/types/TypeAny.js"></script>
-  <script type="text/javascript" src="interpreter/types/TypeBool.js"></script>
-  <script type="text/javascript" src="interpreter/types/TypeFun.js"></script>
-  <script type="text/javascript" src="interpreter/types/TypeNum.js"></script>
-  <script type="text/javascript" src="interpreter/types/TypePair.js"></script>
-  <script type="text/javascript" src="interpreter/types/TypeRecord.js"></script>
-  <script type="text/javascript" src="interpreter/types/TypeStr.js"></script>
-  <script type="text/javascript" src="interpreter/types/TypeUnit.js"></script>
+  <script type="text/javascript" src="interpreter/types/Type.js"></script>
   
   <script type="text/javascript" src="interpreter/StaticCheck.js"></script>
   <script type="text/javascript" src="interpreter/ToJS.js"></script>
@@ -80,8 +86,6 @@
 		<script type="text/javascript" src="CodeColor.js"></script>
 
 		<script type="text/javascript" src="tokenizer/IterableString.js"></script>
-		<script type="text/javascript" src="tokenizer/Tokenizer.js"></script>
-		<script type="text/javascript" src="tokenizer/TokenCoords.js"></script>
 		
 		<script type="text/javascript" src="tokenizer/TokBool.js"></script>
 		<script type="text/javascript" src="tokenizer/TokCommML.js"></script>
@@ -94,15 +98,14 @@
 		<script type="text/javascript" src="tokenizer/TokRPar.js"></script>
 		<script type="text/javascript" src="tokenizer/TokStr.js"></script>
 		<script type="text/javascript" src="tokenizer/TokWhitespace.js"></script>
+		
+		<script type="text/javascript" src="tokenizer/Tokenizer.js"></script>
 
-		<script type="text/javascript" src="parser/RDP.js"></script>
 		<script type="text/javascript" src="parser/TokenList.js"></script>
-
-		<link rel="stylesheet" href="test/qunit-1.11.0.css">
-		<script type="text/javascript" src="test/qunit-1.11.0.js"></script>
+		<script type="text/javascript" src="parser/RDP.js"></script>
+		
 		<script type="text/javascript" src="test/test.js"></script>
-	</head>
-	<body>
+		
 		<div id="qunit"></div>
 		<div id="qunit-fixture"></div>
 	</body>

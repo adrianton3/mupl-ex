@@ -1,51 +1,42 @@
-"use strict";
-
-function Record(map) {
-	this.map = map;
-}
-
-Record.prototype.ev = function(env, modSet) {
-	var mapEv = [];
+exports.Record = (function () {
+	"use strict";
 	
-	for(var i in this.map)
-		mapEv.push(new RecordPair(this.map[i].name, this.map[i].exp.ev(env, modSet)));
+	function Record(map) {
+		this.map = map;
+	}
 	
-	return new Record(mapEv);
-}
-
-Record.prototype.contains = function(name) {
-	for(var i in this.map)
-		if(this.map[i].name == name)
-			return true;
+	Record.prototype.ev = function(env, modSet) {
+		var mapEv = { };
+		
+		for(var key in this.map)
+			mapEv[key] = this.map[key].ev(env, modSet);
+		
+		return new Record(mapEv);
+	}
 	
-	return false;
-}
-
-Record.prototype.get = function(name) {
-	for(var i in this.map)
-		if(this.map[i].name == name)
-			return this.map[i].exp;
-			
-	throw 'Record does not contain ' + name;
-}
-
-Record.prototype.accept = function(visitor, state) {
-	return visitor.visitRecord(this, state);
-}
-
-Record.prototype.toString = function() {
-	var ls = '';
-	for(var i in this.map)
-		ls += ' ' + this.map[i].toString();
+	Record.prototype.contains = function(name) {
+		return this.map[name] !== undefined;
+	}
 	
-	return '(record' + ls + ')';
-}
-//=============================================================================
-function RecordPair(name, exp) {
-	this.name = name;
-	this.exp = exp;
-}
+	Record.prototype.get = function(name) {
+		if(this.contains(name)) {
+			return this.map[name];
+		}
+				
+		throw 'Record does not contain ' + name;
+	}
+	
+	Record.prototype.accept = function(visitor, state) {
+		return visitor.visitRecord(this, state);
+	}
+	
+	Record.prototype.toString = function() {
+		var ls = '';
+		for(var key in this.map)
+			ls += ' ' + key + ': ' + this.map[key].toString();
+		
+		return '(record' + ls + ')';
+	}
 
-RecordPair.prototype.toString = function() {
-	return '(' + this.name + ' ' + this.exp + ')';
-}
+	return Record;
+})();

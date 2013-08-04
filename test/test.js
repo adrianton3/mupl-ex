@@ -1,5 +1,62 @@
 "use strict";
 
+var Tokenizer = require('../tokenizer/Tokenizer.js').Tokenizer;
+var TokEnd = require('../tokenizer/TokEnd.js').TokEnd;
+var TokNum = require('../tokenizer/TokNum.js').TokNum;
+var TokIdentifier = require('../tokenizer/TokIdentifier.js').TokIdentifier;
+var TokBool = require('../tokenizer/TokBool.js').TokBool;
+var TokStr = require('../tokenizer/TokStr.js').TokStr;
+var TokCommSL = require('../tokenizer/TokCommSL.js').TokCommSL;
+var TokCommML = require('../tokenizer/TokCommML.js').TokCommML;
+var TokLPar = require('../tokenizer/TokLPar.js').TokLPar;
+var TokRPar = require('../tokenizer/TokRPar.js').TokRPar;
+var TokKeyword = require('../tokenizer/TokKeyword.js').TokKeyword;
+var TokenCoords = require('../tokenizer/TokenCoords.js').TokenCoords;
+
+var Add = require('../interpreter/nodes/Add.js').Add;
+var And = require('../interpreter/nodes/And.js').And;
+var Bool = require('../interpreter/nodes/Bool.js').Bool;
+var BoolQ = require('../interpreter/nodes/BoolQ.js').BoolQ;
+var Call = require('../interpreter/nodes/Call.js').Call;
+var ClosureQ = require('../interpreter/nodes/ClosureQ.js').ClosureQ;
+var ContainsQ = require('../interpreter/nodes/ContainsQ.js').ContainsQ;
+var Def = require('../interpreter/nodes/Def.js').Def;
+var Div = require('../interpreter/nodes/Div.js').Div;
+var Fst = require('../interpreter/nodes/Fst.js').Fst;
+var Fun = require('../interpreter/nodes/Fun.js').Fun;
+var If = require('../interpreter/nodes/If.js').If;
+var Let = require('../interpreter/nodes/Let.js').Let;
+var Mod = require('../interpreter/nodes/Mod.js').Mod;
+var Module = require('../interpreter/Module.js').Module;
+var ModuleSet = require('../interpreter/ModuleSet.js').ModuleSet;
+var Mul = require('../interpreter/nodes/Mul.js').Mul;
+var Not = require('../interpreter/nodes/Not.js').Not;
+var Num = require('../interpreter/nodes/Num.js').Num;
+var NumQ = require('../interpreter/nodes/NumQ.js').NumQ;
+var Or = require('../interpreter/nodes/Or.js').Or;
+var Pair = require('../interpreter/nodes/Pair.js').Pair;
+var PairQ = require('../interpreter/nodes/PairQ.js').PairQ;
+var Record = require('../interpreter/nodes/Record.js').Record;
+var RecordQ = require('../interpreter/nodes/RecordQ.js').RecordQ;
+var Snd = require('../interpreter/nodes/Snd.js').Snd;
+var Str = require('../interpreter/nodes/Str.js').Str;
+var StrQ = require('../interpreter/nodes/StrQ.js').StrQ;
+var Sub = require('../interpreter/nodes/Sub.js').Sub;
+var Unit = require('../interpreter/nodes/Unit.js').Unit;
+var UnitQ = require('../interpreter/nodes/UnitQ.js').UnitQ;
+var Var = require('../interpreter/nodes/Var.js').Var;
+var Xor = require('../interpreter/nodes/Xor.js').Xor;
+
+var VarBinding = require('../interpreter/VarBinding.js').VarBinding;
+var Env = require('../interpreter/Env.js').Env;
+
+var StaticCheck = require('../interpreter/StaticCheck.js').StaticCheck;
+var VarCheckState = require('../interpreter/VarCheckState.js').VarCheckState;
+var ToJS = require('../interpreter/ToJS.js').ToJS;
+
+var RDP = require('../parser/RDP.js').RDP;
+var Type = require('../interpreter/types/Type.js').Type;
+
 var _l = function(s) { return Tokenizer.chop(s); }
 var _p = function(s) { return RDP.single(Tokenizer.chop(s)); }
 var _e = function(s, modSet) { 
@@ -15,6 +72,17 @@ var _tr = function(s) {
 	return ToJS.header() + '\n\n' + exp.accept(new ToJS()); 
 }
 var _eqnj = function(s) { return _e(s).getValue() == _ej(_tr(s)); }
+
+var _tvid     = new Type(false, false, false, false, false, false, false, false);
+var _tany     = new Type( true, false, false, false, false, false, false, false);
+var _tbool    = new Type(false,  true, false, false, false, false, false, false);
+var _tnum     = new Type(false, false,  true, false, false, false, false, false);
+var _tstr     = new Type(false, false, false,  true, false, false, false, false);
+var _tunit    = new Type(false, false, false, false,  true, false, false, false);
+var _tpair    = new Type(false, false, false, false, false,  true, false, false);
+var _trecord  = new Type(false, false, false, false, false, false,  true, false);
+var _tfun     = new Type(false, false, false, false, false, false, false, _tvid);
+var _tfun_num = new Type(false, false, false, false, false, false, false, _tnum);
 
 module('tokenizer');
 test('Atomic tests', function() {
@@ -193,22 +261,31 @@ test('Extendibles', function() {
 //=============================================================================
 module('type checker');
 test('Basic type eval', function() {
-	ok(_t('#f') instanceof TypeBool, 'TypeBool');
-	ok(_t('234') instanceof TypeNum, 'TypeNum');
-	ok(_t('unit') instanceof TypeUnit, 'TypeUnit');
-	ok(_t('(fun f (x) 10)') instanceof TypeFun, 'TypeFun');
-	ok(_t('(pair 10 20)') instanceof TypePair, 'TypePair');
-	ok(_t('(record (a 10) (y 20))') instanceof TypeRecord, 'TypeRecord');
+	ok(_t('#f').equals(_tbool), 'TypeBool');
+	ok(_t('234').equals(_tnum), 'TypeNum');
+	ok(_t('unit').equals(_tunit), 'TypeUnit');
+	ok(_t('(fun f (x) 10)').equals(
+		new Type(false, false, false, false, false, false, false, 
+			new Type(false, false, true, false, false, false, false, false))), 'TypeFun');
+	ok(_t('(pair 10 20)').equals(_tpair), 'TypePair');
+	ok(_t('(record (a 10) (y 20))').equals(_trecord), 'TypeRecord');
 });
 
 test('Type eval', function() {
-	ok(_t('(and #t #f)') instanceof TypeBool, 'and');
-	ok(_t('(+ 10 20)') instanceof TypeNum, '+');
-	ok(_t('(fst (pair 10 #f))') instanceof TypeNum, 'fst pair');
-	ok(_t('(snd (pair 10 #f))') instanceof TypeBool, 'snd pair');
-	ok(_t('(if #t 10 20)') instanceof TypeNum, 'if num num');
-	ok(_t('(if #t 10 #f)') instanceof TypeAny, 'if num bool');
-	ok(_t('(if #t #f #t)') instanceof TypeBool, 'if bool bool');
+	ok(_t('(and #t #f)').equals(_tbool), 'and');
+	ok(_t('(+ 10 20)').equals(_tnum), '+');
+	ok(_t('(fst (pair 10 #f))').equals(_tnum), 'fst pair');
+	ok(_t('(snd (pair 10 #f))').equals(_tbool), 'snd pair');
+	ok(_t('(if #t 10 20)').equals(_tnum), 'if num num');
+	ok(_t('(if #t 10 #f)').equals(_tnum.or(_tbool)), 'if num bool');
+	ok(_t('(if #t #f #t)').equals(_tbool), 'if bool bool');
+});
+
+test('Fun type eval', function() {
+	ok(_t('(call (lambda (x) (and x #f)) #t)').equals(_tbool), 'call lambda and');
+	ok(_t('(call (lambda (x y) (+ x y)) 4 7)').equals(_tnum), 'call lambda lambda +');
+	ok(_t('(call (lambda (x y) (+ x y)) 4)').equals(_tfun_num), 'call lambda lambda +');
+	throws(function() { return _t('(call (lambda (x) (and x #f)) #t #f)'); }, 'call call lambda and');
 });
 
 test('Exceptions', function() {
@@ -266,8 +343,8 @@ test('Let exceptions', function() {
 });
 
 test('Naming constraints', function() {
-	throws(function() { return _t('(contains? unit m.f)'); }, 'contains? 1');
-	throws(function() { return _t('(contains? unit f m.g)'); }, 'contains? 2');
+	throws(function() { return _t('(contains? (record (a 10)) m.f)'); }, 'contains? 1');
+	throws(function() { return _t('(contains? (record (a 10)) m.g)'); }, 'contains? 2');
 	throws(function() { return _t('(def a.f (lambda (x) x))'); }, 'def');
 	throws(function() { return _t('(deref unit m.f)'); }, 'deref');
 	throws(function() { return _t('(fun m.f (x) x)'); }, 'fun');
@@ -335,6 +412,10 @@ test('Primitives', function() {
 	ok(_eqnj('25'), 'num');
 	ok(_eqnj('#f'), 'bool');
 	ok(_eqnj('"asd"'), 'str');
+	ok(_eqnj('(fst (pair 32 54))'), 'pair 1');
+	ok(_eqnj('(snd (pair 32 54))'), 'pair 2');
+	ok(_eqnj('(deref (record (a 10) (dsa 32)) dsa)'), 'record 1');
+	ok(_eqnj('(deref (record (a 10) (dsa 32)) a)'), 'record 2');
 });
 
 test('Simple functions', function() {
