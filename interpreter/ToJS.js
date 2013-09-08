@@ -199,7 +199,7 @@ exports.ToJS = (function() {
 	}
 
 	ToJS.prototype.visitNot = function(not, state) {
-		var ej = not.e1.accept(this, state);
+		var ej = not.e.accept(this, state);
 		
 		return '!(' + ej + ')';
 	}

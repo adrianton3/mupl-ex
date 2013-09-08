@@ -54,14 +54,14 @@
 		<script type="text/javascript" src="interpreter/nodes/Deref.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/ContainsQ.js"></script>
 
-		<script type="text/javascript" src="interpreter/nodes/Set.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/SetFst.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/SetSnd.js"></script>
-
 		<script type="text/javascript" src="interpreter/nodes/Pair.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/PairQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Fst.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Snd.js"></script>
+		
+		<script type="text/javascript" src="interpreter/nodes/Set.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/SetFst.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/SetSnd.js"></script>
 		
 		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Err.js"></script>
@@ -78,6 +78,9 @@
   
   <script type="text/javascript" src="interpreter/StaticCheck.js"></script>
   <script type="text/javascript" src="interpreter/ToJS.js"></script>
+  
+  <script type="text/javascript" src="lli/ToLL.js"></script>
+  <script type="text/javascript" src="lli/LLI.js"></script>
 <!--
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>
@@ -117,6 +120,8 @@
 			var Env = require('./interpreter/Env.js').Env;
 			var Out = require('./interpreter/Out.js').Out;
 			var ToJS = require('./interpreter/ToJS.js').ToJS;
+			var ToLL = require('./interpreter/ToLL.js').ToLL;
+			var LLI = require('./interpreter/LLI.js').LLI;
 
 			window.onload = process;
 			var _parsedFreeExp;
@@ -156,6 +161,7 @@
 					hComputeButton.disabled = false;
 					
 					doTranslate();
+					doCompile();
 				} catch(err) {
 					outParser += err;
 					hComputeButton.disabled = true;
@@ -199,6 +205,26 @@
 				}
 				
 				hOutJS.value = js;
+			}
+			
+			function doCompile() {
+				var hOutLL = document.getElementById('out_ll');
+				
+				var js = '';
+			 try {
+			  js += _parsedFreeExp.accept(new ToLL());
+				}	catch(err) {
+					js += '\n\nTranslation exception: ' + err;
+				}
+				
+				hOutLL.value = js;
+			}
+			
+			function doEvalLL() {
+				var hOutLL = document.getElementById('out_ll');
+				var s = hOutLL.value;
+				var r = new LLI().interpret(s);
+				console.log('ll eval: ' + r);
 			}
 		</script>
 		
@@ -245,6 +271,11 @@ Module definitions:<br />
 					<input id="chk_modjs" type="checkbox" onchange="doTranslate();">Modules<br />					
 					JavaScript translation:<br />
 					<textarea id="out_js" rows="10" cols="50" readonly="readonly"></textarea>
+					
+					<br />
+					<textarea id="out_ll" rows="10" cols="50" readonly="readonly"></textarea>
+					<br />
+					<input value="Compute LL" id="but_computell" type="button" onclick="doEvalLL()"/>
 				</td>
 			</tr>
 		</table>

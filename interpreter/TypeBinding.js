@@ -10,7 +10,7 @@ exports.TypeBinding = (function () {
 	TypeBinding.prototype.toString = function() {
 		if(this.final) return this.s + ' :: ' + this.v;
 		else return this.s + ' *: ' + this.v;
-	}
+	};
 
 	return TypeBinding;
 })();

@@ -1,6 +1,7 @@
 exports.Module = (function () {
 	"use strict";
 	
+	var Env = require('./Env.js').Env;
 	var Closure = require('./nodes/Closure.js').Closure;
 	var VarBinding = require('./VarBinding.js').VarBinding;
 	
@@ -17,7 +18,7 @@ exports.Module = (function () {
 			if(defs[i].pub)
 				ret.push(defs[i]);
 		return ret;
-	}
+	};
 	
 	Module.getEnv = function(defs) {
 		var old = Env.Emp;
@@ -25,7 +26,7 @@ exports.Module = (function () {
 			old = old.con(new VarBinding(defs[i].defName, new Closure(Env.Emp, defs[i].fun), true));
 		
 		return old;
-	}
+	};
 	
 	Module.prototype.getVal = function(name) {
 		for(var i in this.publicDefs)
@@ -33,11 +34,11 @@ exports.Module = (function () {
 				return this.publicDefs[i];
 				
 		throw 'Could not find ' + name + ' in module ' + this.name;
-	}
+	};
 	
 	Module.prototype.accept = function(visitor, state) {
 		return visitor.visitModule(this, state);
-	}
+	};
 
 	return Module; 
 })();

@@ -11,6 +11,8 @@ exports.Tokenizer = (function () {
 	var TokRPar = require('./TokRPar.js').TokRPar;
 	var TokKeyword = require('./TokKeyword.js').TokKeyword;
 	var TokWhitespace = require('./TokWhitespace.js').TokWhitespace;
+	var TokCommSL = require('./TokCommSL.js').TokCommSL;
+	var TokCommML = require('./TokCommML.js').TokCommML;
 	var TokenCoords = require('./TokenCoords.js').TokenCoords;
 	
 	function Tokenizer() { }
@@ -68,14 +70,14 @@ exports.Tokenizer = (function () {
 		tok.push(new TokEnd(str.getCoords()));
 		
 		return tok;
-	}
+	};
 	
 	Tokenizer.chop.strUnescape = function(s) {
 		return s.replace(/\\\'/g, '\'')
 						.replace(/\\\"/g, '\"')
 						.replace(/\\\\/g, '\\')
 						.replace(/\\\n/g, '\n');
-	}
+	};
 	
 	Tokenizer.chop.strs = function(str) {
 		var coords = str.getCoords();
@@ -88,7 +90,7 @@ exports.Tokenizer = (function () {
 			else if(str.cur() == '\n' || !str.hasNext()) throw 'String did not end well ' + str.getCoords();
 			str.adv();
 		}
-	}
+	};
 	
 	Tokenizer.chop.strd = function(str) {
 		var coords = str.getCoords();
@@ -101,7 +103,7 @@ exports.Tokenizer = (function () {
 			else if(str.cur() == '\n' || !str.hasNext()) throw 'String did not end well ' + str.getCoords();;
 			str.adv();
 		}
-	}
+	};
 	
 	Tokenizer.chop.num = function(str) {
 		var coords = str.getCoords();
@@ -125,7 +127,7 @@ exports.Tokenizer = (function () {
 		if(') \n\t'.indexOf(str.cur()) == -1) throw "Unexpected character '" + str.cur() + "' after \"" + str.getMarked() + '" ' + str.getCoords();
 		
 		return new TokNum(str.getMarked(), coords);
-	}
+	};
 	
 	Tokenizer.chop.commml = function(str) {
 		var coords = str.getCoords();
@@ -144,7 +146,7 @@ exports.Tokenizer = (function () {
 			}
 			else throw 'Multiline comment not properly terminated ' + str.getCoords();;
 		}
-	}
+	};
 	
 	Tokenizer.chop.commsl = function(str) {
 		var coords = str.getCoords();
@@ -159,7 +161,7 @@ exports.Tokenizer = (function () {
 			}
 			else str.adv();
 		}
-	}
+	};
 	
 	Tokenizer.chop.alphanum = function(str) {
 		var coords = str.getCoords();
@@ -176,7 +178,7 @@ exports.Tokenizer = (function () {
 		if(tmp == '#t' || tmp == '#f') return new TokBool(tmp, coords);
 		if(Tokenizer.chop.alphanum.reserved.indexOf(tmp) != -1) return new TokKeyword(tmp, coords);
 		else return new TokIdentifier(tmp, coords);
-	}
+	};
 	
 	Tokenizer.chop.alphanum.reserved = [
 		'unit',

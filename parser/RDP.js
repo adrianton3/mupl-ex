@@ -23,6 +23,7 @@ exports.RDP = (function () {
 	var Deref = require('../interpreter/nodes/Deref.js').Deref;
 	var Div = require('../interpreter/nodes/Div.js').Div;
 	var Fun = require('../interpreter/nodes/Fun.js').Fun;
+	var Fst = require('../interpreter/nodes/Fst.js').Fst;
 	var Greater = require('../interpreter/nodes/Greater.js').Greater;
 	var If = require('../interpreter/nodes/If.js').If;
 	var Let = require('../interpreter/nodes/Let.js').Let;
@@ -30,12 +31,18 @@ exports.RDP = (function () {
 	var Module = require('../interpreter/Module.js').Module;
 	var ModuleSet = require('../interpreter/ModuleSet.js').ModuleSet;
 	var Mul = require('../interpreter/nodes/Mul.js').Mul;
+	var Not = require('../interpreter/nodes/Not.js').Not;
 	var Num = require('../interpreter/nodes/Num.js').Num;
 	var NumQ = require('../interpreter/nodes/NumQ.js').NumQ;
 	var Or = require('../interpreter/nodes/Or.js').Or;
+	var Pair = require('../interpreter/nodes/Pair.js').Pair;
+	var PairQ = require('../interpreter/nodes/PairQ.js').PairQ;
+	var Record = require('../interpreter/nodes/Record.js').Record;
+	var RecordQ = require('../interpreter/nodes/RecordQ.js').RecordQ;
 	var Set = require('../interpreter/nodes/Set.js').Set;
 	var SetFst = require('../interpreter/nodes/SetFst.js').SetFst;
 	var SetSnd = require('../interpreter/nodes/SetSnd.js').SetSnd;
+	var Snd = require('../interpreter/nodes/Snd.js').Snd;
 	var Str = require('../interpreter/nodes/Str.js').Str;
 	var StrQ = require('../interpreter/nodes/StrQ.js').StrQ;
 	var Sub = require('../interpreter/nodes/Sub.js').Sub;
@@ -55,14 +62,14 @@ exports.RDP = (function () {
 		var modSet = RDP.tree.start(token);
 		token.expect(new TokEnd(), 'RDP: expression not properly terminated');
 		return modSet;
-	}
+	};
 	
 	RDP.single = function(tokenar) {
 		var token = new TokenList(tokenar);
 		var t = RDP.tree.exp(token);
 		token.expect(new TokEnd(), 'RDP: expression not properly terminated');
 		return t;
-	}
+	};
 	
 	RDP.tree.num = new TokNum();
 	RDP.tree.identifier = new TokIdentifier();
@@ -85,7 +92,7 @@ exports.RDP = (function () {
 			ret.push(new Module(name, list));
 		}
 		return new ModuleSet(ret);
-	}
+	};
 	
 	RDP.tree.defList = function(token, modName) {
 		var ret = [];
@@ -118,7 +125,7 @@ exports.RDP = (function () {
 			token.expect(RDP.tree.rPar, 'RDP: def: Missing rpar');
 		}
 		return ret;
-	}
+	};
 	
 	RDP.tree.exp = function(token) {
 		if(token.match(RDP.tree.lPar)) {
@@ -146,7 +153,7 @@ exports.RDP = (function () {
 		}
 		else
 			throw 'RDP: expected expression but got ' + token.cur() + ' ' + token.cur().coords;
-	}
+	};
 	
 	RDP.tree.ifList = function(token) {
 		var list = [];
@@ -159,7 +166,7 @@ exports.RDP = (function () {
 			list.push(new CondPair(cond, exp));
 		}
 		return list;
-	}
+	};
 	
 	RDP.tree.funParamList = function(token) {
 		var list = [];
@@ -168,7 +175,7 @@ exports.RDP = (function () {
 			list.push(token.past().s);
 		}
 		return list;
-	}
+	};
 	
 	RDP.tree.callParamList = function(token) {
 		var list = [];
@@ -177,7 +184,7 @@ exports.RDP = (function () {
 			list.push(exp);
 		}
 		return list;
-	}
+	};
 	
 	RDP.tree.letList = function(token) {
 		var list = [];
@@ -191,7 +198,7 @@ exports.RDP = (function () {
 			list.push(new LetStarPair(name, exp));
 		}
 		return list;
-	}
+	};
 	
 	RDP.tree.letrecList = function(token) {
 		var list = [];
@@ -205,7 +212,7 @@ exports.RDP = (function () {
 			list.push(new LetrecStarPair(name, exp));
 		}
 		return list;
-	}
+	};
 	
 	RDP.tree.pairList = function(token) {
 		var list = [];
@@ -214,7 +221,7 @@ exports.RDP = (function () {
 			list.push(exp);
 		}
 		return list;
-	}
+	};
 	
 	RDP.tree.recordList = function(token) {
 		var map = {};
@@ -228,7 +235,7 @@ exports.RDP = (function () {
 			map[name] = exp;
 		}
 		return map;
-	}
+	};
 	
 	RDP.tree.containsList = function(token) {
 		var list = [];
@@ -242,7 +249,7 @@ exports.RDP = (function () {
 		}
 		
 		return list;
-	}
+	};
 	
 	RDP.tree.arrJSList = function(token) {
 		var list = [];
@@ -251,7 +258,7 @@ exports.RDP = (function () {
 			list.push(exp);
 		}
 		return list;
-	}
+	};
 	
 	RDP.tree.callJSList = function(token) {
 		var list = [];
@@ -260,7 +267,7 @@ exports.RDP = (function () {
 			list.push(exp);
 		}
 		return list;
-	}
+	};
 	
 	RDP.tree.special = function(token) {
 		for(var i in RDP.tree.special.bindings) {
@@ -271,7 +278,7 @@ exports.RDP = (function () {
 		}
 	
 		throw 'RDP: unknown function: ' + token.cur();
-	}
+	};
 	//-----------------------------------------------------------------------------
 	RDP.tree.special._add = function(token) {
 		var addTok = token.past();
@@ -279,7 +286,7 @@ exports.RDP = (function () {
 		var addE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: +: Missing rpar');
 		return new Add(addE1, addE2, addTok.coords);
-	}
+	};
 	
 	RDP.tree.special._and = function(token) {
 		var andTok = token.past();
@@ -287,7 +294,7 @@ exports.RDP = (function () {
 		var andE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: and: Missing rpar');
 		return new And(andE1, andE2, andTok.coords);
-	}
+	};
 	
 	RDP.tree.special._arrJS = function(token) {
 		var arrJSTok = token.past();
@@ -296,14 +303,14 @@ exports.RDP = (function () {
 		var arrJSList = RDP.tree.arrJSList(token);
 		token.expect(RDP.tree.rPar, 'RDP: arrJS: Missing rpar');
 		return new ArrJS(arrJSName, arrJSList, arrJSTok.coords);
-	}
+	};
 	
 	RDP.tree.special._boolQ = function(token) {
 		var boolQTok = token.past();
 		var boolQE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: bool?: Missing rpar');
 		return new BoolQ(boolQE, boolQTok.coords);
-	}
+	};
 	
 	RDP.tree.special._callStar = function(token) {
 		var callStarTok = token.past();
@@ -311,7 +318,7 @@ exports.RDP = (function () {
 		var callParamList = RDP.tree.callParamList(token);
 		token.expect(RDP.tree.rPar, 'RDP: call*: Missing rpar');
 		return callStar(callCallee, callParamList, callStarTok.coords);
-	}
+	};
 	
 	RDP.tree.special._callJS = function(token) {
 		var callJSTok = token.past();
@@ -320,14 +327,14 @@ exports.RDP = (function () {
 		var callJSList = RDP.tree.callJSList(token);
 		token.expect(RDP.tree.rPar, 'RDP: calljs: Missing rpar');
 		return new CallJS(callJSName, callJSList, callJSTok.coords);
-	}
+	};
 	
 	RDP.tree.special._closureQ = function(token) {
 		var closureQTok = token.past();
 		var closureE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: closure?: Missing rpar');
 		return new ClosureQ(closureE, closureQTok.coords);
-	}
+	};
 	
 	RDP.tree.special._cond = function(token) {
 		var condTok = token.past();
@@ -337,7 +344,7 @@ exports.RDP = (function () {
 		var condDef = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: cond: Missing rpar');
 		return cond(condList, condDef, condTok.coords);
-	}
+	};
 	
 	RDP.tree.special._containsQ = function(token) {
 		var containsQTok = token.past();
@@ -345,7 +352,7 @@ exports.RDP = (function () {
 		var containsList = RDP.tree.containsList(token);
 		token.expect(RDP.tree.rPar, 'RDP: contains?: Missing rpar');
 		return new ContainsQ(containsExp, containsList, containsQTok.coords);
-	}
+	};
 	
 	RDP.tree.special._deref = function(token) {
 		var derefTok = token.past();
@@ -354,7 +361,7 @@ exports.RDP = (function () {
 		var derefName = token.past().s;
 		token.expect(RDP.tree.rPar, 'RDP: deref: Missing rpar');
 		return new Deref(derefExp, derefName, derefTok, derefTok.coords);
-	}
+	};
 	
 	RDP.tree.special._div = function(token) {
 		var divTok = token.past();
@@ -362,21 +369,21 @@ exports.RDP = (function () {
 		var divE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: /: Missing rpar');
 		return new Div(divE1, divE2, divTok.coords);
-	}
+	};
 	
 	RDP.tree.special._err = function(token) {
 		var errTok = token.past();
 		var errExp = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: err: Missing rpar');
 		return new Err(errExp, errTok.coords);
-	}
+	};
 	
 	RDP.tree.special._fst = function(token) {
 		var fstTok = token.past();
 		var fstE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: fst: Missing rpar');
 		return new Fst(fstE, fstTok.coords);
-	}
+	};
 	
 	RDP.tree.special._funStar = function(token) {
 		var funStarTok = token.past();
@@ -388,7 +395,7 @@ exports.RDP = (function () {
 		var funBody = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: fun: Missing rpar');
 		return new funStar(funName, funParamList, funBody, funStarTok.coords);
-	}
+	};
 	
 	RDP.tree.special._greater = function(token) {
 		var greaterTok = token.past();
@@ -396,7 +403,7 @@ exports.RDP = (function () {
 		var greaterE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: >: Missing rpar');
 		return new Greater(greaterE1, greaterE2, greaterTok.coords);
-	}
+	};
 	
 	RDP.tree.special._if = function(token) {
 		var ifTok = token.past();
@@ -405,7 +412,7 @@ exports.RDP = (function () {
 		var ifElse = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: if: Missing rpar');
 		return new If(ifCond, ifThen, ifElse, ifTok.coords);
-	}
+	};
 	
 	RDP.tree.special._lambdaStar = function(token) {
 		var lambdaStarTok = token.past();
@@ -415,7 +422,7 @@ exports.RDP = (function () {
 		var funBody = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: lambda: Missing rpar');
 		return new funStar(false, funParamList, funBody, lambdaStarTok.coords);
-	}
+	};
 	
 	RDP.tree.special._let = function(token) {
 		var letTok = token.past();
@@ -425,7 +432,7 @@ exports.RDP = (function () {
 		var letBody = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: let: Missing rpar');
 		return new Let(letName, letExp, letBody, true, letTok.coords);
-	}
+	};
 	
 	RDP.tree.special._letStar = function(token) {
 		var letStarTok = token.past();
@@ -435,7 +442,7 @@ exports.RDP = (function () {
 		var letBody = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: let*: Missing rpar');
 		return letStar(letList, letBody, letStarTok.coords);
-	}
+	};
 	
 	RDP.tree.special._letrecStar = function(token) {
 		var letrecStarTok = token.past();
@@ -445,14 +452,14 @@ exports.RDP = (function () {
 		var letrecBody = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: letrec: Missing rpar');
 		return letrecStar(letrecList, letrecBody, letrecStarTok.coords);
-	}
+	};
 	
 	RDP.tree.special._list = function(token) {
 		var listTok = token.past();
 		var pairList = RDP.tree.pairList(token);
 		token.expect(RDP.tree.rPar, 'RDP: list: Missing rpar');
 		return pairStar(pairList, listTok.coords);
-	}
+	};
 	
 	RDP.tree.special._mod = function(token) {
 		var modTok = token.past();
@@ -460,7 +467,7 @@ exports.RDP = (function () {
 		var modE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: %: Missing rpar');
 		return new Mod(modE1, modE2, modTok.coords);
-	}
+	};
 	
 	RDP.tree.special._mul = function(token) {
 		var mulTok = token.past();
@@ -468,7 +475,7 @@ exports.RDP = (function () {
 		var mulE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: *: Missing rpar');
 		return new Mul(mulE1, mulE2, mulTok.coords);
-	}
+	};
 	
 	RDP.tree.special._mut = function(token) {
 		var mutTok = token.past();
@@ -478,21 +485,21 @@ exports.RDP = (function () {
 		var mutBody = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: mut: Missing rpar');
 		return new Let(mutName, mutExp, mutBody, false, mutTok.coords);
-	}
+	};
 	
 	RDP.tree.special._not = function(token) {
 		var notTok = token.past();
 		var notE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: not: Missing rpar');
 		return new Not(notE, notTok.coords);
-	}
+	};
 	
 	RDP.tree.special._numQ = function(token) {
 		var numQTok = token.past();
 		var numQE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: num?: Missing rpar');
 		return new NumQ(numQE, numQTok.coords);
-	}
+	};
 	
 	RDP.tree.special._or = function(token) {
 		var orTok = token.past();
@@ -500,7 +507,7 @@ exports.RDP = (function () {
 		var orE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: or: Missing rpar');
 		return new Or(orE1, orE2, orTok.coords);
-	}
+	};
 	
 	RDP.tree.special._pair = function(token) {
 		var pairTok = token.past();
@@ -508,14 +515,14 @@ exports.RDP = (function () {
 		var pairE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: pair: Missing rpar');
 		return new Pair(pairE1, pairE2, pairTok.coords);
-	}
+	};
 	
 	RDP.tree.special._pairQ = function(token) {
 		var pairQTok = token.past();
 		var pairE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: pair?: Missing rpar');
 		return new PairQ(pairE, pairQTok.coords);
-	}
+	};
 	
 	RDP.tree.special._print = function(token) {
 		var printTok = token.past();
@@ -523,21 +530,21 @@ exports.RDP = (function () {
 		var printRetExp = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: print: Missing rpar');
 		return new Print(printPrintExp, printRetExp, printTok.coords);
-	}
+	};
 	
 	RDP.tree.special._record = function(token) {
 		var recordTok = token.past();
 		var recordList = RDP.tree.recordList(token);
 		token.expect(RDP.tree.rPar, 'RDP: record: Missing rpar');
 		return new Record(recordList, recordTok.coords);
-	}
+	};
 	
 	RDP.tree.special._recordQ = function(token) {
 		var recordQTok = token.past();
 		var recordQE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: record?: Missing rpar');
 		return new RecordQ(recordQE, recordQTok.coords);
-	}
+	};
 	
 	RDP.tree.special._set = function(token) {
 		var setTok = token.past();
@@ -547,7 +554,7 @@ exports.RDP = (function () {
 		var setRetExp = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: set: Missing rpar');
 		return new Set(setName, setValExp, setRetExp, false, setTok.coords);
-	}
+	};
 	
 	RDP.tree.special._setfst = function(token) {
 		var setfstTok = token.past();
@@ -557,7 +564,7 @@ exports.RDP = (function () {
 		var setfstRetExp = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: setfst: Missing rpar');
 		return new SetFst(setfstName, setfstValExp, setfstRetExp, setfstTok.coords);
-	}
+	};
 	
 	RDP.tree.special._setsnd = function(token) {
 		var setsndTok = token.past();
@@ -567,21 +574,21 @@ exports.RDP = (function () {
 		var setsndRetExp = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: setsnd: Missing rpar');
 		return new SetSnd(setsndName, setsndValExp, setsndRetExp, setsndTok.coords);
-	}
+	};
 	
 	RDP.tree.special._snd = function(token) {
 		var sndTok = token.past();
 		var sndE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: snd: Missing rpar');
 		return new Snd(sndE, sndTok.coords);
-	}
+	};
 	
 	RDP.tree.special._strQ = function(token) {
 		var strQTok = token.past();
 		var strQE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: str?: Missing rpar');
 		return new StrQ(strQE, strQTok.coords);
-	}
+	};
 	
 	RDP.tree.special._sub = function(token) {
 		var subTok = token.past();
@@ -589,14 +596,14 @@ exports.RDP = (function () {
 		var subE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: -: Missing rpar');
 		return new Sub(subE1, subE2, subTok.coords);
-	}
+	};
 	
 	RDP.tree.special._unitQ = function(token) {
 		var unitQTok = token.past();
 		var unitQE = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: unit?: Missing rpar');
 		return new UnitQ(unitQE, unitQTok.coords);
-	}
+	};
 	
 	RDP.tree.special._xor = function(token) {
 		var xorTok = token.past();
@@ -604,7 +611,7 @@ exports.RDP = (function () {
 		var xorE2 = RDP.tree.exp(token);
 		token.expect(RDP.tree.rPar, 'RDP: xor: Missing rpar');
 		return new Xor(xorE1, xorE2, xorTok.coords);
-	}
+	};
 	
 	RDP.tree.special.bindings = [
 		new StrHandlerPair('+'        , RDP.tree.special._add       ),
@@ -653,21 +660,21 @@ exports.RDP = (function () {
 		this.h = h;
 	}
 	//-----------------------------------------------------------------------------
-	function callStar(funexp, list) {
+	function callStar(funexp, list, tokenCoords) {
 		if(list.length > 0) {
-			var old = new Call(funexp, list[0]);
+			var old = new Call(funexp, list[0], tokenCoords);
 			for(var i = 1; i < list.length; i++)
-				old = new Call(old, list[i]);
+				old = new Call(old, list[i], tokenCoords);
 		
 			return old;
 		}
-		else return new Call(funexp, false);
+		else return new Call(funexp, false, tokenCoords);
 	}
 	//-----------------------------------------------------------------------------
-	function cond(list, def) {
+	function cond(list, def, tokenCoords) {
 		var old = def;
 		for(var i = list.length - 1; i >= 0; i--)
-			old = new If(list[i].cond, list[i].exp, old);
+			old = new If(list[i].cond, list[i].exp, old, tokenCoords);
 		
 		return old;
 	}
@@ -677,28 +684,28 @@ exports.RDP = (function () {
 		this.exp = exp;
 	}
 	//-----------------------------------------------------------------------------
-	function funStar(name, list, body) {
+	function funStar(name, list, body, tokenCoords) {
 		var old = body;
 		
 		if(list.length == 0) {
-			return new Fun(name, false, old);
+			return new Fun(name, false, old, tokenCoords);
 		}
 		else {
 			for(var i = list.length - 1; i > 0; i--)
-				old = new Fun(false, list[i], old);
+				old = new Fun(false, list[i], old, tokenCoords);
 			
-			return new Fun(name, list[0], old);
+			return new Fun(name, list[0], old, tokenCoords);
 		}
 	}
 	//-----------------------------------------------------------------------------
-	function letrecStar(list, body) {
+	function letrecStar(list, body, tokenCoords) {
 		var old = body;
 		
 		for(var i = list.length - 1; i >= 0; i--)
-			old = new Set(list[i].name, list[i].exp, old, true);
+			old = new Set(list[i].name, list[i].exp, old, true, tokenCoords);
 		
 		for(var i = list.length - 1; i >= 0; i--)
-			old = new Let(list[i].name, new Any(), old, true);
+			old = new Let(list[i].name, new Any(), old, true, tokenCoords);
 		
 		return old;
 	}
@@ -708,10 +715,10 @@ exports.RDP = (function () {
 		this.exp = exp;
 	}
 	//-----------------------------------------------------------------------------
-	function letStar(list, body) {
+	function letStar(list, body, tokenCoords) {
 		var old = body;
 		for(var i = list.length - 1; i >= 0; i--)
-			old = new Let(list[i].name, list[i].exp, old, true);
+			old = new Let(list[i].name, list[i].exp, old, true, tokenCoords);
 		
 		return old;
 	}
@@ -721,10 +728,10 @@ exports.RDP = (function () {
 		this.exp = exp;
 	}
 	//-----------------------------------------------------------------------------
-	function pairStar(list) {
+	function pairStar(list, tokenCoords) {
 		var old = new Unit();
 		for(var i = list.length - 1; i >= 0; i--)
-			old = new Pair(list[i], old);
+			old = new Pair(list[i], old, tokenCoords);
 		
 		return old;
 	}

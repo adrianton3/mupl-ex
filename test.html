@@ -3,11 +3,10 @@
 	<head>
 		<meta charset="utf-8">
   <title>MUPLex tests</title>
-		<link rel="stylesheet" href="test/qunit-1.11.0.css">
+		<link rel="stylesheet" href="test/lib/qunit-1.11.0.css">
 	</head>
 	<body>
-		
-		<script type="text/javascript" src="test/qunit-1.11.0.js"></script>
+		<script type="text/javascript" src="test/lib/qunit-1.11.0.js"></script>
 		<script type="text/javascript" src="Require.js"></script>
 		
 		<script type="text/javascript" src="tokenizer/TokenCoords.js"></script>
@@ -56,14 +55,14 @@
 		<script type="text/javascript" src="interpreter/nodes/Deref.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/ContainsQ.js"></script>
 
-		<script type="text/javascript" src="interpreter/nodes/Set.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/SetFst.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/SetSnd.js"></script>
-
 		<script type="text/javascript" src="interpreter/nodes/Pair.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/PairQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Fst.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Snd.js"></script>
+		
+		<script type="text/javascript" src="interpreter/nodes/Set.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/SetFst.js"></script>
+		<script type="text/javascript" src="interpreter/nodes/SetSnd.js"></script>
 		
 		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Err.js"></script>
@@ -75,6 +74,8 @@
   
   <script type="text/javascript" src="interpreter/StaticCheck.js"></script>
   <script type="text/javascript" src="interpreter/ToJS.js"></script>
+  <script type="text/javascript" src="lli/ToLL.js"></script>
+  <script type="text/javascript" src="lli/LLI.js"></script>
 
 		<script type="text/javascript" src="expansion/callStar.js"></script>
 		<script type="text/javascript" src="expansion/funStar.js"></script>
@@ -104,7 +105,15 @@
 		<script type="text/javascript" src="parser/TokenList.js"></script>
 		<script type="text/javascript" src="parser/RDP.js"></script>
 		
-		<script type="text/javascript" src="test/test.js"></script>
+		<script type="text/javascript" src="test/parts/interpreter.js"></script>
+		<script type="text/javascript" src="test/parts/lli.js"></script>
+		<script type="text/javascript" src="test/parts/misc.js"></script>
+		<script type="text/javascript" src="test/parts/modules.js"></script>
+		<script type="text/javascript" src="test/parts/parser.js"></script>
+		<script type="text/javascript" src="test/parts/referencecheck.js"></script>
+		<script type="text/javascript" src="test/parts/tojs.js"></script>
+		<script type="text/javascript" src="test/parts/tokenizer.js"></script>
+		<script type="text/javascript" src="test/parts/typecheck.js"></script>
 		
 		<div id="qunit"></div>
 		<div id="qunit-fixture"></div>
