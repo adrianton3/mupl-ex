@@ -3,17 +3,24 @@
 	<head>
 		<meta charset="utf-8">
 		<title>MUPLex</title>
+		<link href='http://fonts.googleapis.com/css?family=Leckerli+One' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="lib/codemirror.css">
+		<link rel="stylesheet" href="lib/cobalt.css">
+		<link rel="stylesheet" href="style.css">
 	</head>
 
 	<body>
+		<script type="text/javascript" src="lib/codemirror.js"></script>
+		<script type="text/javascript" src="lib/matchbrackets.js"></script>
+
 		<script type="text/javascript" src="Require.js"></script>
-		
+
 		<script type="text/javascript" src="tokenizer/TokenCoords.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/TypeBinding.js"></script>
 		<script type="text/javascript" src="interpreter/VarBinding.js"></script>
 		<script type="text/javascript" src="interpreter/VarCheckState.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/Env.js"></script>
 		<script type="text/javascript" src="interpreter/Out.js"></script>
 
@@ -30,9 +37,9 @@
 		<script type="text/javascript" src="interpreter/nodes/Mul.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Div.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Mod.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/nodes/Def.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/nodes/Let.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Var.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Closure.js"></script>
@@ -58,41 +65,34 @@
 		<script type="text/javascript" src="interpreter/nodes/PairQ.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Fst.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Snd.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/nodes/Set.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/SetFst.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/SetSnd.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/Err.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/nodes/interjm.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/nodes/ArrJS.js"></script>
 		<script type="text/javascript" src="interpreter/nodes/CallJS.js"></script>
-		
+
 		<script type="text/javascript" src="interpreter/Module.js"></script>
 		<script type="text/javascript" src="interpreter/ModuleSet.js"></script>
-  
+
   <script type="text/javascript" src="interpreter/types/Type.js"></script>
-  
+
   <script type="text/javascript" src="interpreter/StaticCheck.js"></script>
   <script type="text/javascript" src="interpreter/ToJS.js"></script>
-  
+
   <script type="text/javascript" src="lli/ToLL.js"></script>
   <script type="text/javascript" src="lli/LLI.js"></script>
-<!--
-		<script type="text/javascript" src="expansion/callStar.js"></script>
-		<script type="text/javascript" src="expansion/funStar.js"></script>
-		<script type="text/javascript" src="expansion/cond.js"></script>
-		<script type="text/javascript" src="expansion/letStar.js"></script>
-		<script type="text/javascript" src="expansion/letrecStar.js"></script>
-		<script type="text/javascript" src="expansion/pairStar.js"></script>
--->
+
 		<script type="text/javascript" src="CodeColor.js"></script>
 
 		<script type="text/javascript" src="tokenizer/IterableString.js"></script>
-		
+
 		<script type="text/javascript" src="tokenizer/TokBool.js"></script>
 		<script type="text/javascript" src="tokenizer/TokCommML.js"></script>
 		<script type="text/javascript" src="tokenizer/TokCommSL.js"></script>
@@ -104,180 +104,157 @@
 		<script type="text/javascript" src="tokenizer/TokRPar.js"></script>
 		<script type="text/javascript" src="tokenizer/TokStr.js"></script>
 		<script type="text/javascript" src="tokenizer/TokWhitespace.js"></script>
-		
+
 		<script type="text/javascript" src="tokenizer/Tokenizer.js"></script>
 
 		<script type="text/javascript" src="parser/TokenList.js"></script>
 		<script type="text/javascript" src="parser/RDP.js"></script>
-		
+
+<!-- --- -->
+
+		<h2>MUPLex: parsing</h2>
+		<table>
+			<tr>
+				<td>
+					<span class="title">Module definitions</span><br>
+					<textarea id="in_mods" rows="10" cols="50">(module m
+ (public f (lambda (x) (* x x)))
+ (private g (lambda (x) (* (* x x) x)))
+ (public h (lambda (x) (+ x 10)))
+)
+
+(module n
+ (public a (lambda (x) (call b x)))
+ (private b (lambda (x) (* (* x x) x)))
+ (public c (lambda (x) (+ 1 (call m.h x))))
+)</textarea><br>
+					<span class="title">Expression to evaluate</span><br>
+					<textarea id="in_exp" rows="6" cols="50">(let a 10
+ (+ (call m.f 5) a)
+)</textarea><br>
+				 <input value="Compute" id="but_compute" type="button" onclick="doEval()"><br>
+				 <br>
+				 <span class="title">Interpreter output</span><br>
+					<textarea id="out_interpreter" rows="3" cols="50" readonly="readonly"></textarea>
+				</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td>
+					<span class="title">Parser output</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="chk_tokens" type="checkbox"><span class="title">Tokens</span>&nbsp;&nbsp;
+					<input id="chk_ast" type="checkbox"><span class="title">AST</span>
+					<textarea id="out_parser" rows="3" cols="50" readonly="readonly"></textarea>
+				</td>
+			</tr>
+		</table>
+
+<!-- --- -->
+
 		<script type="text/javascript">
-			"use strict";
-			
+			'use strict';
+
 			var Tokenizer = require('./tokenizer/Tokenizer.js').Tokenizer;
 			var RDP = require('./parser/RDP.js').RDP;
 			var StaticCheck = require('./interpreter/StaticCheck.js').StaticCheck;
 			var VarCheckState = require('./interpreter/VarCheckState.js').VarCheckState;
 			var Env = require('./interpreter/Env.js').Env;
 			var Out = require('./interpreter/Out.js').Out;
-			var ToJS = require('./interpreter/ToJS.js').ToJS;
-			var ToLL = require('./interpreter/ToLL.js').ToLL;
-			var LLI = require('./interpreter/LLI.js').LLI;
 
 			window.onload = process;
 			var _parsedFreeExp;
 			var _modSet;
-			
+
+			var inModsEditor, inExpEditor, outParserEditor, outInterpreterEditor;
+
+			function setupEditors() {
+				inModsEditor = CodeMirror.fromTextArea(document.getElementById('in_mods'), {
+    	lineNumbers: true,
+    	styleActiveLine: true,
+    	matchBrackets: true
+  		});
+  		inModsEditor.setSize(500, 200);
+  		inModsEditor.setOption('theme', 'cobalt');
+				inModsEditor.on('change', process);
+
+				inExpEditor = CodeMirror.fromTextArea(document.getElementById('in_exp'), {
+    	lineNumbers: true,
+    	styleActiveLine: true,
+    	matchBrackets: true
+  		});
+  		inExpEditor.setSize(500, 100);
+  		inExpEditor.setOption('theme', 'cobalt');
+				inExpEditor.on('change', process);
+
+				outParserEditor = CodeMirror.fromTextArea(document.getElementById('out_parser'), {
+    	lineNumbers: true,
+    	styleActiveLine: true,
+    	readOnly: true
+  		});
+  		outParserEditor.setSize(500, 300);
+  		outParserEditor.setOption('theme', 'cobalt');
+
+				outInterpreterEditor = CodeMirror.fromTextArea(document.getElementById('out_interpreter'), {
+    	lineNumbers: true,
+    	styleActiveLine: true,
+    	readOnly: true
+  		});
+  		outInterpreterEditor.setSize(500, 100);
+  		outInterpreterEditor.setOption('theme', 'cobalt');
+			}
+
+			setupEditors();
+
 			function process() {
-				var hInMods = document.getElementById('in_mods');
-				var hInExp = document.getElementById('in_exp');
-				var hOutParser = document.getElementById('out_parser');
 				var hComputeButton = document.getElementById('but_compute');
-				
+
 				var hTokens = document.getElementById('chk_tokens');
 				var hAST = document.getElementById('chk_ast');
 
-    var modsIn = hInMods.value;
-				var expIn = hInExp.value;
+    var modsIn = inModsEditor.getValue();
+				var expIn = inExpEditor.getValue();
 				var outParser = '';
 
 				try {
 					var toksMods = Tokenizer.chop(modsIn);
 					_modSet = RDP.tree(toksMods);
-					
+
 					_modSet.accept(new StaticCheck(), new VarCheckState(Env.Emp, _modSet));
 					outParser += 'Modules type/reference check: OK.\n';
-					
+
 					var toksFreeExp = Tokenizer.chop(expIn);
-					if(hTokens.checked) 
+					if(hTokens.checked)
 						outParser += 'Free exp tokens:\n-------\n' + toksFreeExp.join(', ') + '\n\n';
-					
+
 					_parsedFreeExp = RDP.single(toksFreeExp);
 					if(hAST.checked)
 						outParser += 'Free exp AST:\n----\n' + _parsedFreeExp.toString() + '\n\n';
-					
+
 					var freeExpt = _parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, _modSet));
 					outParser += 'Free exp type/reference check: OK.\n';
-					
+
 					hComputeButton.disabled = false;
-					
-					doTranslate();
-					doCompile();
 				} catch(err) {
 					outParser += err;
 					hComputeButton.disabled = true;
-					
-					var hOutJS = document.getElementById('out_js');
-					hOutJS.value = 'Parsing failed ==> nothing to translate\nCheck "parser output"';
 				}
-				hOutParser.value = outParser;
+				outParserEditor.setValue(outParser);
 			}
 
 			function doEval() {
-				var hOutInterpreter = document.getElementById('out_interpreter');
-				
 				var istr = '';
-				//try {
+				try {
 					Out.reset();
 					var res = _parsedFreeExp.ev(Env.Emp, _modSet);
 					istr += res.toString();
-					
+
 					istr += '\n---\n\n';
 				 istr += Out.toString();
-				//} catch(err) {
-				//	istr += 'Runtime exception: ' + err;
-				//}
-				
-				hOutInterpreter.value = istr;
-			}
-			
-			function doTranslate() {
-				var hOutJS = document.getElementById('out_js');
-				var hHeadJS = document.getElementById('chk_headjs');
-				var hModJS = document.getElementById('chk_modjs');
-				
-				var js = '';
-			 try {
-			 	if(hHeadJS.checked) js += ToJS.header() + '\n\n';
-			  if(hModJS.checked) js += _modSet.accept(new ToJS());
-			  js += _parsedFreeExp.accept(new ToJS());
-				}	catch(err) {
-					js += '\n\nTranslation exception: ' + err;
+				} catch(err) {
+					istr += 'Runtime exception: ' + err;
 				}
-				
-				hOutJS.value = js;
-			}
-			
-			function doCompile() {
-				var hOutLL = document.getElementById('out_ll');
-				
-				var js = '';
-			 try {
-			  js += _parsedFreeExp.accept(new ToLL());
-				}	catch(err) {
-					js += '\n\nTranslation exception: ' + err;
-				}
-				
-				hOutLL.value = js;
-			}
-			
-			function doEvalLL() {
-				var hOutLL = document.getElementById('out_ll');
-				var s = hOutLL.value;
-				var r = new LLI().interpret(s);
-				console.log('ll eval: ' + r);
+
+				outInterpreterEditor.setValue(istr);
 			}
 		</script>
-		
-		<h2>MUPLex</h2>
-		
-		<table>
-			<tr>
-				<td style="vertical-align: top">
-Module definitions:<br />
-		<textarea id="in_mods" onkeyup="process()" rows="10" cols="50">(module m 
- (public f (lambda (x) (* x x)))
- (private g (lambda (x) (* (* x x) x)))
- (public h (lambda (x) (+ x 10)))
-)
 
-(module n 
- (public a (lambda (x) (call b x)))
- (private b (lambda (x) (* (* x x) x)))
- (public c (lambda (x) (+ 1 (call m.h x))))
-)</textarea><br />
-		Expression to evaluate:<br />
-		<textarea id="in_exp" onkeyup="process();" rows="6" cols="50">(let a 10
- (+ (call m.f 5) a)
-)</textarea>
-		<br />
-
-  <input id="chk_tokens" type="checkbox" onchange="process();">Tokens
-		<input id="chk_ast" type="checkbox" onchange="process();">AST<br />
-		Parser output:
-		<br />
-		<textarea id="out_parser" rows="3" cols="50" readonly="readonly"></textarea>		
- 	
- 	<br />
-  <input value="Compute" id="but_compute" type="button" onclick="doEval()"/>
-  <br />
-  <br />
-  Interpreter output:
-		<br />
-		<textarea id="out_interpreter" rows="3" cols="50" readonly="readonly"></textarea>
-		</td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td style="vertical-align: top">
-					<input id="chk_headjs" type="checkbox" onchange="doTranslate();">Header
-					<input id="chk_modjs" type="checkbox" onchange="doTranslate();">Modules<br />					
-					JavaScript translation:<br />
-					<textarea id="out_js" rows="10" cols="50" readonly="readonly"></textarea>
-					
-					<br />
-					<textarea id="out_ll" rows="10" cols="50" readonly="readonly"></textarea>
-					<br />
-					<input value="Compute LL" id="but_computell" type="button" onclick="doEvalLL()"/>
-				</td>
-			</tr>
-		</table>
 	</body>
 </html>
