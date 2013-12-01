@@ -1,7 +1,8 @@
 exports.RecordQ = (function () {
 	"use strict";
 	
-	var Bool = require('./interpreter/nodes/Bool.js').Bool;
+	var Record = require('./Record.js').Record;
+	var Bool = require('./Bool.js').Bool;
 	
 	function RecordQ(e) {
 		this.e = e;
@@ -12,15 +13,15 @@ exports.RecordQ = (function () {
 		
 		if(eEv instanceof Record) return new Bool(true);
 		else return new Bool(false);
-	}
+	};
 	
 	RecordQ.prototype.accept = function(visitor, state) {
 		return visitor.visitRecordQ(this, state);
-	}
+	};
 	
 	RecordQ.prototype.toString = function() {
 		return '(record? ' + this.e + ')';
-	}
+	};
 	
 	return RecordQ;
 })();

@@ -1,0 +1,17 @@
+.title {
+	color: #FFF;
+	font-family: Verdana, Geneva, sans-serif;
+}
+
+body {
+	background-color: rgb(0, 13, 23);
+}
+
+h2 {
+	font-family: 'Leckerli One', cursive;
+	color: #FFF;
+}
+
+td {
+	vertical-align: top;
+}

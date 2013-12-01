@@ -9,15 +9,16 @@ exports.StaticCheck = (function() {
 
 	function StaticCheck() { }
 
-	var _tvid    = new Type(false, false, false, false, false, false, false, false);
-	var _tany    = new Type( true, false, false, false, false, false, false, false);
-	var _tbool   = new Type(false,  true, false, false, false, false, false, false);
-	var _tnum    = new Type(false, false,  true, false, false, false, false, false);
-	var _tstr    = new Type(false, false, false,  true, false, false, false, false);
-	var _tunit   = new Type(false, false, false, false,  true, false, false, false);
-	var _tpair   = new Type(false, false, false, false, false,  true, false, false);
-	var _trecord = new Type(false, false, false, false, false, false,  true, false);
-	var _tfun    = new Type(false, false, false, false, false, false, false, _tvid);
+	var _tvid     = new Type(false, false, false, false, false, false, false, false);
+	var _tany     = new Type( true, false, false, false, false, false, false, false);
+	var _tbool    = new Type(false,  true, false, false, false, false, false, false);
+	var _tnum     = new Type(false, false,  true, false, false, false, false, false);
+	var _tstr     = new Type(false, false, false,  true, false, false, false, false);
+	var _tunit    = new Type(false, false, false, false,  true, false, false, false);
+	var _tpair    = new Type(false, false, false, false, false,  true, false, false);
+	var _trecord  = new Type(false, false, false, false, false, false,  true, false);
+	var _tfun     = new Type(false, false, false, false, false, false, false, _tvid);
+	var _tfun_any = new Type(false, false, false, false, false, false, false, _tany);
 
 	StaticCheck.prototype.visitAdd = function(add, state) {
 		var e1t = add.e1.accept(this, state);
@@ -29,7 +30,7 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: + ' + add.tokenCoords;
 
 		return _tnum;
-	}
+	};
 
 	StaticCheck.prototype.visitAnd = function(and, state) {
 		var e1t = and.e1.accept(this, state);
@@ -41,27 +42,27 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: and ' + and.tokenCoords;
 
 		return _tbool;
-	}
+	};
 	
 	StaticCheck.prototype.visitAny = function(unit, state) {
 		return _tany;
-	}
+	};
 	
 	StaticCheck.prototype.visitArrJS = function(arrJS, state) {
 		for(var i in arrJS.indexExps) {
 			arrJS.indexExps[i].accept(this, state);
 		}
 		return _tany;
-	}
+	};
 
 	StaticCheck.prototype.visitBool = function(bool, state) {
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitBoolQ = function(boolQ, state) {
 		boolQ.e.accept(this, state);
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitCall = function(call, state) {
 		var funexpt;
@@ -76,27 +77,28 @@ exports.StaticCheck = (function() {
     	
     }
     
-		if(!funexpt.isFun())
-			throw 'Expression does not type check: call ' + call.tokenCoords;
+		if(!funexpt.isFun()) {
+			throw 'Expression does not type check: call ' + call.tokenCoords + '\n expecting function and got ' + funexpt;
+		}
 		
 		if(call.pexp != false) 
 			call.pexp.accept(this, state);
 		
 		if(funexpt.isAny()) return _tany;
 		return funexpt.fun;
-	}
+	};
 	
 	StaticCheck.prototype.visitCallJS = function(callJS, state) {
 		for(var i in callJS.parameterExps) {
 			callJS.parameterExps[i].accept(this, state);
 		}
 		return _tany;
-	}
+	};
 	
 	StaticCheck.prototype.visitClosureQ = function(closureQ, state) {
 		closureQ.e.accept(this, state);
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitContainsQ = function(containsQ, state) {
 		for(var i in containsQ.list)
@@ -104,13 +106,13 @@ exports.StaticCheck = (function() {
 			
 		containsQ.exp.accept(this, state);
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitDef = function(def, state) {
 		if(def.defName.indexOf('.') != -1) throw 'Def name (' + def.defName + ') can not contain "."';
 		var funt = def.fun.accept(this, state);
 		return funt;
-	}
+	};
 
 	StaticCheck.prototype.visitDeref = function(deref, state) {
 		if(deref.name.indexOf('.') != -1) throw 'Member name (' + deref.name + ') can not contain "." ' + deref.tokenCoords;
@@ -120,7 +122,7 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: deref ' + deref.tokenCoords;
 
 		return _tany;
-	}
+	};
 
 	StaticCheck.prototype.visitDiv = function(div, state) {
 		var e1t = div.e1.accept(this, state);
@@ -132,12 +134,12 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: / ' + div.tokenCoords;
 			
 		return _tnum;
-	}
+	};
 	
 	StaticCheck.prototype.visitErr = function(err, state) {
 		err.e.accept(this, state);
 		return _tany;
-	}
+	};
 	
 	StaticCheck.prototype.visitFst = function(fst, state) {
 		var et = fst.e.accept(this, state);
@@ -146,14 +148,14 @@ exports.StaticCheck = (function() {
 		
 		if(et.equals(_tpair)) return fst.e.e1.accept(this, state);	
 		else return _tany;
-	}
+	};
 
 	StaticCheck.prototype.visitFun = function(fun, state) {
 		var nState = state;
 		
 		if(fun.name != false) {
 			if(fun.name.indexOf('.') != -1) throw 'Function name (' + fun.name + ') cannot contain a "." ' + fun.tokenCoords;
-			nState = nState.con(new TypeBinding(fun.name, _tfun, true));
+			nState = nState.con(new TypeBinding(fun.name, _tfun_any, true));
 		}
 		
 		if(fun.pformal != false) {
@@ -164,7 +166,7 @@ exports.StaticCheck = (function() {
 		var bodyt = fun.body.accept(this, nState);
 		
 		return new Type(false, false, false, false, false, false, false, bodyt);
-	}
+	};
 
 	StaticCheck.prototype.visitGreater = function(greater, state) {
 		var e1t = greater.e1.accept(this, state);
@@ -176,7 +178,7 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: > ' + greater.tokenCoords;
 
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitIf = function(ife, state) {
 		var eCondt = ife.cond.accept(this, state);
@@ -187,7 +189,7 @@ exports.StaticCheck = (function() {
 		var e2t = ife.e2.accept(this, state);
 
 		return e1t.or(e2t);
-	}
+	};
 
 	StaticCheck.prototype.visitLet = function(lete, state) {
 		if(lete.name.indexOf('.') != -1) throw 'Let binding (' + lete.name + ') cannot contain a "." ' + lete.tokenCoords;
@@ -198,7 +200,7 @@ exports.StaticCheck = (function() {
 		
 		var nState = state.con(new TypeBinding(lete.name, et, lete.final));
 		return lete.body.accept(this, nState);
-	}
+	};
 
 	StaticCheck.prototype.visitMod = function(mod, state) {
 		var e1t = mod.e1.accept(this, state);
@@ -210,7 +212,7 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: % ' + mod.tokenCoords;
 
 		return _tnum;
-	}
+	};
 	
 	StaticCheck.prototype.visitModule = function(module, state) {
 		for(var i in module.defs) {
@@ -219,7 +221,7 @@ exports.StaticCheck = (function() {
 		}
 			
 		return _tany;
-	}
+	};
 	
 	StaticCheck.prototype.visitModuleSet = function(modSet, state) {
 		for(var i in modSet.mods)
@@ -227,7 +229,7 @@ exports.StaticCheck = (function() {
 				new VarCheckState(modSet.mods[i].privateEnv, state.modSet));
 			
 		return _tany;
-	}
+	};
 
 	StaticCheck.prototype.visitMul = function(mul, state) {
 		var e1t = mul.e1.accept(this, state);
@@ -239,7 +241,7 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: * ' + mul.tokenCoords;
 
 		return _tnum;
-	}
+	};
 
 	StaticCheck.prototype.visitNot = function(not, state) {
 		var et = not.e.accept(this, state);
@@ -247,16 +249,16 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: not ' + not.tokenCoords;
 
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitNum = function(num, state) {
 		return _tnum;
-	}
+	};
 
 	StaticCheck.prototype.visitNumQ = function(numQ, state) {
 		numQ.e.accept(this, state);
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitOr = function(or, state) {
 		var e1t = or.e1.accept(this, state);
@@ -268,23 +270,23 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: or ' + or.tokenCoords;
 
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitPair = function(pair, state) {
 		pair.e1.accept(this, state);
 		pair.e2.accept(this, state);
 		return _tpair;
-	}
+	};
 
 	StaticCheck.prototype.visitPairQ = function(pairQ, state) {
 		pairQ.e.accept(this, state);
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitPrint = function(print, state) {
 		print.e.accept(this, state);
 		return print.body.accept(this, state);
-	}
+	};
 
 	StaticCheck.prototype.visitRecord = function(record, state) {
 		for(var key in record.map) {
@@ -293,12 +295,12 @@ exports.StaticCheck = (function() {
 		}
 			
 		return _trecord;
-	}
+	};
 
 	StaticCheck.prototype.visitRecordQ = function(recordQ, state) {
 		recordQ.e.accept(this, state);
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitSet = function(set, state) {
 		if(set.name.indexOf('.') !== -1) throw 'Set can be applied only on local variables ' + set.tokenCoords;
@@ -310,7 +312,7 @@ exports.StaticCheck = (function() {
 		if(set.bang) binding.v = et;
 		
 		return set.body.accept(this, state);
-	}
+	};
 
 	StaticCheck.prototype.visitSetFst = function(setFst, state) {
 		if(setFst.name.indexOf('.') != -1) throw 'SetFst can be applied only on local variables ' + setFst.tokenCoords;
@@ -321,7 +323,7 @@ exports.StaticCheck = (function() {
 		
 		setFst.e.accept(this, state);
 		return setFst.body.accept(this, state);
-	}
+	};
 
 	StaticCheck.prototype.visitSetSnd = function(setSnd, state) {
 		if(setSnd.name.indexOf('.') != -1) throw 'SetSnd can be applied only on local variables ' + setSnd.tokenCoords;
@@ -332,7 +334,7 @@ exports.StaticCheck = (function() {
 		
 		setSnd.e.accept(this, state);
 		return setSnd.body.accept(this, state);
-	}
+	};
 	
 	StaticCheck.prototype.visitSnd = function(snd, state) {
 		var et = snd.e.accept(this, state);
@@ -341,16 +343,16 @@ exports.StaticCheck = (function() {
 		
 		if(et.equals(_tpair)) return snd.e.e2.accept(this, state);	
 		else return _tany;
-	}
+	};
 
 	StaticCheck.prototype.visitStr = function(str, state) {
 		return _tstr;
-	}
+	};
 	
 	StaticCheck.prototype.visitStrQ = function(strQ, state) {
 		strQ.e.accept(this, state);
 		return _tbool;
-	}
+	};
 	
 	StaticCheck.prototype.visitSub = function(sub, state) {
 		var e1t = sub.e1.accept(this, state);
@@ -362,16 +364,16 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: - ' + sub.tokenCoords;
 
 		return _tnum;
-	}
+	};
 
 	StaticCheck.prototype.visitUnit = function(unit, state) {
 		return _tunit;
-	}
+	};
 
 	StaticCheck.prototype.visitUnitQ = function(unitQ, state) {
 		unitQ.e.accept(this, state);
 		return _tbool;
-	}
+	};
 
 	StaticCheck.prototype.visitVar = function(vare, state) {
 		if(vare.extern) {
@@ -379,9 +381,10 @@ exports.StaticCheck = (function() {
 			if(def.fun.type) return def.fun.type;
 			return _tany;
 		}
-		else
+		else {
 			return state.env.findBinding(vare.name);
-	}
+		}
+	};
 
 	StaticCheck.prototype.visitXor = function(xor, state) {
 		var e1t = xor.e1.accept(this, state);
@@ -393,7 +396,7 @@ exports.StaticCheck = (function() {
 			throw 'Expression does not type check: xor ' + xor.tokenCoords;
 
 		return _tbool;
-	}
+	};
 
 	return StaticCheck;
 })();

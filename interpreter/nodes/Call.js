@@ -41,15 +41,15 @@ exports.Call = (function () {
 			return evClos.fun.body.ev(envPlusPar, modSet);
 		else
 			return evClos.fun.body.ev(envPlusPar.con(new VarBinding(evClos.fun.name, evClos, true)), modSet);
-	}
+	};
 	
 	Call.prototype.accept = function(visitor, state) {
 		return visitor.visitCall(this, state);
-	}
+	};
 	
 	Call.prototype.toString = function() {
 		return '(call ' + this.funexp + '\n' + this.pexp + ')';
-	}
+	};
 	
 	return Call;
 })();	
