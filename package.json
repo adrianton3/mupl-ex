@@ -2,7 +2,8 @@
   "name": "muplex",
   "version": "0.1.0",
   "scripts": {
-    "eslint": "echo \"Error: no script specified\" && exit 1"
+    "eslint": "node node_modules/eslint/bin/eslint.js src/ || true",
+    "eslint-fix": "node node_modules/eslint/bin/eslint.js --fix src/ || true"
   },
   "repository": {
     "type": "git",
