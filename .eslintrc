@@ -11,7 +11,9 @@
     "computed-property-spacing": ["error", "never"],
     "eol-last": "error",
     "indent": ["error", "tab"],
+    "keyword-spacing": ["error", { "before": true, "after": true }],
     "semi": ["error", "never"],
+    "space-before-function-paren": ["error", "always"],
     "no-trailing-spaces": "error",
     "no-multi-spaces": "error",
     "spaced-comment": ["error", "always", { "exceptions": ["-"] }]
