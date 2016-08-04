@@ -1,21 +1,21 @@
 exports.Unit = (function () {
-	"use strict";
-	
-	function Unit() {
-		
+	"use strict"
+
+	function Unit () {
+
 	}
-	
-	Unit.prototype.ev = function(env, modSet) {
-		return this;
+
+	Unit.prototype.ev = function (env, modSet) {
+		return this
 	}
-	
-	Unit.prototype.accept = function(visitor, state) {
-		return visitor.visitUnit(this, state);
+
+	Unit.prototype.accept = function (visitor, state) {
+		return visitor.visitUnit(this, state)
 	}
-	
-	Unit.prototype.toString = function() {
-		return 'unit';
+
+	Unit.prototype.toString = function () {
+		return 'unit'
 	}
-	
-	return Unit;
-})();
+
+	return Unit
+})()

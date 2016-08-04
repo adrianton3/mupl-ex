@@ -1,21 +1,21 @@
 exports.TokEnd = (function () {
-	"use strict";
-	
-	function TokEnd(coords) { 
-		this.coords = coords;
+	"use strict"
+
+	function TokEnd (coords) {
+		this.coords = coords
 	}
-	
-	TokEnd.prototype.match = function(that) {
-		return that instanceof TokEnd;
+
+	TokEnd.prototype.match = function (that) {
+		return that instanceof TokEnd
 	}
-	
-	TokEnd.prototype.toString = function() {
-		return "END";
+
+	TokEnd.prototype.toString = function () {
+		return "END"
 	}
-	
-	TokEnd.prototype.toHTML = function(c) {
-		return '';
+
+	TokEnd.prototype.toHTML = function (c) {
+		return ''
 	}
-	
-	return TokEnd;
-})();
+
+	return TokEnd
+})()

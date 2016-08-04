@@ -1,22 +1,22 @@
 exports.TokStr = (function () {
-	"use strict";
-	
-	function TokStr(s, coords) {
-		this.s = s;
-		this.coords = coords;
+	"use strict"
+
+	function TokStr (s, coords) {
+		this.s = s
+		this.coords = coords
 	}
-	
-	TokStr.prototype.match = function(that) {
-		return that instanceof TokStr;
+
+	TokStr.prototype.match = function (that) {
+		return that instanceof TokStr
 	}
-	
-	TokStr.prototype.toString = function() {
-		return "Str(" + this.s + ")";
+
+	TokStr.prototype.toString = function () {
+		return "Str(" + this.s + ")"
 	}
-	
-	TokStr.prototype.toHTML = function(c) {
-		return '<span style="color:' + c.str + '">\'' + this.s + '\'</span>';
+
+	TokStr.prototype.toHTML = function (c) {
+		return '<span style="color:' + c.str + '">\'' + this.s + '\'</span>'
 	}
-	
-	return TokStr;
-})();
+
+	return TokStr
+})()
