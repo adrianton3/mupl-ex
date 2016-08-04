@@ -1,0 +1,19 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "array-bracket-spacing": ["error", "never"],
+    "block-spacing": ["error", "always"],
+    "comma-dangle": ["error", "always-multiline"],
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "computed-property-spacing": ["error", "never"],
+    "eol-last": "error",
+    "indent": ["error", "tab"],
+    "semi": ["error", "never"],
+    "no-trailing-spaces": "error",
+    "no-multi-spaces": "error",
+    "spaced-comment": ["error", "always", { "exceptions": ["-"] }]
+  }
+}
