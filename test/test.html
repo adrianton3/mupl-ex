@@ -2,118 +2,116 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-  <title>MUPLex tests</title>
-		<link rel="stylesheet" href="test/lib/qunit-1.11.0.css">
+		<title>MUPLex tests</title>
+		<link rel="stylesheet" href="lib/qunit-1.11.0.css">
 	</head>
 	<body>
-		<script type="text/javascript" src="test/lib/qunit-1.11.0.js"></script>
-		<script type="text/javascript" src="Require.js"></script>
+		<script type="text/javascript" src="lib/qunit-1.11.0.js"></script>
+		<script type="text/javascript" src="../src/Require.js"></script>
 		
-		<script type="text/javascript" src="tokenizer/TokenCoords.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokenCoords.js"></script>
 		
-		<script type="text/javascript" src="interpreter/TypeBinding.js"></script>
-		<script type="text/javascript" src="interpreter/VarBinding.js"></script>
-		<script type="text/javascript" src="interpreter/VarCheckState.js"></script>
+		<script type="text/javascript" src="../src/interpreter/TypeBinding.js"></script>
+		<script type="text/javascript" src="../src/interpreter/VarBinding.js"></script>
+		<script type="text/javascript" src="../src/interpreter/VarCheckState.js"></script>
 		
-		<script type="text/javascript" src="interpreter/Env.js"></script>
-		<script type="text/javascript" src="interpreter/Out.js"></script>
+		<script type="text/javascript" src="../src/interpreter/Env.js"></script>
+		<script type="text/javascript" src="../src/interpreter/Out.js"></script>
 
-  <script type="text/javascript" src="interpreter/nodes/Any.js"></script>
-  <script type="text/javascript" src="interpreter/nodes/Bool.js"></script>
-  <script type="text/javascript" src="interpreter/nodes/Num.js"></script>
-  <script type="text/javascript" src="interpreter/nodes/Str.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Unit.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/UnitQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Any.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Bool.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Num.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Str.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Unit.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/UnitQ.js"></script>
 
-		<script type="text/javascript" src="interpreter/nodes/NumQ.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Add.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Sub.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Mul.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Div.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Mod.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/NumQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Add.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Sub.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Mul.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Div.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Mod.js"></script>
 		
-		<script type="text/javascript" src="interpreter/nodes/Def.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Def.js"></script>
 		
-		<script type="text/javascript" src="interpreter/nodes/Let.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Var.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Closure.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Fun.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/ClosureQ.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Call.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Let.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Var.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Closure.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Fun.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/ClosureQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Call.js"></script>
 
- 	<script type="text/javascript" src="interpreter/nodes/StrQ.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/BoolQ.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/If.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Greater.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Not.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/And.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Or.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Xor.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/StrQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/BoolQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/If.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Greater.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Not.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/And.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Or.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Xor.js"></script>
 
-		<script type="text/javascript" src="interpreter/nodes/Record.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/RecordQ.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Deref.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/ContainsQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Record.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/RecordQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Deref.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/ContainsQ.js"></script>
 
-		<script type="text/javascript" src="interpreter/nodes/Pair.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/PairQ.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Fst.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Snd.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Pair.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/PairQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Fst.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Snd.js"></script>
 		
-		<script type="text/javascript" src="interpreter/nodes/Set.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/SetFst.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/SetSnd.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Set.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/SetFst.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/SetSnd.js"></script>
 		
-		<script type="text/javascript" src="interpreter/nodes/Print.js"></script>
-		<script type="text/javascript" src="interpreter/nodes/Err.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Print.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Err.js"></script>
 		
-		<script type="text/javascript" src="interpreter/Module.js"></script>
-		<script type="text/javascript" src="interpreter/ModuleSet.js"></script>
+		<script type="text/javascript" src="../src/interpreter/Module.js"></script>
+		<script type="text/javascript" src="../src/interpreter/ModuleSet.js"></script>
   
-  <script type="text/javascript" src="interpreter/types/Type.js"></script>
-  
-  <script type="text/javascript" src="interpreter/StaticCheck.js"></script>
-  <script type="text/javascript" src="interpreter/ToJS.js"></script>
-  <script type="text/javascript" src="lli/ToLL.js"></script>
-  <script type="text/javascript" src="lli/LLI.js"></script>
+		<script type="text/javascript" src="../src/interpreter/types/Type.js"></script>
 
-		<script type="text/javascript" src="expansion/callStar.js"></script>
-		<script type="text/javascript" src="expansion/funStar.js"></script>
-		<script type="text/javascript" src="expansion/cond.js"></script>
-		<script type="text/javascript" src="expansion/letStar.js"></script>
-		<script type="text/javascript" src="expansion/letrecStar.js"></script>
-		<script type="text/javascript" src="expansion/pairStar.js"></script>
+		<script type="text/javascript" src="../src/interpreter/StaticCheck.js"></script>
+		<script type="text/javascript" src="../src/interpreter/ToJS.js"></script>
+		<script type="text/javascript" src="../src/lli/ToLL.js"></script>
+		<script type="text/javascript" src="../src/lli/LLI.js"></script>
 
-		<script type="text/javascript" src="CodeColor.js"></script>
+		<script type="text/javascript" src="../src/expansion/callStar.js"></script>
+		<script type="text/javascript" src="../src/expansion/funStar.js"></script>
+		<script type="text/javascript" src="../src/expansion/cond.js"></script>
+		<script type="text/javascript" src="../src/expansion/letStar.js"></script>
+		<script type="text/javascript" src="../src/expansion/letrecStar.js"></script>
+		<script type="text/javascript" src="../src/expansion/pairStar.js"></script>
 
-		<script type="text/javascript" src="tokenizer/IterableString.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/IterableString.js"></script>
 		
-		<script type="text/javascript" src="tokenizer/TokBool.js"></script>
-		<script type="text/javascript" src="tokenizer/TokCommML.js"></script>
-		<script type="text/javascript" src="tokenizer/TokCommSL.js"></script>
-		<script type="text/javascript" src="tokenizer/TokEnd.js"></script>
-		<script type="text/javascript" src="tokenizer/TokIdentifier.js"></script>
-		<script type="text/javascript" src="tokenizer/TokKeyword.js"></script>
-		<script type="text/javascript" src="tokenizer/TokLPar.js"></script>
-		<script type="text/javascript" src="tokenizer/TokNum.js"></script>
-		<script type="text/javascript" src="tokenizer/TokRPar.js"></script>
-		<script type="text/javascript" src="tokenizer/TokStr.js"></script>
-		<script type="text/javascript" src="tokenizer/TokWhitespace.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokBool.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokCommML.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokCommSL.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokEnd.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokIdentifier.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokKeyword.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokLPar.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokNum.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokRPar.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokStr.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/TokWhitespace.js"></script>
 		
-		<script type="text/javascript" src="tokenizer/Tokenizer.js"></script>
+		<script type="text/javascript" src="../src/tokenizer/Tokenizer.js"></script>
 
-		<script type="text/javascript" src="parser/TokenList.js"></script>
-		<script type="text/javascript" src="parser/RDP.js"></script>
+		<script type="text/javascript" src="../src/parser/TokenList.js"></script>
+		<script type="text/javascript" src="../src/parser/RDP.js"></script>
 		
-		<script type="text/javascript" src="test/parts/interpreter.js"></script>
-		<script type="text/javascript" src="test/parts/lli.js"></script>
-		<script type="text/javascript" src="test/parts/misc.js"></script>
-		<script type="text/javascript" src="test/parts/modules.js"></script>
-		<script type="text/javascript" src="test/parts/parser.js"></script>
-		<script type="text/javascript" src="test/parts/referencecheck.js"></script>
-		<script type="text/javascript" src="test/parts/tojs.js"></script>
-		<script type="text/javascript" src="test/parts/tokenizer.js"></script>
-		<script type="text/javascript" src="test/parts/typecheck.js"></script>
+		<script type="text/javascript" src="parts/interpreter.js"></script>
+		<script type="text/javascript" src="parts/lli.js"></script>
+		<script type="text/javascript" src="parts/misc.js"></script>
+		<script type="text/javascript" src="parts/modules.js"></script>
+		<script type="text/javascript" src="parts/parser.js"></script>
+		<script type="text/javascript" src="parts/referencecheck.js"></script>
+		<script type="text/javascript" src="parts/tojs.js"></script>
+		<script type="text/javascript" src="parts/tokenizer.js"></script>
+		<script type="text/javascript" src="parts/typecheck.js"></script>
 		
 		<div id="qunit"></div>
 		<div id="qunit-fixture"></div>
