@@ -11,7 +11,7 @@ exports.TokenList = (function () {
 	}
 
 	TokenList.prototype.matchSeq = function (token) {
-		for (var i = 0; i < token.length; i++)
+		for (let i = 0; i < token.length; i++)
 			if (!(this.token[this.pointer + i].match(token[i])))
 				return false
 
@@ -19,7 +19,7 @@ exports.TokenList = (function () {
 	}
 
 	TokenList.prototype.matchAnySeq = function (token) {
-		for (var i = 0; i < token.length; i++)
+		for (let i = 0; i < token.length; i++)
 			if (this.matchSeq(token[i]))
 				return true
 
@@ -52,7 +52,7 @@ exports.TokenList = (function () {
 	}
 
 	TokenList.prototype.toString = function () {
-		var ret = 'TokenList(pointer: ' + this.pointer
+		const ret = 'TokenList(pointer: ' + this.pointer
 						+ ', content: [' + this.token.join(', ') + ']'
 		return ret
 	}

@@ -2,16 +2,16 @@ exports.Pretty = (function () {
 	function Pretty () { }
 
 	Pretty.prototype.visitAdd = function (add, state) {
-		var nState = { i : state.i + '   ' }
-		var e1s = add.e1.accept(this, nState)
-		var e2s = add.e2.accept(this, nState)
+		const nState = { i : state.i + '   ' }
+		const e1s = add.e1.accept(this, nState)
+		const e2s = add.e2.accept(this, nState)
 		return '(+ ' + e1s + '\n' + nState.i + e2s + ')'
 	}
 
 	Pretty.prototype.visitAnd = function (and, state) {
-		var nState = { i : state.i + '   ' }
-		var e1s = and.e1.accept(this, nState)
-		var e2s = and.e2.accept(this, nState)
+		const nState = { i : state.i + '   ' }
+		const e1s = and.e1.accept(this, nState)
+		const e2s = and.e2.accept(this, nState)
 		return '(and ' + e1s + '\n' + nState.i + e2s + ')'
 	}
 
@@ -21,7 +21,7 @@ exports.Pretty = (function () {
 	}
 
 	Pretty.prototype.visitBoolQ = function (boolQ, state) {
-		var es = boolQ.e.accept(this, state)
+		const es = boolQ.e.accept(this, state)
 		return '(bool? ' + es + ')'
 	}
 

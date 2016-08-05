@@ -1,10 +1,10 @@
 exports.Call = (function () {
 	"use strict"
 
-	var Closure = require('./Closure.js').Closure
-	var Def = require('./Def.js').Def
-	var VarBinding = require('../VarBinding.js').VarBinding
-	var TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const Closure = require('./Closure.js').Closure
+	const Def = require('./Def.js').Def
+	const VarBinding = require('../VarBinding.js').VarBinding
+	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Call (funexp, pexp, tokenCoords) {
 		this.funexp = funexp
@@ -13,11 +13,11 @@ exports.Call = (function () {
 	}
 
 	Call.prototype.ev = function (env, modSet) {
-		var evClos = this.funexp.ev(env, modSet)
+		const evClos = this.funexp.ev(env, modSet)
 
 		// extenral call
 		if (evClos instanceof Def) {
-			var newEnv = modSet.getEnv(evClos.modName)
+			let newEnv = modSet.getEnv(evClos.modName)
 			if (!(evClos.fun.pformal === false || this.pexp === false)) {
 				var evPexp = this.pexp.ev(env, modSet)
 				newEnv = newEnv.con(new VarBinding(evClos.fun.pformal, evPexp, true))
@@ -29,7 +29,7 @@ exports.Call = (function () {
 		// local call
 		if (!(evClos instanceof Closure)) throw 'Cannot call a non-function ' + this.tokenCoords
 
-		var envPlusPar
+		let envPlusPar
 		if (evClos.fun.pformal === false || this.pexp === false)
 			envPlusPar = evClos.env
 		else {

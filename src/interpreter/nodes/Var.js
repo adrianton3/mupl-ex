@@ -1,7 +1,7 @@
 exports.Var = (function () {
 	"use strict"
 
-	var TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Var (name, tokenCoords) {
 		this.name = name

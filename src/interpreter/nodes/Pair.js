@@ -7,8 +7,8 @@ exports.Pair = (function () {
 	}
 
 	Pair.prototype.ev = function (env, modSet) {
-		var e1Ev = this.e1.ev(env, modSet)
-		var e2Ev = this.e2.ev(env, modSet)
+		const e1Ev = this.e1.ev(env, modSet)
+		const e2Ev = this.e2.ev(env, modSet)
 		return new Pair(e1Ev, e2Ev)
 	}
 

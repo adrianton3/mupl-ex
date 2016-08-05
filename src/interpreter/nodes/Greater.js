@@ -1,9 +1,9 @@
 exports.Greater = (function () {
 	"use strict"
 
-	var Bool = require('./Bool.js').Bool
-	var Num = require('./Num.js').Num
-	var TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const Bool = require('./Bool.js').Bool
+	const Num = require('./Num.js').Num
+	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Greater (e1, e2, tokenCoords) {
 		this.e1 = e1
@@ -12,10 +12,10 @@ exports.Greater = (function () {
 	}
 
 	Greater.prototype.ev = function (env, modSet) {
-		var e1Ev = this.e1.ev(env, modSet)
+		const e1Ev = this.e1.ev(env, modSet)
 		if (!(e1Ev instanceof Num)) throw 'Can not compare non-numbers ' + this.tokenCoords
 
-		var e2Ev = this.e2.ev(env, modSet)
+		const e2Ev = this.e2.ev(env, modSet)
 		if (!(e1Ev instanceof Num)) throw 'Can not compare non-numbers ' + this.tokenCoords
 
 		if (e1Ev.n > e2Ev.n) return new Bool(true)

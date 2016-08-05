@@ -1,8 +1,8 @@
 exports.SetFst = (function () {
 	"use strict"
 
-	var Pair = require('./Pair.js').Pair
-	var TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const Pair = require('./Pair.js').Pair
+	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function SetFst (name, e, body, tokenCoords) {
 		this.name = name
@@ -12,8 +12,8 @@ exports.SetFst = (function () {
 	}
 
 	SetFst.prototype.ev = function (env, modSet) {
-		var eEv = this.e.ev(env, modSet)
-		var binding = env.getBinding(this.name)
+		const eEv = this.e.ev(env, modSet)
+		const binding = env.getBinding(this.name)
 		if (!(binding.v instanceof Pair)) throw 'Cannot apply setfst! on non-pair'
 		binding.v.e1 = eEv
 		return this.body.ev(env, modSet)

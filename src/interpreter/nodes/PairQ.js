@@ -1,15 +1,15 @@
 exports.PairQ = (function () {
 	"use strict"
 
-	var Pair = require('./Pair.js').Pair
-	var Bool = require('./interpreter/nodes/Bool.js').Bool
+	const Pair = require('./Pair.js').Pair
+	const Bool = require('./interpreter/nodes/Bool.js').Bool
 
 	function PairQ (e) {
 		this.e = e
 	}
 
 	PairQ.prototype.ev = function (env, modSet) {
-		var eEv = this.e.ev(env, modSet)
+		const eEv = this.e.ev(env, modSet)
 
 		if (eEv instanceof Pair) return new Bool(true)
 		else return new Bool(false)

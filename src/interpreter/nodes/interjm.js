@@ -1,11 +1,11 @@
 exports.interjm = (function () {
 	"use strict"
 
-	var Bool = require('./Bool.js').Bool
-	var Num = require('./Num.js').Num
-	var Pair = require('./Pair.js').Pair
-	var Record = require('./Record.js').Record
-	var Str = require('./Str.js').Str
+	const Bool = require('./Bool.js').Bool
+	const Num = require('./Num.js').Num
+	const Pair = require('./Pair.js').Pair
+	const Record = require('./Record.js').Record
+	const Str = require('./Str.js').Str
 
 	function interjm () {}
 
@@ -17,8 +17,8 @@ exports.interjm = (function () {
 		} else if (typeof jValue === "string") {
 			return new Str(jValue)
 		} else if (typeof jValue === "object") {
-			var mapConv = { }
-			for (var key in jValue) {
+			const mapConv = { }
+			for (const key in jValue) {
 				mapConv[key] = interjm.jtomValue(jValue[key])
 			}
 			return new Record(mapConv)

@@ -1,19 +1,19 @@
 exports.Tokenizer = (function () {
 	"use strict"
 
-	var IterableString = require('./IterableString.js').IterableString
-	var TokEnd = require('./TokEnd.js').TokEnd
-	var TokNum = require('./TokNum.js').TokNum
-	var TokIdentifier = require('./TokIdentifier.js').TokIdentifier
-	var TokBool = require('./TokBool.js').TokBool
-	var TokStr = require('./TokStr.js').TokStr
-	var TokLPar = require('./TokLPar.js').TokLPar
-	var TokRPar = require('./TokRPar.js').TokRPar
-	var TokKeyword = require('./TokKeyword.js').TokKeyword
-	var TokWhitespace = require('./TokWhitespace.js').TokWhitespace
-	var TokCommSL = require('./TokCommSL.js').TokCommSL
-	var TokCommML = require('./TokCommML.js').TokCommML
-	var TokenCoords = require('./TokenCoords.js').TokenCoords
+	const IterableString = require('./IterableString.js').IterableString
+	const TokEnd = require('./TokEnd.js').TokEnd
+	const TokNum = require('./TokNum.js').TokNum
+	const TokIdentifier = require('./TokIdentifier.js').TokIdentifier
+	const TokBool = require('./TokBool.js').TokBool
+	const TokStr = require('./TokStr.js').TokStr
+	const TokLPar = require('./TokLPar.js').TokLPar
+	const TokRPar = require('./TokRPar.js').TokRPar
+	const TokKeyword = require('./TokKeyword.js').TokKeyword
+	const TokWhitespace = require('./TokWhitespace.js').TokWhitespace
+	const TokCommSL = require('./TokCommSL.js').TokCommSL
+	const TokCommML = require('./TokCommML.js').TokCommML
+	const TokenCoords = require('./TokenCoords.js').TokenCoords
 
 	function Tokenizer () { }
 
@@ -21,11 +21,11 @@ exports.Tokenizer = (function () {
 		if (ws == undefined) ws = false
 		if (comm == undefined) comm = false
 
-		var str = new IterableString(s + ' ')
-		var tok = []
+		const str = new IterableString(s + ' ')
+		const tok = []
 
 		while (str.hasNext()) {
-			var c = str.cur()
+			const c = str.cur()
 
 			if (c == "'") {
 				tok.push(Tokenizer.chop.strs(str))
@@ -34,7 +34,7 @@ exports.Tokenizer = (function () {
 				tok.push(Tokenizer.chop.strd(str))
 			}
 			else if (c == '/') {
-				var n = str.next()
+				const n = str.next()
 				if (n == '/') {
 					var tmp = Tokenizer.chop.commsl(str)
 					if (comm) tok.push(tmp)
@@ -80,7 +80,7 @@ exports.Tokenizer = (function () {
 	}
 
 	Tokenizer.chop.strs = function (str) {
-		var coords = str.getCoords()
+		const coords = str.getCoords()
 		str.setMarker()
 		str.adv()
 
@@ -93,7 +93,7 @@ exports.Tokenizer = (function () {
 	}
 
 	Tokenizer.chop.strd = function (str) {
-		var coords = str.getCoords()
+		const coords = str.getCoords()
 		str.setMarker()
 		str.adv()
 
@@ -106,7 +106,7 @@ exports.Tokenizer = (function () {
 	}
 
 	Tokenizer.chop.num = function (str) {
-		var coords = str.getCoords()
+		const coords = str.getCoords()
 		str.setMarker()
 
 		var tmp = str.cur()
@@ -130,7 +130,7 @@ exports.Tokenizer = (function () {
 	}
 
 	Tokenizer.chop.commml = function (str) {
-		var coords = str.getCoords()
+		const coords = str.getCoords()
 		str.setMarker()
 		str.adv()
 		str.adv()
@@ -149,7 +149,7 @@ exports.Tokenizer = (function () {
 	}
 
 	Tokenizer.chop.commsl = function (str) {
-		var coords = str.getCoords()
+		const coords = str.getCoords()
 		str.setMarker()
 		str.adv()
 		str.adv(2)
@@ -164,10 +164,10 @@ exports.Tokenizer = (function () {
 	}
 
 	Tokenizer.chop.alphanum = function (str) {
-		var coords = str.getCoords()
+		const coords = str.getCoords()
 		str.setMarker()
 
-		var tmp = str.cur()
+		let tmp = str.cur()
 		while (tmp > ' ' && tmp <= '~' && (tmp != '(' && tmp != ')')) {
 			str.adv()
 			tmp = str.cur()
@@ -196,7 +196,7 @@ exports.Tokenizer = (function () {
 		'module', 'public', 'private']
 
 	Tokenizer.chop.whitespace = function (str) {
-		var tmp = str.cur()
+		const tmp = str.cur()
 		str.adv()
 		return new TokWhitespace(tmp)
 	}

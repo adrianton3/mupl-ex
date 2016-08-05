@@ -1,8 +1,8 @@
 exports.LLI = (function () {
 	"use strict"
 
-	var Env = require('../Env.js').Env
-	var VarBinding = require('../VarBinding.js').VarBinding
+	const Env = require('../Env.js').Env
+	const VarBinding = require('../VarBinding.js').VarBinding
 
 	function State (pc, env) { this.pc = pc; this.env = env }
 	State.prototype.toString = function () { return '(pc: ' + this.pc + ')' }
@@ -11,21 +11,21 @@ exports.LLI = (function () {
 	}
 
 	LLI.prototype.interpret = function (s) {
-		var lines = s.split('\n')
-		var ins = lines.map(function (line) {
+		const lines = s.split('\n')
+		const ins = lines.map(function (line) {
 			return line.split(' ')
 		})
 
-		var opStack = []
-		var env = Env.Emp
-		var curState
-		var jumpTo
-		var pc = 0
+		const opStack = []
+		let env = Env.Emp
+		let curState
+		let jumpTo
+		let pc = 0
 
 
 		//-------------------------------------------------------------------------
-		var safetyCounter = 0
-		var safetyCounterMax = 10000
+		let safetyCounter = 0
+		const safetyCounterMax = 10000
 
 		while (pc < ins.length) {
 			// console.log('===>', pc, ins[pc].join(' '), '| stack: ' + opStack.join(' '));

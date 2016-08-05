@@ -1,31 +1,31 @@
 exports.StaticCheck = (function () {
 	"use strict"
 
-	var Closure = require('./nodes/Closure.js').Closure
-	var Type = require('./types/Type.js').Type
-	var TypeBinding = require('./TypeBinding.js').TypeBinding
-	var VarCheckState = require('./VarCheckState.js').VarCheckState
-	var TokenCoords = require('../tokenizer/TokenCoords.js').TokenCoords
+	const Closure = require('./nodes/Closure.js').Closure
+	const Type = require('./types/Type.js').Type
+	const TypeBinding = require('./TypeBinding.js').TypeBinding
+	const VarCheckState = require('./VarCheckState.js').VarCheckState
+	const TokenCoords = require('../tokenizer/TokenCoords.js').TokenCoords
 
 	function StaticCheck () { }
 
-	var _tvid = new Type(false, false, false, false, false, false, false, false)
-	var _tany = new Type( true, false, false, false, false, false, false, false)
-	var _tbool = new Type(false, true, false, false, false, false, false, false)
-	var _tnum = new Type(false, false, true, false, false, false, false, false)
-	var _tstr = new Type(false, false, false, true, false, false, false, false)
-	var _tunit = new Type(false, false, false, false, true, false, false, false)
-	var _tpair = new Type(false, false, false, false, false, true, false, false)
-	var _trecord = new Type(false, false, false, false, false, false, true, false)
-	var _tfun = new Type(false, false, false, false, false, false, false, _tvid)
-	var _tfun_any = new Type(false, false, false, false, false, false, false, _tany)
+	const _tvid = new Type(false, false, false, false, false, false, false, false)
+	const _tany = new Type( true, false, false, false, false, false, false, false)
+	const _tbool = new Type(false, true, false, false, false, false, false, false)
+	const _tnum = new Type(false, false, true, false, false, false, false, false)
+	const _tstr = new Type(false, false, false, true, false, false, false, false)
+	const _tunit = new Type(false, false, false, false, true, false, false, false)
+	const _tpair = new Type(false, false, false, false, false, true, false, false)
+	const _trecord = new Type(false, false, false, false, false, false, true, false)
+	const _tfun = new Type(false, false, false, false, false, false, false, _tvid)
+	const _tfun_any = new Type(false, false, false, false, false, false, false, _tany)
 
 	StaticCheck.prototype.visitAdd = function (add, state) {
-		var e1t = add.e1.accept(this, state)
+		const e1t = add.e1.accept(this, state)
 		if (!e1t.isNum())
 			throw 'Expression does not type check: + ' + add.tokenCoords
 
-		var e2t = add.e2.accept(this, state)
+		const e2t = add.e2.accept(this, state)
 		if (!e2t.isNum())
 			throw 'Expression does not type check: + ' + add.tokenCoords
 
@@ -33,11 +33,11 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitAnd = function (and, state) {
-		var e1t = and.e1.accept(this, state)
+		const e1t = and.e1.accept(this, state)
 		if (!e1t.isBool())
 			throw 'Expression does not type check: and ' + and.tokenCoords
 
-		var e2t = and.e2.accept(this, state)
+		const e2t = and.e2.accept(this, state)
 		if (!e2t.isBool())
 			throw 'Expression does not type check: and ' + and.tokenCoords
 
@@ -49,7 +49,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitArrJS = function (arrJS, state) {
-		for (var i in arrJS.indexExps) {
+		for (const i in arrJS.indexExps) {
 			arrJS.indexExps[i].accept(this, state)
 		}
 		return _tany
@@ -65,15 +65,15 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitCall = function (call, state) {
-		var funexpt
+		let funexpt
 
 		funexpt = call.funexp.accept(this, state)
 
-    																																								if (funexpt instanceof Closure) {
-    																					if (funexpt.fun.type) funexpt = funexpt.fun.type
-    																					else funexpt = _tany
+    																																																																																																				if (funexpt instanceof Closure) {
+    																																																			if (funexpt.fun.type) funexpt = funexpt.fun.type
+    																																																			else funexpt = _tany
     }
-    																																								else {
+    																																																																																																				else {
 
     }
 
@@ -89,7 +89,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitCallJS = function (callJS, state) {
-		for (var i in callJS.parameterExps) {
+		for (const i in callJS.parameterExps) {
 			callJS.parameterExps[i].accept(this, state)
 		}
 		return _tany
@@ -101,7 +101,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitContainsQ = function (containsQ, state) {
-		for (var i in containsQ.list)
+		for (const i in containsQ.list)
 			if (containsQ.list[i].indexOf('.') != -1) throw 'Member names (' + containsQ.list[i] + ') can not contain "." ' + containsQ.tokenCoords
 
 		containsQ.exp.accept(this, state)
@@ -110,14 +110,14 @@ exports.StaticCheck = (function () {
 
 	StaticCheck.prototype.visitDef = function (def, state) {
 		if (def.defName.indexOf('.') != -1) throw 'Def name (' + def.defName + ') can not contain "."'
-		var funt = def.fun.accept(this, state)
+		const funt = def.fun.accept(this, state)
 		return funt
 	}
 
 	StaticCheck.prototype.visitDeref = function (deref, state) {
 		if (deref.name.indexOf('.') != -1) throw 'Member name (' + deref.name + ') can not contain "." ' + deref.tokenCoords
 
-		var et = deref.exp.accept(this, state)
+		const et = deref.exp.accept(this, state)
 		if (!et.isRecord())
 			throw 'Expression does not type check: deref ' + deref.tokenCoords
 
@@ -125,11 +125,11 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitDiv = function (div, state) {
-		var e1t = div.e1.accept(this, state)
+		const e1t = div.e1.accept(this, state)
 		if (!e1t.isNum())
 			throw 'Expression does not type check: / ' + div.tokenCoords
 
-		var e2t = div.e2.accept(this, state)
+		const e2t = div.e2.accept(this, state)
 		if (!e2t.isNum())
 			throw 'Expression does not type check: / ' + div.tokenCoords
 
@@ -142,7 +142,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitFst = function (fst, state) {
-		var et = fst.e.accept(this, state)
+		const et = fst.e.accept(this, state)
 		if (!et.isPair())
 			throw 'Expression does not type check: fst ' + fst.tokenCoords
 
@@ -151,7 +151,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitFun = function (fun, state) {
-		var nState = state
+		let nState = state
 
 		if (fun.name != false) {
 			if (fun.name.indexOf('.') != -1) throw 'Function name (' + fun.name + ') cannot contain a "." ' + fun.tokenCoords
@@ -163,17 +163,17 @@ exports.StaticCheck = (function () {
 			nState = nState.con(new TypeBinding(fun.pformal, _tany, true))
 		}
 
-		var bodyt = fun.body.accept(this, nState)
+		const bodyt = fun.body.accept(this, nState)
 
 		return new Type(false, false, false, false, false, false, false, bodyt)
 	}
 
 	StaticCheck.prototype.visitGreater = function (greater, state) {
-		var e1t = greater.e1.accept(this, state)
+		const e1t = greater.e1.accept(this, state)
 		if (!e1t.isNum())
 			throw 'Expression does not type check: > ' + greater.tokenCoords
 
-		var e2t = greater.e2.accept(this, state)
+		const e2t = greater.e2.accept(this, state)
 		if (!e2t.isNum())
 			throw 'Expression does not type check: > ' + greater.tokenCoords
 
@@ -181,12 +181,12 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitIf = function (ife, state) {
-		var eCondt = ife.cond.accept(this, state)
+		const eCondt = ife.cond.accept(this, state)
 		if (!eCondt.isBool())
 			throw 'Expression does not type check: if ' + ife.tokenCoords
 
-		var e1t = ife.e1.accept(this, state)
-		var e2t = ife.e2.accept(this, state)
+		const e1t = ife.e1.accept(this, state)
+		const e2t = ife.e2.accept(this, state)
 
 		return e1t.or(e2t)
 	}
@@ -194,20 +194,20 @@ exports.StaticCheck = (function () {
 	StaticCheck.prototype.visitLet = function (lete, state) {
 		if (lete.name.indexOf('.') != -1) throw 'Let binding (' + lete.name + ') cannot contain a "." ' + lete.tokenCoords
 
-		var et
+		let et
 		if (lete.final) et = lete.e.accept(this, state)
 		else { et = _tany; lete.e.accept(this, state) }
 
-		var nState = state.con(new TypeBinding(lete.name, et, lete.final))
+		const nState = state.con(new TypeBinding(lete.name, et, lete.final))
 		return lete.body.accept(this, nState)
 	}
 
 	StaticCheck.prototype.visitMod = function (mod, state) {
-		var e1t = mod.e1.accept(this, state)
+		const e1t = mod.e1.accept(this, state)
 		if (!e1t.isNum())
 			throw 'Expression does not type check: % ' + mod.tokenCoords
 
-		var e2t = mod.e2.accept(this, state)
+		const e2t = mod.e2.accept(this, state)
 		if (!e2t.isNum())
 			throw 'Expression does not type check: % ' + mod.tokenCoords
 
@@ -215,8 +215,8 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitModule = function (module, state) {
-		for (var i in module.defs) {
-			var deft = module.defs[i].accept(this, state)
+		for (const i in module.defs) {
+			const deft = module.defs[i].accept(this, state)
 			module.defs[i].fun.type = deft
 		}
 
@@ -224,7 +224,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitModuleSet = function (modSet, state) {
-		for (var i in modSet.mods)
+		for (const i in modSet.mods)
 			modSet.mods[i].accept(this,
 				new VarCheckState(modSet.mods[i].privateEnv, state.modSet))
 
@@ -232,11 +232,11 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitMul = function (mul, state) {
-		var e1t = mul.e1.accept(this, state)
+		const e1t = mul.e1.accept(this, state)
 		if (!e1t.isNum())
 			throw 'Expression does not type check: * ' + mul.tokenCoords
 
-		var e2t = mul.e2.accept(this, state)
+		const e2t = mul.e2.accept(this, state)
 		if (!e2t.isNum())
 			throw 'Expression does not type check: * ' + mul.tokenCoords
 
@@ -244,7 +244,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitNot = function (not, state) {
-		var et = not.e.accept(this, state)
+		const et = not.e.accept(this, state)
 		if (!et.isBool())
 			throw 'Expression does not type check: not ' + not.tokenCoords
 
@@ -261,11 +261,11 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitOr = function (or, state) {
-		var e1t = or.e1.accept(this, state)
+		const e1t = or.e1.accept(this, state)
 		if (!e1t.isBool())
 			throw 'Expression does not type check: or ' + or.tokenCoords
 
-		var e2t = or.e2.accept(this, state)
+		const e2t = or.e2.accept(this, state)
 		if (!e2t.isBool())
 			throw 'Expression does not type check: or ' + or.tokenCoords
 
@@ -289,7 +289,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitRecord = function (record, state) {
-		for (var key in record.map) {
+		for (const key in record.map) {
 			if (key.indexOf('.') !== -1) throw 'Record member name (' + key + ')can not contain "." ' + record.tokenCoords
 			record.map[key].accept(this, state)
 		}
@@ -305,10 +305,10 @@ exports.StaticCheck = (function () {
 	StaticCheck.prototype.visitSet = function (set, state) {
 		if (set.name.indexOf('.') !== -1) throw 'Set can be applied only on local variables ' + set.tokenCoords
 
-		var binding = state.env.getBinding(set.name)
+		const binding = state.env.getBinding(set.name)
 		if (binding.final && !set.bang) throw set.name + ' is final ' + set.tokenCoords
 
-		var et = set.e.accept(this, state)
+		const et = set.e.accept(this, state)
 		if (set.bang) binding.v = et
 
 		return set.body.accept(this, state)
@@ -317,7 +317,7 @@ exports.StaticCheck = (function () {
 	StaticCheck.prototype.visitSetFst = function (setFst, state) {
 		if (setFst.name.indexOf('.') != -1) throw 'SetFst can be applied only on local variables ' + setFst.tokenCoords
 
-		var bt = state.env.findBinding(setFst.name)
+		const bt = state.env.findBinding(setFst.name)
 		if (!bt.isPair())
 			throw 'Cannot apply setfst! on non-pair ' + setFst.tokenCoords
 
@@ -328,7 +328,7 @@ exports.StaticCheck = (function () {
 	StaticCheck.prototype.visitSetSnd = function (setSnd, state) {
 		if (setSnd.name.indexOf('.') != -1) throw 'SetSnd can be applied only on local variables ' + setSnd.tokenCoords
 
-		var bt = state.env.findBinding(setSnd.name)
+		const bt = state.env.findBinding(setSnd.name)
 		if (!bt.isPair())
 			throw 'Cannot apply setsnd! on non-pair ' + setSnd.tokenCoords
 
@@ -337,7 +337,7 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitSnd = function (snd, state) {
-		var et = snd.e.accept(this, state)
+		const et = snd.e.accept(this, state)
 		if (!et.isPair())
 			throw 'Expression does not type check: snd ' + snd.tokenCoords
 
@@ -355,11 +355,11 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitSub = function (sub, state) {
-		var e1t = sub.e1.accept(this, state)
+		const e1t = sub.e1.accept(this, state)
 		if (!e1t.isNum())
 			throw 'Expression does not type check: - ' + sub.tokenCoords
 
-		var e2t = sub.e2.accept(this, state)
+		const e2t = sub.e2.accept(this, state)
 		if (!e2t.isNum())
 			throw 'Expression does not type check: - ' + sub.tokenCoords
 
@@ -377,7 +377,7 @@ exports.StaticCheck = (function () {
 
 	StaticCheck.prototype.visitVar = function (vare, state) {
 		if (vare.extern) {
-			var def = state.modSet.getVal(vare.name)
+			const def = state.modSet.getVal(vare.name)
 			if (def.fun.type) return def.fun.type
 			return _tany
 		}
@@ -387,11 +387,11 @@ exports.StaticCheck = (function () {
 	}
 
 	StaticCheck.prototype.visitXor = function (xor, state) {
-		var e1t = xor.e1.accept(this, state)
+		const e1t = xor.e1.accept(this, state)
 		if (!e1t.isBool())
 			throw 'Expression does not type check: xor ' + xor.tokenCoords
 
-		var e2t = xor.e2.accept(this, state)
+		const e2t = xor.e2.accept(this, state)
 		if (!e2t.isBool())
 			throw 'Expression does not type check: xor ' + xor.tokenCoords
 

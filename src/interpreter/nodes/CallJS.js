@@ -1,8 +1,8 @@
 exports.CallJS = (function () {
 	"use strict"
 
-	var interjm = require('./interjm.js').interjm
-	var TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const interjm = require('./interjm.js').interjm
+	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function CallJS (funIdentifier, parameterExps, tokenCoords) {
 		this.funIdentifier = funIdentifier
@@ -11,15 +11,15 @@ exports.CallJS = (function () {
 	}
 
 	CallJS.prototype.ev = function (env, modSet) {
-		var evParamter = this.parameterExps.map(function (parameterExp) {
+		const evParamter = this.parameterExps.map(function (parameterExp) {
 			return JSON.stringify(interjm.mtojValue(parameterExp.ev(env, modSet)))
 		})
 
-		var parameterExpsStr = '(' + evParamter.join(', ') + ')'
-		var completeEvalStr = this.funIdentifier + parameterExpsStr
+		const parameterExpsStr = '(' + evParamter.join(', ') + ')'
+		const completeEvalStr = this.funIdentifier + parameterExpsStr
 
-		var callEv = eval(completeEvalStr)
-		var convertedValue = interjm.jtomValue(callEv)
+		const callEv = eval(completeEvalStr)
+		const convertedValue = interjm.jtomValue(callEv)
 
 		if (convertedValue !== undefined) {
 			return convertedValue

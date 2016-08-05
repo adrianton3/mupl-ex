@@ -1,15 +1,15 @@
 "use strict"
 
-var exports = { }
+const exports = { }
 
 function require (s) {
-	var lastIndex = s.lastIndexOf('/')
-	var name = s.substring(lastIndex + 1, s.length - 3)
+	const lastIndex = s.lastIndexOf('/')
+	const name = s.substring(lastIndex + 1, s.length - 3)
 	if (!exports[name]) {
 		console.warn('Module', name, 'was not exported')
 		console.trace()
 	}
-	var o = {}
+	const o = {}
 	o[name] = exports[name]
 	return o
 }

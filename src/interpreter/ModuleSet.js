@@ -10,11 +10,11 @@ exports.ModuleSet = (function () {
 	}
 
 	ModuleSet.prototype.getVal = function (name) {
-		var sepIndex = name.lastIndexOf('.')
-		var modName = name.substring(sepIndex, 0)
-		var defName = name.substring(sepIndex + 1)
+		const sepIndex = name.lastIndexOf('.')
+		const modName = name.substring(sepIndex, 0)
+		const defName = name.substring(sepIndex + 1)
 
-		for (var i in this.mods)
+		for (const i in this.mods)
 			if (this.mods[i].name == modName)
 				return this.mods[i].getVal(defName)
 
@@ -22,7 +22,7 @@ exports.ModuleSet = (function () {
 	}
 
 	ModuleSet.prototype.getEnv = function (name) {
-		for (var i in this.mods)
+		for (const i in this.mods)
 			if (this.mods[i].name == name)
 				return this.mods[i].privateEnv
 

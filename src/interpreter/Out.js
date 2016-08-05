@@ -1,7 +1,7 @@
 exports.Out = (function () {
 	"use strict"
 
-	var Out = { }
+	const Out = { }
 
 	Out.s = ''
 	Out.reset = function () { Out.s = '' }

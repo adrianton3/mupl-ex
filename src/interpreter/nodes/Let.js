@@ -1,8 +1,8 @@
 exports.Let = (function () {
 	"use strict"
 
-	var VarBinding = require('../VarBinding.js').VarBinding
-	var TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const VarBinding = require('../VarBinding.js').VarBinding
+	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Let (name, e, body, final, tokenCoords) {
 		this.name = name
@@ -13,7 +13,7 @@ exports.Let = (function () {
 	}
 
 	Let.prototype.ev = function (env, modSet) {
-		var eEv = this.e.ev(env, modSet)
+		const eEv = this.e.ev(env, modSet)
 
 		return this.body.ev(env.con(new VarBinding(this.name, eEv, this.final)), modSet)
 	}

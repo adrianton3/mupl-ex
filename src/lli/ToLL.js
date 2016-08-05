@@ -9,15 +9,15 @@ exports.ToLL = (function () {
 	}
 
 	ToLL.prototype.visitAdd = function (add, state) {
-		var e1j = add.e1.accept(this, state)
-		var e2j = add.e2.accept(this, state)
+		const e1j = add.e1.accept(this, state)
+		const e2j = add.e2.accept(this, state)
 
 		return e1j + e2j + '+\n'
 	}
 
 	ToLL.prototype.visitCall = function (call, state) {
-		var funexpj = call.funexp.accept(this, state)
-		var pexpj = call.pexp.accept(this, state)
+		const funexpj = call.funexp.accept(this, state)
+		const pexpj = call.pexp.accept(this, state)
 
 		return pexpj +
 			funexpj +
@@ -27,13 +27,13 @@ exports.ToLL = (function () {
 	}
 
 	ToLL.prototype.visitFun = function (fun, state) {
-		var fname = fun.name
-		var pformalj = fun.pformal
-		var bodyj = fun.body.accept(this, state)
+		const fname = fun.name
+		const pformalj = fun.pformal
+		const bodyj = fun.body.accept(this, state)
 
-		var uEndFun = getU()
+		const uEndFun = getU()
 
-		var llstr = ''
+		let llstr = ''
 
 		llstr +=
 		  'push-state 2\n' +
@@ -52,20 +52,20 @@ exports.ToLL = (function () {
 	}
 
 	ToLL.prototype.visitGreater = function (greater, state) {
-		var e1j = greater.e1.accept(this, state)
-		var e2j = greater.e2.accept(this, state)
+		const e1j = greater.e1.accept(this, state)
+		const e2j = greater.e2.accept(this, state)
 
 		return e1j + e2j + '>\n'
 	}
 
 	ToLL.prototype.visitIf = function (ife, state) {
-		var eCondj = ife.cond.accept(this, state)
+		const eCondj = ife.cond.accept(this, state)
 
-		var e1j = ife.e1.accept(this, state)
-		var e2j = ife.e2.accept(this, state)
+		const e1j = ife.e1.accept(this, state)
+		const e2j = ife.e2.accept(this, state)
 
-		var uIfElse = getU()
-		var uIfEnd = getU()
+		const uIfElse = getU()
+		const uIfEnd = getU()
 
 		return eCondj +
 			'if ' + uIfElse + '\n' +
@@ -77,9 +77,9 @@ exports.ToLL = (function () {
 	}
 
 	ToLL.prototype.visitLet = function (lete, state) {
-		var ej = lete.e.accept(this, state)
-		var namej = lete.name
-		var bodyj = lete.body.accept(this, state)
+		const ej = lete.e.accept(this, state)
+		const namej = lete.name
+		const bodyj = lete.body.accept(this, state)
 
 		return ej +
 			'let ' + namej + '\n' +
@@ -88,8 +88,8 @@ exports.ToLL = (function () {
 	}
 
 	ToLL.prototype.visitMul = function (mul, state) {
-		var e1j = mul.e1.accept(this, state)
-		var e2j = mul.e2.accept(this, state)
+		const e1j = mul.e1.accept(this, state)
+		const e2j = mul.e2.accept(this, state)
 
 		return e1j + e2j + '*\n'
 	}

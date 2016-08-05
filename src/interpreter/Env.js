@@ -38,15 +38,15 @@ exports.Env = (function () {
 	}
 
 	Env.Emp = {
-		hd: function () { throw 'Emp has no head' },
-		tl: function () { throw 'Emp has no tail' },
-		con: function (n) { return new Env(n, this) },
-		empty: function () { return true },
-		length: function () { return 0 },
-		toString: function () { return '.' },
-		getBinding: function (s) { throw 'Find binding failed for ' + s },
-		findBinding: function (s) { throw 'Find binding failed for ' + s },
-		setBinding: function (s) { throw 'Set binding failed for ' + s },
+		hd () { throw 'Emp has no head' },
+		tl () { throw 'Emp has no tail' },
+		con (n) { return new Env(n, this) },
+		empty () { return true },
+		length () { return 0 },
+		toString () { return '.' },
+		getBinding (s) { throw 'Find binding failed for ' + s },
+		findBinding (s) { throw 'Find binding failed for ' + s },
+		setBinding (s) { throw 'Set binding failed for ' + s },
 	}
 
 	return Env

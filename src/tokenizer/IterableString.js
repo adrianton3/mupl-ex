@@ -1,7 +1,7 @@
 exports.IterableString = (function () {
 	"use strict"
 
-	var TokenCoords = require('./TokenCoords.js').TokenCoords
+	const TokenCoords = require('./TokenCoords.js').TokenCoords
 
 	function IterableString (s) {
 		this.s = s
@@ -43,11 +43,11 @@ exports.IterableString = (function () {
 	}
 
 	IterableString.prototype.match = function (str) {
-		var substr = this.s.substring(this.pointer, this.pointer + str.length)
+		const substr = this.s.substring(this.pointer, this.pointer + str.length)
 		if (substr == str) {
 			this.pointer += str.length
 
-			var count = str.match(/\n/g).length
+			const count = str.match(/\n/g).length
 			if (count > 0) {
 				this.line += count
 				this.col = str.length - str.lastIndexOf('\n')

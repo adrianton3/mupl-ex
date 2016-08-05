@@ -1,15 +1,15 @@
 exports.UnitQ = (function () {
 	"use strict"
 
-	var Unit = require('./Unit.js').Unit
-	var Bool = require('./Bool.js').Bool
+	const Unit = require('./Unit.js').Unit
+	const Bool = require('./Bool.js').Bool
 
 	function UnitQ (e) {
 		this.e = e
 	}
 
 	UnitQ.prototype.ev = function (env, modSet) {
-		var eEv = this.e.ev(env, modSet)
+		const eEv = this.e.ev(env, modSet)
 
 		if (eEv instanceof Unit) return new Bool(true)
 		else return new Bool(false)

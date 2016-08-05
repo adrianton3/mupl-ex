@@ -1,7 +1,7 @@
 exports.Def = (function () {
 	"use strict"
 
-	var TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Def (defName, modName, pub, fun, tokenCoords) {
 		this.defName = defName

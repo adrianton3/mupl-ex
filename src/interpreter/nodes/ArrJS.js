@@ -1,8 +1,8 @@
 exports.ArrJS = (function () {
 	"use strict"
 
-	var interjm = require('./interjm.js').interjm
-	var TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const interjm = require('./interjm.js').interjm
+	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function ArrJS (arrIdentifier, indexExps, tokenCoords) {
 		this.arrIdentifier = arrIdentifier
@@ -11,15 +11,15 @@ exports.ArrJS = (function () {
 	}
 
 	ArrJS.prototype.ev = function (env, modSet) {
-		var evIndex = this.indexExps.map(function (indexExp) {
+		const evIndex = this.indexExps.map(function (indexExp) {
 			return JSON.stringify(interjm.mtojValue(indexExp.ev(env, modSet)))
 		})
 
-		var indexExpsStr = '[' + evIndex.join('][') + ']'
-		var completeEvalStr = this.arrIdentifier + indexExpsStr
+		const indexExpsStr = '[' + evIndex.join('][') + ']'
+		const completeEvalStr = this.arrIdentifier + indexExpsStr
 
-		var arrEv = eval(completeEvalStr)
-		var convertedValue = interjm.jtomValue(arrEv)
+		const arrEv = eval(completeEvalStr)
+		const convertedValue = interjm.jtomValue(arrEv)
 
 		if (convertedValue !== undefined) {
 			return convertedValue
