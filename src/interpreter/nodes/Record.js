@@ -6,10 +6,11 @@ exports.Record = (function () {
 	}
 
 	Record.prototype.ev = function (env, modSet) {
-		const mapEv = { }
+		const mapEv = {}
 
-		for (const key in this.map)
+		for (const key in this.map) {
 			mapEv[key] = this.map[key].ev(env, modSet)
+		}
 
 		return new Record(mapEv)
 	}
@@ -32,8 +33,9 @@ exports.Record = (function () {
 
 	Record.prototype.toString = function () {
 		let ls = ''
-		for (const key in this.map)
+		for (const key in this.map) {
 			ls += ' ' + key + ': ' + this.map[key].toString()
+		}
 
 		return '(record' + ls + ')'
 	}

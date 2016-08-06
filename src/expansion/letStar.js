@@ -2,8 +2,9 @@
 
 function letStar (list, body) {
 	let old = body
-	for (let i = list.length - 1; i >= 0; i--)
+	for (let i = list.length - 1; i >= 0; i--) {
 		old = new Let(list[i].name, list[i].exp, old, true)
+	}
 
 	return old
 }

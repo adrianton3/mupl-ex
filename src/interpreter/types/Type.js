@@ -14,12 +14,12 @@ exports.Type = (function () {
 
 	Type.prototype.equals = function (that) {
 		return (this.any || that.any) ||
-			(this.bool == that.bool &&
-			this.num == that.num &&
-			this.str == that.str &&
-			this.unit == that.unit &&
-			this.pair == that.pair &&
-			this.record == that.record &&
+			(this.bool === that.bool &&
+			this.num === that.num &&
+			this.str === that.str &&
+			this.unit === that.unit &&
+			this.pair === that.pair &&
+			this.record === that.record &&
 			(this.fun && that.fun ? this.fun.equals(that.fun) : this.fun === that.fun))
 	}
 

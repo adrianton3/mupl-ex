@@ -19,24 +19,28 @@ exports.StaticCheck = (function () {
 
 	StaticCheck.prototype.visitAdd = function (add, state) {
 		const e1t = add.e1.accept(this, state)
-		if (!e1t.isNum())
+		if (!e1t.isNum()) {
 			throw 'Expression does not type check: + ' + add.tokenCoords
+		}
 
 		const e2t = add.e2.accept(this, state)
-		if (!e2t.isNum())
+		if (!e2t.isNum()) {
 			throw 'Expression does not type check: + ' + add.tokenCoords
+		}
 
 		return _tnum
 	}
 
 	StaticCheck.prototype.visitAnd = function (and, state) {
 		const e1t = and.e1.accept(this, state)
-		if (!e1t.isBool())
+		if (!e1t.isBool()) {
 			throw 'Expression does not type check: and ' + and.tokenCoords
+		}
 
 		const e2t = and.e2.accept(this, state)
-		if (!e2t.isBool())
+		if (!e2t.isBool()) {
 			throw 'Expression does not type check: and ' + and.tokenCoords
+		}
 
 		return _tbool
 	}
@@ -49,6 +53,7 @@ exports.StaticCheck = (function () {
 		for (const i in arrJS.indexExps) {
 			arrJS.indexExps[i].accept(this, state)
 		}
+
 		return _tany
 	}
 
@@ -58,6 +63,7 @@ exports.StaticCheck = (function () {
 
 	StaticCheck.prototype.visitBoolQ = function (boolQ, state) {
 		boolQ.e.accept(this, state)
+
 		return _tbool
 	}
 
@@ -96,6 +102,7 @@ exports.StaticCheck = (function () {
 
 	StaticCheck.prototype.visitClosureQ = function (closureQ, state) {
 		closureQ.e.accept(this, state)
+
 		return _tbool
 	}
 
@@ -107,6 +114,7 @@ exports.StaticCheck = (function () {
 		}
 
 		containsQ.exp.accept(this, state)
+
 		return _tbool
 	}
 

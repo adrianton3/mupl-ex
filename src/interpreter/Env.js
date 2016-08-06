@@ -41,7 +41,7 @@ exports.Env = (function () {
 	}
 
 	Env.prototype.setBindingBang = function (s, nv) {
-		if (this.n.s == s) {
+		if (this.n.s === s) {
 			this.n.v = nv
 		} else {
 			this.tail.setBindingBang(s, nv)

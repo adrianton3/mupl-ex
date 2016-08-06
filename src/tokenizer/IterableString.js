@@ -13,11 +13,12 @@ exports.IterableString = (function () {
 	}
 
 	IterableString.prototype.adv = function () {
-		if (this.s.charAt(this.pointer) == '\n') {
+		if (this.s.charAt(this.pointer) === '\n') {
 			this.line++
 			this.col = 0
+		} else {
+			this.col++
 		}
-		else this.col++
 
 		this.pointer++
 	}
@@ -44,15 +45,16 @@ exports.IterableString = (function () {
 
 	IterableString.prototype.match = function (str) {
 		const substr = this.s.substring(this.pointer, this.pointer + str.length)
-		if (substr == str) {
+		if (substr === str) {
 			this.pointer += str.length
 
 			const count = str.match(/\n/g).length
 			if (count > 0) {
 				this.line += count
 				this.col = str.length - str.lastIndexOf('\n')
+			} else {
+				this.col += str.length
 			}
-			else this.col += str.length
 
 			return true
 		}

@@ -27,16 +27,16 @@ exports.Tokenizer = (function () {
 		while (str.hasNext()) {
 			const c = str.cur()
 
-			if (c == "'") {
+			if (c === "'") {
 				tok.push(Tokenizer.chop.strs(str))
-			} else if (c == '"') {
+			} else if (c === '"') {
 				tok.push(Tokenizer.chop.strd(str))
-			} else if (c == '/') {
+			} else if (c === '/') {
 				const n = str.next()
-				if (n == '/') {
+				if (n === '/') {
 					const tmp = Tokenizer.chop.commsl(str)
 					if (comm) { tok.push(tmp) }
-				} else if (n == '*') {
+				} else if (n === '*') {
 					const tmp = Tokenizer.chop.commml(str)
 					if (comm) { tok.push(tmp) }
 				} else {
@@ -44,10 +44,10 @@ exports.Tokenizer = (function () {
 				}
 			} else if (c >= '0' && c <= '9') {
 				tok.push(Tokenizer.chop.num(str))
-			} else if (c == '(') {
+			} else if (c === '(') {
 				tok.push(new TokLPar(str.getCoords()))
 				str.adv()
-			} else if (c == ')') {
+			} else if (c === ')') {
 				tok.push(new TokRPar(str.getCoords()))
 				str.adv()
 			} else if (c > ' ' && c <= '~') {
@@ -76,12 +76,12 @@ exports.Tokenizer = (function () {
 		str.adv()
 
 		while (true) {
-			if (str.cur() == '\\') {
+			if (str.cur() === '\\') {
 				str.adv()
-			} else if (str.cur() == "'") {
+			} else if (str.cur() === "'") {
 				str.adv()
 				return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords)
-			} else if (str.cur() == '\n' || !str.hasNext()) {
+			} else if (str.cur() === '\n' || !str.hasNext()) {
 				throw 'String did not end well ' + str.getCoords()
 			}
 
@@ -95,12 +95,12 @@ exports.Tokenizer = (function () {
 		str.adv()
 
 		while (true) {
-			if (str.cur() == '\\') {
+			if (str.cur() === '\\') {
 				str.adv()
-			} else if (str.cur() == '"') {
+			} else if (str.cur() === '"') {
 				str.adv()
 				return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords)
-			} else if (str.cur() == '\n' || !str.hasNext()) {
+			} else if (str.cur() === '\n' || !str.hasNext()) {
 				throw 'String did not end well ' + str.getCoords()
 			}
 
@@ -118,7 +118,7 @@ exports.Tokenizer = (function () {
 			tmp = str.cur()
 		}
 
-		if (str.cur() == '.') {
+		if (str.cur() === '.') {
 			str.adv()
 			let tmp = str.cur()
 			while (tmp >= '0' && tmp <= '9') {
@@ -141,7 +141,7 @@ exports.Tokenizer = (function () {
 		str.adv()
 
 		while (true) {
-			if (str.cur() == '*' && str.next() == '/') {
+			if (str.cur() === '*' && str.next() === '/') {
 				str.adv()
 				str.adv()
 				return new TokCommML(str.getMarked(), coords)
@@ -160,7 +160,7 @@ exports.Tokenizer = (function () {
 		str.adv(2)
 
 		while (true) {
-			if (str.cur() == '\n' || !str.hasNext()) {
+			if (str.cur() === '\n' || !str.hasNext()) {
 				str.adv()
 				return new TokCommSL(str.getMarked(), coords)
 			} else {
@@ -181,7 +181,7 @@ exports.Tokenizer = (function () {
 
 		tmp = str.getMarked()
 
-		if (tmp == '#t' || tmp == '#f') {
+		if (tmp === '#t' || tmp === '#f') {
 			return new TokBool(tmp, coords)
 		} else if (Tokenizer.chop.alphanum.reserved.has(tmp)) {
 			return new TokKeyword(tmp, coords)

@@ -56,7 +56,7 @@ exports.LLI = (function () {
 					pc++
 				}	else {
 					jumpTo = ins[pc][1]
-					while (!(ins[pc][0] === ':' && ins[pc][1] == jumpTo)) {
+					while (!(ins[pc][0] === ':' && ins[pc][1] === jumpTo)) {
 						pc++
 					}
 					pc++
@@ -90,7 +90,7 @@ exports.LLI = (function () {
 				break
 			case 'jump-down':
 				jumpTo = ins[pc][1]
-				while (!(ins[pc][0] === ':' && ins[pc][1] == jumpTo)) {
+				while (!(ins[pc][0] === ':' && ins[pc][1] === jumpTo)) {
 					pc++
 				}
 				pc++

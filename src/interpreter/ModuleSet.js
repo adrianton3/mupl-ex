@@ -14,17 +14,21 @@ exports.ModuleSet = (function () {
 		const modName = name.substring(sepIndex, 0)
 		const defName = name.substring(sepIndex + 1)
 
-		for (const i in this.mods)
-			if (this.mods[i].name == modName)
+		for (const i in this.mods) {
+			if (this.mods[i].name === modName) {
 				return this.mods[i].getVal(defName)
+			}
+		}
 
 		throw 'Module ' + modName + ' is not defined'
 	}
 
 	ModuleSet.prototype.getEnv = function (name) {
-		for (const i in this.mods)
-			if (this.mods[i].name == name)
+		for (const i in this.mods) {
+			if (this.mods[i].name === name) {
 				return this.mods[i].privateEnv
+			}
+		}
 
 		throw 'Module ' + name + ' is not defined'
 	}

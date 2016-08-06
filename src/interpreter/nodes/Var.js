@@ -3,7 +3,7 @@ exports.Var = (function () {
 
 	function Var (name, tokenCoords) {
 		this.name = name
-		this.extern = this.name.indexOf('.') != -1
+		this.extern = this.name.indexOf('.') !== -1
 		this.tokenCoords = tokenCoords
 	}
 

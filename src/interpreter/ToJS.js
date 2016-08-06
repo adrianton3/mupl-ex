@@ -62,12 +62,12 @@ exports.ToJS = (function () {
 
 	ToJS.prototype.visitCall = function (call, state) {
 		const funexpj = call.funexp.accept(this, state)
-		if (call.pexp != false) {
+		if (call.pexp !== false) {
 			const pexpj = call.pexp.accept(this, state)
 			return funexpj + '(' + pexpj + ')'
-		}
-		else
+		} else {
 			return funexpj + '()'
+		}
 	}
 
 	ToJS.prototype.visitCallJS = function (callJS, state) {
@@ -87,8 +87,9 @@ exports.ToJS = (function () {
 	ToJS.prototype.visitContainsQ = function (containsQ, state) {
 		let containsQj = ''
 
-		for (const i in containsQ.list)
+		for (const i in containsQ.list) {
 			containsQj += '"' + containsQ.list[i] + '", '
+		}
 
 		const expj = containsQ.exp.accept(this, state)
 
@@ -99,10 +100,8 @@ exports.ToJS = (function () {
 		const funj = def.fun.accept(this, state)
 		const namej = def.defName
 
-		if (def.pub)
-			return '_module.' + namej + ' = ' + funj + ';\n\n'
-		else
-			return 'var ' + namej + ' = ' + funj + ';\n\n'
+		return (def.pub ? '_module.' : 'var ') +
+			namej + ' = ' + funj + ';\n\n'
 	}
 
 	ToJS.prototype.visitDeref = function (deref, state) {

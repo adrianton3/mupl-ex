@@ -11,17 +11,21 @@ exports.TokenList = (function () {
 	}
 
 	TokenList.prototype.matchSeq = function (token) {
-		for (let i = 0; i < token.length; i++)
-			if (!(this.token[this.pointer + i].match(token[i])))
+		for (let i = 0; i < token.length; i++) {
+			if (!(this.token[this.pointer + i].match(token[i]))) {
 				return false
+			}
+		}
 
 		return true
 	}
 
 	TokenList.prototype.matchAnySeq = function (token) {
-		for (let i = 0; i < token.length; i++)
-			if (this.matchSeq(token[i]))
+		for (let i = 0; i < token.length; i++) {
+			if (this.matchSeq(token[i])) {
 				return true
+			}
+		}
 
 		return false
 	}

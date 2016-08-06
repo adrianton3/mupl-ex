@@ -14,24 +14,30 @@ exports.Module = (function () {
 
 	Module.getPub = function (defs) {
 		const ret = []
-		for (const i in defs)
-			if (defs[i].pub)
+		for (const i in defs) {
+			if (defs[i].pub) {
 				ret.push(defs[i])
+			}
+		}
+
 		return ret
 	}
 
 	Module.getEnv = function (defs) {
 		let old = Env.Emp
-		for (const i in defs)
+		for (const i in defs) {
 			old = old.con(new VarBinding(defs[i].defName, new Closure(Env.Emp, defs[i].fun), true))
+		}
 
 		return old
 	}
 
 	Module.prototype.getVal = function (name) {
-		for (const i in this.publicDefs)
-			if (this.publicDefs[i].defName == name)
+		for (const i in this.publicDefs) {
+			if (this.publicDefs[i].defName === name) {
 				return this.publicDefs[i]
+			}
+		}
 
 		throw 'Could not find ' + name + ' in module ' + this.name
 	}

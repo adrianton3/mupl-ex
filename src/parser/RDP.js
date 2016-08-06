@@ -668,18 +668,21 @@ exports.RDP = (function () {
 	function callStar (funexp, list, tokenCoords) {
 		if (list.length > 0) {
 			let old = new Call(funexp, list[0], tokenCoords)
-			for (let i = 1; i < list.length; i++)
+			for (let i = 1; i < list.length; i++) {
 				old = new Call(old, list[i], tokenCoords)
+			}
 
 			return old
+		} else {
+			return new Call(funexp, false, tokenCoords)
 		}
-		else return new Call(funexp, false, tokenCoords)
 	}
 	//-----------------------------------------------------------------------------
 	function cond (list, def, tokenCoords) {
 		let old = def
-		for (let i = list.length - 1; i >= 0; i--)
+		for (let i = list.length - 1; i >= 0; i--) {
 			old = new If(list[i].cond, list[i].exp, old, tokenCoords)
+		}
 
 		return old
 	}
@@ -692,12 +695,12 @@ exports.RDP = (function () {
 	function funStar (name, list, body, tokenCoords) {
 		let old = body
 
-		if (list.length == 0) {
+		if (list.length === 0) {
 			return new Fun(name, false, old, tokenCoords)
-		}
-		else {
-			for (let i = list.length - 1; i > 0; i--)
+		} else {
+			for (let i = list.length - 1; i > 0; i--) {
 				old = new Fun(false, list[i], old, tokenCoords)
+			}
 
 			return new Fun(name, list[0], old, tokenCoords)
 		}
@@ -706,11 +709,13 @@ exports.RDP = (function () {
 	function letrecStar (list, body, tokenCoords) {
 		let old = body
 
-		for (var i = list.length - 1; i >= 0; i--)
+		for (let i = list.length - 1; i >= 0; i--) {
 			old = new Set(list[i].name, list[i].exp, old, true, tokenCoords)
+		}
 
-		for (var i = list.length - 1; i >= 0; i--)
+		for (let i = list.length - 1; i >= 0; i--) {
 			old = new Let(list[i].name, new Any(), old, true, tokenCoords)
+		}
 
 		return old
 	}
@@ -722,8 +727,9 @@ exports.RDP = (function () {
 	//-----------------------------------------------------------------------------
 	function letStar (list, body, tokenCoords) {
 		let old = body
-		for (let i = list.length - 1; i >= 0; i--)
+		for (let i = list.length - 1; i >= 0; i--) {
 			old = new Let(list[i].name, list[i].exp, old, true, tokenCoords)
+		}
 
 		return old
 	}
@@ -735,8 +741,9 @@ exports.RDP = (function () {
 	//-----------------------------------------------------------------------------
 	function pairStar (list, tokenCoords) {
 		let old = new Unit()
-		for (let i = list.length - 1; i >= 0; i--)
+		for (let i = list.length - 1; i >= 0; i--) {
 			old = new Pair(list[i], old, tokenCoords)
+		}
 
 		return old
 	}
