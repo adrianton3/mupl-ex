@@ -3,6 +3,11 @@
     "ecmaVersion": 6
   },
   "extends": "eslint:recommended",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
   "rules": {
     "array-bracket-spacing": ["error", "never"],
     "block-spacing": ["error", "always"],
@@ -12,6 +17,7 @@
     "eol-last": "error",
     "indent": ["error", "tab"],
     "keyword-spacing": ["error", { "before": true, "after": true }],
+    "no-console": "off",
     "no-var": "error",
     "object-shorthand": ["error", "always"],
     "prefer-const": "error",
