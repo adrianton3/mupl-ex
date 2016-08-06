@@ -10,8 +10,7 @@ exports.BoolQ = (function () {
 	BoolQ.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
 
-		if (eEv instanceof Bool) return new Bool(true)
-		else return new Bool(false)
+		return new Bool(eEv instanceof Bool)
 	}
 
 	BoolQ.prototype.accept = function (visitor, state) {

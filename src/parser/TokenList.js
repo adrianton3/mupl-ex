@@ -27,13 +27,17 @@ exports.TokenList = (function () {
 	}
 
 	TokenList.prototype.expect = function (token, exMessage) {
-		if (this.match(token)) this.adv()
-		else throw exMessage + this.cur().coords
+		if (this.match(token)) {
+		    this.adv()
+        } else {
+            throw exMessage + this.cur().coords
+        }
 	}
 
 	TokenList.prototype.adv = function () {
-		if (this.pointer >= this.token.length)
-			throw 'TokenList: You\'ve not enough tokens!'
+		if (this.pointer >= this.token.length) {
+            throw 'TokenList: You\'ve not enough tokens!'
+        }
 
 		this.pointer++
 	}
@@ -52,9 +56,8 @@ exports.TokenList = (function () {
 	}
 
 	TokenList.prototype.toString = function () {
-		const ret = 'TokenList(pointer: ' + this.pointer
-						+ ', content: [' + this.token.join(', ') + ']'
-		return ret
+		return 'TokenList(pointer: ' + this.pointer +
+            ', content: [' + this.token.join(', ') + ']'
 	}
 
 	return TokenList

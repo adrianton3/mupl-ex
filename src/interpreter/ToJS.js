@@ -120,6 +120,7 @@ exports.ToJS = (function () {
 
 	ToJS.prototype.visitErr = function (err, state) {
 		const ej = err.e.accept(this, state)
+
 		return '(function() { throw ' + ej + '; })()'
 	}
 
@@ -130,12 +131,8 @@ exports.ToJS = (function () {
 	}
 
 	ToJS.prototype.visitFun = function (fun, state) {
-		let namej = ''
-		if (fun.name != false) namej = fun.name
-
-		let pformalj = ''
-		if (fun.pformal != false) pformalj = fun.pformal
-
+		const namej = fun.name !== false ? fun.name : ''
+		const pformalj = fun.pformal !== false ? fun.pformal : ''
 		const bodyj = fun.body.accept(this, state)
 
 		return '(function ' + namej + '(' + pformalj + ')\n{ return ' + bodyj + '; })'
@@ -176,8 +173,9 @@ exports.ToJS = (function () {
 		const namej = module.name
 		let defsj = ''
 
-		for (const i in module.defs)
-			defsj += module.defs[i].accept(this, state)
+		for (const i in module.defs) {
+            defsj += module.defs[i].accept(this, state)
+        }
 
 		return 'var ' + namej + ' = {};\n(function(_module) {\n' + defsj + '})(' + namej + ');'
 	}
@@ -185,8 +183,9 @@ exports.ToJS = (function () {
 	ToJS.prototype.visitModuleSet = function (modSet, state) {
 		let modSetj = ''
 
-		for (const i in modSet.mods)
-			modSetj += modSet.mods[i].accept(this, state) + '\n\n'
+		for (const i in modSet.mods) {
+            modSetj += modSet.mods[i].accept(this, state) + '\n\n'
+        }
 
 		return modSetj
 	}
@@ -224,6 +223,7 @@ exports.ToJS = (function () {
 	ToJS.prototype.visitPair = function (pair, state) {
 		const e1j = pair.e1.accept(this, state)
 		const e2j = pair.e2.accept(this, state)
+
 		return '(new _Pair(' + e1j + ', ' + e2j + '))'
 	}
 
@@ -269,6 +269,7 @@ exports.ToJS = (function () {
 		const namej = setFst.name
 		const ej = setFst.e.accept(this, state)
 		const bodyj = setFst.body.accept(this, state)
+
 		return '(' + namej + '._f = ' + ej + ', ' + bodyj + ')'
 	}
 
@@ -276,6 +277,7 @@ exports.ToJS = (function () {
 		const namej = setSnd.name
 		const ej = setSnd.e.accept(this, state)
 		const bodyj = setSnd.body.accept(this, state)
+
 		return '(' + namej + '._s = ' + ej + ', ' + bodyj + ')'
 	}
 

@@ -12,13 +12,16 @@ exports.Xor = (function () {
 
 	Xor.prototype.ev = function (env, modSet) {
 		const e1Ev = this.e1.ev(env, modSet)
-		if (!(e1Ev instanceof Bool)) throw 'First argument of xor-op is not a boolean ' + this.tokenCoords
+		if (!(e1Ev instanceof Bool)) {
+		    throw 'First argument of xor-op is not a boolean ' + this.tokenCoords
+        }
 
 		const e2Ev = this.e2.ev(env, modSet)
-		if (!(e2Ev instanceof Bool)) throw 'Second argument of xor-op is not a boolean ' + this.tokenCoords
+		if (!(e2Ev instanceof Bool)) {
+		    throw 'Second argument of xor-op is not a boolean ' + this.tokenCoords
+        }
 
-		if (e1Ev.v ? (!e2Ev.v) : e2Ev.v) return new Bool(true)
-		else return new Bool(false)
+		return new Bool(e1Ev.v ? (!e2Ev.v) : e2Ev.v)
 	}
 
 	Xor.prototype.accept = function (visitor, state) {

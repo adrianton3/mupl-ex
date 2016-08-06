@@ -13,8 +13,13 @@ exports.Set = (function () {
 
 	Set.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
-		if (this.bang) env.setBindingBang(this.name, eEv)
-		else env.setBinding(this.name, eEv)
+
+		if (this.bang) {
+		    env.setBindingBang(this.name, eEv)
+        } else {
+            env.setBinding(this.name, eEv)
+        }
+
 		return this.body.ev(env, modSet)
 	}
 

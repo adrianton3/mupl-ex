@@ -11,7 +11,9 @@ exports.Fst = (function () {
 
 	Fst.prototype.ev = function (env, modSet) {
 		const ev = this.e.ev(env, modSet)
-		if (!(ev instanceof Pair))	throw 'Can not get first member of on non-pair ' + this.tokenCoords
+		if (!(ev instanceof Pair)) {
+		    throw 'Can not get first member of on non-pair ' + this.tokenCoords
+        }
 
 		return ev.e1
 	}

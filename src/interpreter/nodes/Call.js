@@ -19,7 +19,7 @@ exports.Call = (function () {
 		if (evClos instanceof Def) {
 			let newEnv = modSet.getEnv(evClos.modName)
 			if (!(evClos.fun.pformal === false || this.pexp === false)) {
-				var evPexp = this.pexp.ev(env, modSet)
+				const evPexp = this.pexp.ev(env, modSet)
 				newEnv = newEnv.con(new VarBinding(evClos.fun.pformal, evPexp, true))
 			}
 
@@ -27,20 +27,26 @@ exports.Call = (function () {
 		}
 
 		// local call
-		if (!(evClos instanceof Closure)) throw 'Cannot call a non-function ' + this.tokenCoords
+		if (!(evClos instanceof Closure)) {
+		    throw 'Cannot call a non-function ' + this.tokenCoords
+        }
 
 		let envPlusPar
-		if (evClos.fun.pformal === false || this.pexp === false)
-			envPlusPar = evClos.env
-		else {
-			var evPexp = this.pexp.ev(env, modSet) // evaluate the parameter
+		if (evClos.fun.pformal === false || this.pexp === false) {
+            envPlusPar = evClos.env
+        } else {
+			const evPexp = this.pexp.ev(env, modSet) // evaluate the parameter
 			envPlusPar = evClos.env.con(new VarBinding(evClos.fun.pformal, evPexp))
 		}
 
-		if (evClos.fun.name == false)
-			return evClos.fun.body.ev(envPlusPar, modSet)
-		else
-			return evClos.fun.body.ev(envPlusPar.con(new VarBinding(evClos.fun.name, evClos, true)), modSet)
+		if (evClos.fun.name === false) {
+            return evClos.fun.body.ev(envPlusPar, modSet)
+        } else {
+            return evClos.fun.body.ev(
+                envPlusPar.con(new VarBinding(evClos.fun.name, evClos, true)),
+                modSet
+            )
+        }
 	}
 
 	Call.prototype.accept = function (visitor, state) {

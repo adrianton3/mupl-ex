@@ -14,9 +14,14 @@ exports.SetSnd = (function () {
 	SetSnd.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
 		const binding = env.getBinding(this.name)
-		if (!(binding.v instanceof Pair)) throw 'Cannot apply setsnd! on non-pair'
-		binding.v.e2 = eEv
-		return this.body.ev(env, modSet)
+
+        if (!(binding.v instanceof Pair)) {
+		    throw 'Cannot apply setsnd! on non-pair'
+        }
+
+        binding.v.e2 = eEv
+
+        return this.body.ev(env, modSet)
 	}
 
 	SetSnd.prototype.accept = function (visitor, state) {

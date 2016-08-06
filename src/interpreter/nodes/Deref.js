@@ -17,7 +17,9 @@ exports.Deref = (function () {
 	Deref.prototype.ev = function (env, modSet) {
 		const expEv = this.exp.ev(env, modSet)
 
-		if (!(expEv instanceof Record)) throw 'Can not dereferentiate a non-record ' + this.tokenCoords
+		if (!(expEv instanceof Record)) {
+		    throw 'Can not dereferentiate a non-record ' + this.tokenCoords
+        }
 
 		return expEv.get(this.name)
 	}

@@ -13,13 +13,16 @@ exports.Greater = (function () {
 
 	Greater.prototype.ev = function (env, modSet) {
 		const e1Ev = this.e1.ev(env, modSet)
-		if (!(e1Ev instanceof Num)) throw 'Can not compare non-numbers ' + this.tokenCoords
+		if (!(e1Ev instanceof Num)) {
+		    throw 'Can not compare non-numbers ' + this.tokenCoords
+        }
 
 		const e2Ev = this.e2.ev(env, modSet)
-		if (!(e1Ev instanceof Num)) throw 'Can not compare non-numbers ' + this.tokenCoords
+		if (!(e1Ev instanceof Num)) {
+		    throw 'Can not compare non-numbers ' + this.tokenCoords
+        }
 
-		if (e1Ev.n > e2Ev.n) return new Bool(true)
-		else return new Bool(false)
+        return new Bool(e1Ev.n > e2Ev.n)
 	}
 
 	Greater.prototype.accept = function (visitor, state) {

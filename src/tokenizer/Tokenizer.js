@@ -18,8 +18,8 @@ exports.Tokenizer = (function () {
 	function Tokenizer () { }
 
 	Tokenizer.chop = function (s, ws, comm) {
-		if (ws == undefined) ws = false
-		if (comm == undefined) comm = false
+		if (ws === undefined) { ws = false }
+		if (comm === undefined) { comm = false }
 
 		const str = new IterableString(s + ' ')
 		const tok = []
@@ -29,41 +29,32 @@ exports.Tokenizer = (function () {
 
 			if (c == "'") {
 				tok.push(Tokenizer.chop.strs(str))
-			}
-			else if (c == '"') {
+			} else if (c == '"') {
 				tok.push(Tokenizer.chop.strd(str))
-			}
-			else if (c == '/') {
+			} else if (c == '/') {
 				const n = str.next()
 				if (n == '/') {
-					var tmp = Tokenizer.chop.commsl(str)
-					if (comm) tok.push(tmp)
-				}
-				else if (n == '*') {
-					var tmp = Tokenizer.chop.commml(str)
-					if (comm) tok.push(tmp)
-				}
-				else {
+					const tmp = Tokenizer.chop.commsl(str)
+					if (comm) { tok.push(tmp) }
+				} else if (n == '*') {
+					const tmp = Tokenizer.chop.commml(str)
+					if (comm) { tok.push(tmp) }
+				} else {
 					tok.push(Tokenizer.chop.alphanum(str))
 				}
-			}
-			else if (c >= '0' && c <= '9') {
+			} else if (c >= '0' && c <= '9') {
 				tok.push(Tokenizer.chop.num(str))
-			}
-			else if (c == '(') {
+			} else if (c == '(') {
 				tok.push(new TokLPar(str.getCoords()))
 				str.adv()
-			}
-			else if (c == ')') {
+			} else if (c == ')') {
 				tok.push(new TokRPar(str.getCoords()))
 				str.adv()
-			}
-			else if (c > ' ' && c <= '~') {
+			} else if (c > ' ' && c <= '~') {
 				tok.push(Tokenizer.chop.alphanum(str))
-			}
-			else {
-				var tmp = Tokenizer.chop.whitespace(str)
-				if (ws) tok.push(tmp)
+			} else {
+				const tmp = Tokenizer.chop.whitespace(str)
+				if (ws) { tok.push(tmp) }
 			}
 		}
 
@@ -74,9 +65,9 @@ exports.Tokenizer = (function () {
 
 	Tokenizer.chop.strUnescape = function (s) {
 		return s.replace(/\\\'/g, '\'')
-						.replace(/\\\"/g, '\"')
-						.replace(/\\\\/g, '\\')
-						.replace(/\\\n/g, '\n')
+            .replace(/\\\"/g, '\"')
+            .replace(/\\\\/g, '\\')
+            .replace(/\\\n/g, '\n')
 	}
 
 	Tokenizer.chop.strs = function (str) {
@@ -85,9 +76,15 @@ exports.Tokenizer = (function () {
 		str.adv()
 
 		while (true) {
-			if (str.cur() == '\\') str.adv()
-			else if (str.cur() == "'") { str.adv(); return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords) }
-			else if (str.cur() == '\n' || !str.hasNext()) throw 'String did not end well ' + str.getCoords()
+			if (str.cur() == '\\') {
+			    str.adv()
+            } else if (str.cur() == "'") {
+                str.adv()
+                return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords)
+            } else if (str.cur() == '\n' || !str.hasNext()) {
+                throw 'String did not end well ' + str.getCoords()
+            }
+
 			str.adv()
 		}
 	}
@@ -98,9 +95,15 @@ exports.Tokenizer = (function () {
 		str.adv()
 
 		while (true) {
-			if (str.cur() == '\\') str.adv()
-			else if (str.cur() == '"') { str.adv(); return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords) }
-			else if (str.cur() == '\n' || !str.hasNext()) throw 'String did not end well ' + str.getCoords()
+			if (str.cur() == '\\') {
+			    str.adv()
+			} else if (str.cur() == '"') {
+			    str.adv()
+                return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords)
+			} else if (str.cur() == '\n' || !str.hasNext()) {
+			    throw 'String did not end well ' + str.getCoords()
+            }
+
 			str.adv()
 		}
 	}
@@ -109,7 +112,7 @@ exports.Tokenizer = (function () {
 		const coords = str.getCoords()
 		str.setMarker()
 
-		var tmp = str.cur()
+		let tmp = str.cur()
 		while (tmp >= '0' && tmp <= '9') {
 			str.adv()
 			tmp = str.cur()
@@ -117,14 +120,16 @@ exports.Tokenizer = (function () {
 
 		if (str.cur() == '.') {
 			str.adv()
-			var tmp = str.cur()
+			let tmp = str.cur()
 			while (tmp >= '0' && tmp <= '9') {
 				str.adv()
 				tmp = str.cur()
 			}
 		}
 
-		if (') \n\t'.indexOf(str.cur()) == -1) throw "Unexpected character '" + str.cur() + "' after \"" + str.getMarked() + '" ' + str.getCoords()
+		if (') \n\t'.indexOf(str.cur()) === -1) {
+		    throw "Unexpected character '" + str.cur() + "' after \"" + str.getMarked() + '" ' + str.getCoords()
+        }
 
 		return new TokNum(str.getMarked(), coords)
 	}
@@ -140,11 +145,11 @@ exports.Tokenizer = (function () {
 				str.adv()
 				str.adv()
 				return new TokCommML(str.getMarked(), coords)
-			}
-			else if (str.hasNext()) {
+			} else if (str.hasNext()) {
 				str.adv()
-			}
-			else throw 'Multiline comment not properly terminated ' + str.getCoords()
+			} else {
+			    throw 'Multiline comment not properly terminated ' + str.getCoords()
+            }
 		}
 	}
 
@@ -158,8 +163,9 @@ exports.Tokenizer = (function () {
 			if (str.cur() == '\n' || !str.hasNext()) {
 				str.adv()
 				return new TokCommSL(str.getMarked(), coords)
-			}
-			else str.adv()
+			} else {
+			    str.adv()
+            }
 		}
 	}
 
@@ -168,32 +174,37 @@ exports.Tokenizer = (function () {
 		str.setMarker()
 
 		let tmp = str.cur()
-		while (tmp > ' ' && tmp <= '~' && (tmp != '(' && tmp != ')')) {
+		while (tmp > ' ' && tmp <= '~' && (tmp !== '(' && tmp !== ')')) {
 			str.adv()
 			tmp = str.cur()
 		}
 
 		tmp = str.getMarked()
 
-		if (tmp == '#t' || tmp == '#f') return new TokBool(tmp, coords)
-		if (Tokenizer.chop.alphanum.reserved.indexOf(tmp) != -1) return new TokKeyword(tmp, coords)
-		else return new TokIdentifier(tmp, coords)
+		if (tmp == '#t' || tmp == '#f') {
+		    return new TokBool(tmp, coords)
+        } else if (Tokenizer.chop.alphanum.reserved.has(tmp)) {
+            return new TokKeyword(tmp, coords)
+        } else {
+            return new TokIdentifier(tmp, coords)
+        }
 	}
 
-	Tokenizer.chop.alphanum.reserved = [
+	Tokenizer.chop.alphanum.reserved = new Set([
 		'unit',
 		'pair', 'pair?', 'list', 'fst', 'snd',
 		'record', 'record?', 'deref', 'contains?',
 		'fun', 'lambda', 'call', 'closure?',
 		'calljs', 'arrjs',
 		'+', '-', '*', '/', '%',
-		/* '<', '<=', '=', '>='*/, '>',
+		'>',
 		'not', 'and', 'or', 'xor',
 		'let', 'mut', 'let*', 'letrec', 'if', 'cond',
 		'set!', 'setfst!', 'setsnd!',
 		'num?', 'bool?', 'unit?', 'string?',
 		'print', 'err',
-		'module', 'public', 'private']
+		'module', 'public', 'private'
+    ])
 
 	Tokenizer.chop.whitespace = function (str) {
 		const tmp = str.cur()

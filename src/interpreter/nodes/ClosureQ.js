@@ -11,8 +11,7 @@ exports.ClosureQ = (function () {
 	ClosureQ.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
 
-		if (eEv instanceof Closure) return new Bool(true)
-		else return new Bool(false)
+		return new Bool(eEv instanceof Closure)
 	}
 
 	ClosureQ.prototype.accept = function (visitor, state) {

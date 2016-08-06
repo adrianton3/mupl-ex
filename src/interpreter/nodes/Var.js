@@ -10,8 +10,9 @@ exports.Var = (function () {
 	}
 
 	Var.prototype.ev = function (env, modSet) {
-		if (this.extern) return modSet.getVal(this.name)
-		else return env.findBinding(this.name)
+		return this.extern ?
+            modSet.getVal(this.name) :
+		    env.findBinding(this.name)
 	}
 
 	Var.prototype.accept = function (visitor, state) {

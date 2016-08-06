@@ -100,9 +100,13 @@ exports.RDP = (function () {
 			token.adv()
 
 			let pub
-			if (token.match('public')) pub = true
-			else if (token.match('private')) pub = false
-			else throw 'RDP: def can be either public or private'
+			if (token.match('public')) {
+                pub = true
+            } else if (token.match('private')) {
+                pub = false
+            } else {
+                throw 'RDP: def can be either public or private'
+            }
 			token.adv()
 
 			token.expect(RDP.tree.identifier, 'RDP: def name expected')
@@ -114,16 +118,17 @@ exports.RDP = (function () {
 			if (token.match('fun')) {
 				token.adv()
 				fun = RDP.tree.special._funStar(token)
-			}
-			else if (token.match('lambda')) {
+			} else if (token.match('lambda')) {
 				token.adv()
 				fun = RDP.tree.special._lambdaStar(token)
-			}
-			else throw 'RDP: def can bind only functions'
+			} else {
+			    throw 'RDP: def can bind only functions'
+            }
 
 			ret.push(new Def(defName, modName, pub, fun))
 			token.expect(RDP.tree.rPar, 'RDP: def: Missing rpar')
 		}
+
 		return ret
 	}
 
@@ -131,28 +136,22 @@ exports.RDP = (function () {
 		if (token.match(RDP.tree.lPar)) {
 			token.adv()
 			return RDP.tree.special(token)
-		}
-		else if (token.match(RDP.tree.bool)) {
+		} else if (token.match(RDP.tree.bool)) {
 			const tmp = token.next()
-			if (tmp.s == '#t') return new Bool(true)
-			else return new Bool(false)
-		}
-		else if (token.match(RDP.tree.num)) {
+            return new Bool(tmp.s === '#t')
+		} else if (token.match(RDP.tree.num)) {
 			return new Num(token.next().n)
-		}
-		else if (token.match(RDP.tree.str)) {
+		} else if (token.match(RDP.tree.str)) {
 			return new Str(token.next().s)
-		}
-		else if (token.match('unit')) {
+		} else if (token.match('unit')) {
 			token.adv()
 			return new Unit()
-		}
-		else if (token.match(RDP.tree.identifier)) {
+		} else if (token.match(RDP.tree.identifier)) {
 			const vTok = token.next()
 			return new Var(vTok.s, vTok.coords)
-		}
-		else
-			throw 'RDP: expected expression but got ' + token.cur() + ' ' + token.cur().coords
+		} else {
+            throw 'RDP: expected expression but got ' + token.cur() + ' ' + token.cur().coords
+        }
 	}
 
 	RDP.tree.ifList = function (token) {
@@ -165,6 +164,7 @@ exports.RDP = (function () {
 
 			list.push(new CondPair(cond, exp))
 		}
+
 		return list
 	}
 
@@ -174,6 +174,7 @@ exports.RDP = (function () {
 			token.expect(RDP.tree.identifier, 'RDP: fun: identifiers expected')
 			list.push(token.past().s)
 		}
+
 		return list
 	}
 
@@ -183,6 +184,7 @@ exports.RDP = (function () {
 			const exp = RDP.tree.exp(token)
 			list.push(exp)
 		}
+
 		return list
 	}
 
@@ -197,6 +199,7 @@ exports.RDP = (function () {
 
 			list.push(new LetStarPair(name, exp))
 		}
+
 		return list
 	}
 
@@ -211,6 +214,7 @@ exports.RDP = (function () {
 
 			list.push(new LetrecStarPair(name, exp))
 		}
+
 		return list
 	}
 
@@ -220,6 +224,7 @@ exports.RDP = (function () {
 			const exp = RDP.tree.exp(token)
 			list.push(exp)
 		}
+
 		return list
 	}
 

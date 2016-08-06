@@ -16,8 +16,7 @@ exports.Pretty = (function () {
 	}
 
 	Pretty.prototype.visitBool = function (bool, state) {
-		if (bool.v) return '#t'
-		else return '#f'
+		return bool.v ? '#t' : '#f'
 	}
 
 	Pretty.prototype.visitBoolQ = function (boolQ, state) {

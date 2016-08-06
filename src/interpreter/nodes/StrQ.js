@@ -11,8 +11,7 @@ exports.StrQ = (function () {
 	StrQ.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
 
-		if (eEv instanceof Str) return new Bool(true)
-		else return new Bool(false)
+		return new Bool(eEv instanceof Str)
 	}
 
 	StrQ.prototype.accept = function (visitor, state) {

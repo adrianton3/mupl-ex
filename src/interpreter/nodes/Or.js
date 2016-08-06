@@ -12,13 +12,17 @@ exports.Or = (function () {
 
 	Or.prototype.ev = function (env, modSet) {
 		const e1Ev = this.e1.ev(env, modSet)
-		if (!(e1Ev instanceof Bool)) throw 'First argument of or-op is not a boolean ' + this.tokenCoords
+		if (!(e1Ev instanceof Bool)) {
+		    throw 'First argument of or-op is not a boolean ' + this.tokenCoords
+        }
 
-		if (e1Ev.v)
-			return new Bool(true)
-		else {
+		if (e1Ev.v) {
+            return new Bool(true)
+        } else {
 			const e2Ev = this.e2.ev(env, modSet)
-			if (!(e2Ev instanceof Bool)) throw 'Second argument of or-op is not a boolean ' + this.tokenCoords
+			if (!(e2Ev instanceof Bool)) {
+			    throw 'Second argument of or-op is not a boolean ' + this.tokenCoords
+            }
 
 			return new Bool(e2Ev.v)
 		}

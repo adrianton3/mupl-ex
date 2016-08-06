@@ -12,7 +12,10 @@ exports.Not = (function () {
 	Not.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
 
-		if (!(eEv instanceof Bool)) throw 'Can not perform not-op on non-booleans ' + this.tokenCoords
+		if (!(eEv instanceof Bool)) {
+		    throw 'Can not perform not-op on non-booleans ' + this.tokenCoords
+        }
+
 		return new Bool(!eEv.v)
 	}
 

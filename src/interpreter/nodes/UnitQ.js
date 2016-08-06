@@ -11,8 +11,7 @@ exports.UnitQ = (function () {
 	UnitQ.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
 
-		if (eEv instanceof Unit) return new Bool(true)
-		else return new Bool(false)
+		return new Bool(eEv instanceof Unit)
 	}
 
 	UnitQ.prototype.accept = function (visitor, state) {

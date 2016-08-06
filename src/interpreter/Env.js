@@ -4,8 +4,9 @@ exports.Env = (function () {
 	function Env (n, tail) {
 		this.n = n
 
-		if (arguments.length < 2) this.tail = Env.Emp
-		else this.tail = tail
+		this.tail = arguments.length < 2 ?
+			Env.Emp :
+			tail
 	}
 
 	Env.prototype.hd = function () { return this.n }
@@ -16,25 +17,35 @@ exports.Env = (function () {
 	Env.prototype.toString = function () { return this.n.toString() + this.tail.toString() }
 
 	Env.prototype.getBinding = function (s) {
-		if (this.n.s == s) return this.n
-		else return this.tail.getBinding(s)
+		return this.n.s === s ?
+			this.n :
+			this.tail.getBinding(s)
 	}
 
 	Env.prototype.findBinding = function (s) {
-		if (this.n.s == s) return this.n.v
-		else return this.tail.findBinding(s)
+		return this.n.s === s ?
+			this.n.v :
+			this.tail.findBinding(s)
 	}
 
 	Env.prototype.setBinding = function (s, nv) {
-		if (this.n.s == s)
-			if (this.n.final) throw this.n.s + ' is final'
-			else this.n.v = nv
-		else return this.tail.setBinding(s, nv)
+		if (this.n.s === s) {
+			if (this.n.final) {
+				throw this.n.s + ' is final'
+			} else {
+				this.n.v = nv
+			}
+		} else {
+			this.tail.setBinding(s, nv)
+		}
 	}
 
 	Env.prototype.setBindingBang = function (s, nv) {
-		if (this.n.s == s) this.n.v = nv
-		else return this.tail.setBindingBang(s, nv)
+		if (this.n.s == s) {
+			this.n.v = nv
+		} else {
+			this.tail.setBindingBang(s, nv)
+		}
 	}
 
 	Env.Emp = {

@@ -16,8 +16,7 @@ exports.Bool = (function () {
 	Bool.prototype.getValue = function () { return this.v }
 
 	Bool.prototype.toString = function () {
-		if (this.v) return '#t'
-		else return '#f'
+		return this.v ? '#t' : '#f'
 	}
 
 	return Bool

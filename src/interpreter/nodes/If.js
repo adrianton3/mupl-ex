@@ -13,10 +13,13 @@ exports.If = (function () {
 
 	If.prototype.ev = function (env, modSet) {
 		const condEv = this.cond.ev(env, modSet)
-		if (!(condEv instanceof Bool)) throw 'If condition needs to be a boolean ' + this.tokenCoords
+		if (!(condEv instanceof Bool)) {
+		    throw 'If condition needs to be a boolean ' + this.tokenCoords
+        }
 
-		if (condEv.v) return this.e1.ev(env, modSet)
-		else return this.e2.ev(env, modSet)
+		return condEv.v ?
+            this.e1.ev(env, modSet) :
+		    this.e2.ev(env, modSet)
 	}
 
 	If.prototype.accept = function (visitor, state) {

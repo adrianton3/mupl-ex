@@ -11,8 +11,7 @@ exports.NumQ = (function () {
 	NumQ.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
 
-		if (eEv instanceof Num) return new Bool(true)
-		else return new Bool(false)
+		return new Bool(eEv instanceof Num)
 	}
 
 	NumQ.prototype.accept = function (visitor, state) {

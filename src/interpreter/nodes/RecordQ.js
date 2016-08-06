@@ -11,8 +11,7 @@ exports.RecordQ = (function () {
 	RecordQ.prototype.ev = function (env, modSet) {
 		const eEv = this.e.ev(env, modSet)
 
-		if (eEv instanceof Record) return new Bool(true)
-		else return new Bool(false)
+		return new Bool(eEv instanceof Record)
 	}
 
 	RecordQ.prototype.accept = function (visitor, state) {
