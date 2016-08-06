@@ -1,8 +1,6 @@
 exports.Var = (function () {
 	"use strict"
 
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
-
 	function Var (name, tokenCoords) {
 		this.name = name
 		this.extern = this.name.indexOf('.') != -1
@@ -11,8 +9,8 @@ exports.Var = (function () {
 
 	Var.prototype.ev = function (env, modSet) {
 		return this.extern ?
-            modSet.getVal(this.name) :
-		    env.findBinding(this.name)
+			modSet.getVal(this.name) :
+			env.findBinding(this.name)
 	}
 
 	Var.prototype.accept = function (visitor, state) {

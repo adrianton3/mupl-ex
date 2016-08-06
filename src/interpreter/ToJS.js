@@ -174,8 +174,8 @@ exports.ToJS = (function () {
 		let defsj = ''
 
 		for (const i in module.defs) {
-            defsj += module.defs[i].accept(this, state)
-        }
+			defsj += module.defs[i].accept(this, state)
+		}
 
 		return 'var ' + namej + ' = {};\n(function(_module) {\n' + defsj + '})(' + namej + ');'
 	}
@@ -184,8 +184,8 @@ exports.ToJS = (function () {
 		let modSetj = ''
 
 		for (const i in modSet.mods) {
-            modSetj += modSet.mods[i].accept(this, state) + '\n\n'
-        }
+			modSetj += modSet.mods[i].accept(this, state) + '\n\n'
+		}
 
 		return modSetj
 	}

@@ -31,8 +31,8 @@ exports.LLI = (function () {
 			// console.log('===>', pc, ins[pc].join(' '), '| stack: ' + opStack.join(' '));
 			safetyCounter++
 			if (safetyCounter > safetyCounterMax) {
-			    throw 'Safety counter reached maximum value'
-            }
+				throw 'Safety counter reached maximum value'
+			}
 
 			switch (ins[pc][0]) {
 			case 'push':

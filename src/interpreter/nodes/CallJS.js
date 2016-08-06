@@ -2,7 +2,6 @@ exports.CallJS = (function () {
 	"use strict"
 
 	const interjm = require('./interjm.js').interjm
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function CallJS (funIdentifier, parameterExps, tokenCoords) {
 		this.funIdentifier = funIdentifier

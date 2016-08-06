@@ -2,7 +2,6 @@ exports.Xor = (function () {
 	"use strict"
 
 	const Bool = require('./Bool.js').Bool
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Xor (e1, e2, tokenCoords) {
 		this.e1 = e1
@@ -13,13 +12,13 @@ exports.Xor = (function () {
 	Xor.prototype.ev = function (env, modSet) {
 		const e1Ev = this.e1.ev(env, modSet)
 		if (!(e1Ev instanceof Bool)) {
-		    throw 'First argument of xor-op is not a boolean ' + this.tokenCoords
-        }
+			throw 'First argument of xor-op is not a boolean ' + this.tokenCoords
+		}
 
 		const e2Ev = this.e2.ev(env, modSet)
 		if (!(e2Ev instanceof Bool)) {
-		    throw 'Second argument of xor-op is not a boolean ' + this.tokenCoords
-        }
+			throw 'Second argument of xor-op is not a boolean ' + this.tokenCoords
+		}
 
 		return new Bool(e1Ev.v ? (!e2Ev.v) : e2Ev.v)
 	}

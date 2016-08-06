@@ -2,7 +2,6 @@ exports.Fst = (function () {
 	"use strict"
 
 	const Pair = require('./Pair.js').Pair
-	const TokenCoords = require('./tokenizer/TokenCoords.js').TokenCoords
 
 	function Fst (e, tokenCoords) {
 		this.e = e
@@ -12,8 +11,8 @@ exports.Fst = (function () {
 	Fst.prototype.ev = function (env, modSet) {
 		const ev = this.e.ev(env, modSet)
 		if (!(ev instanceof Pair)) {
-		    throw 'Can not get first member of on non-pair ' + this.tokenCoords
-        }
+			throw 'Can not get first member of on non-pair ' + this.tokenCoords
+		}
 
 		return ev.e1
 	}

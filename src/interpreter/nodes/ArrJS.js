@@ -2,7 +2,6 @@ exports.ArrJS = (function () {
 	"use strict"
 
 	const interjm = require('./interjm.js').interjm
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function ArrJS (arrIdentifier, indexExps, tokenCoords) {
 		this.arrIdentifier = arrIdentifier

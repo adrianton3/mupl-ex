@@ -13,7 +13,7 @@ exports.TokEnd = (function () {
 		return "END"
 	}
 
-	TokEnd.prototype.toHTML = function (c) {
+	TokEnd.prototype.toHTML = function () {
 		return ''
 	}
 

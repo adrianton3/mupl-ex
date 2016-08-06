@@ -14,9 +14,9 @@ exports.TokWhitespace = (function () {
 	}
 
 	TokWhitespace.prototype.toHTML = function (c) {
-	    return this.s == '\n' ? '<br />'
-            : this.s == ' ' ? '<span style="color:' + c.whitespace + '">&nbsp;</span>'
-            : '<span style="color:' + c.whitespace + '">' + this.s + '</span>'
+		return this.s == '\n' ? '<br />'
+			: this.s == ' ' ? '<span style="color:' + c.whitespace + '">&nbsp;</span>'
+			: '<span style="color:' + c.whitespace + '">' + this.s + '</span>'
 	}
 
 	return TokWhitespace

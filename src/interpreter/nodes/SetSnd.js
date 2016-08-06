@@ -2,7 +2,6 @@ exports.SetSnd = (function () {
 	"use strict"
 
 	const Pair = require('./Pair.js').Pair
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function SetSnd (name, e, body, tokenCoords) {
 		this.name = name
@@ -15,13 +14,13 @@ exports.SetSnd = (function () {
 		const eEv = this.e.ev(env, modSet)
 		const binding = env.getBinding(this.name)
 
-        if (!(binding.v instanceof Pair)) {
-		    throw 'Cannot apply setsnd! on non-pair'
-        }
+		if (!(binding.v instanceof Pair)) {
+			throw 'Cannot apply setsnd! on non-pair'
+		}
 
-        binding.v.e2 = eEv
+		binding.v.e2 = eEv
 
-        return this.body.ev(env, modSet)
+		return this.body.ev(env, modSet)
 	}
 
 	SetSnd.prototype.accept = function (visitor, state) {

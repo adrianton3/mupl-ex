@@ -2,7 +2,6 @@ exports.Not = (function () {
 	"use strict"
 
 	const Bool = require('./Bool.js').Bool
-	const TokenCoords = require('./tokenizer/TokenCoords.js').TokenCoords
 
 	function Not (e, tokenCoords) {
 		this.e = e
@@ -13,8 +12,8 @@ exports.Not = (function () {
 		const eEv = this.e.ev(env, modSet)
 
 		if (!(eEv instanceof Bool)) {
-		    throw 'Can not perform not-op on non-booleans ' + this.tokenCoords
-        }
+			throw 'Can not perform not-op on non-booleans ' + this.tokenCoords
+		}
 
 		return new Bool(!eEv.v)
 	}

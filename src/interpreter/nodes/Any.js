@@ -1,9 +1,7 @@
 exports.Any = (function () {
 	"use strict"
 
-	function Any () {
-
-	}
+	function Any () {}
 
 	Any.prototype.ev = function (env, modSet) {
 		return this

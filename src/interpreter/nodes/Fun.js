@@ -2,7 +2,6 @@ exports.Fun = (function () {
 	"use strict"
 
 	const Closure = require('./Closure.js').Closure
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Fun (name, pformal, body, tokenCoords) {
 		this.name = name

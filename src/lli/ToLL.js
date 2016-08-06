@@ -36,10 +36,10 @@ exports.ToLL = (function () {
 		let llstr = ''
 
 		llstr +=
-		  'push-state 2\n' +
-		  'jump-down ' + uEndFun + '\n' +
-		  (fname ? 'push-state 0\n' : '') + // 0
-		  (fname ? 'let ' + fname + '\n' : '') +
+			'push-state 2\n' +
+			'jump-down ' + uEndFun + '\n' +
+			(fname ? 'push-state 0\n' : '') + // 0
+			(fname ? 'let ' + fname + '\n' : '') +
 			'swap\n' +
 			'let ' + pformalj + '\n' +
 			bodyj +

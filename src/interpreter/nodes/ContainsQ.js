@@ -2,7 +2,7 @@ exports.ContainsQ = (function () {
 	"use strict"
 
 	const Bool = require('./Bool.js').Bool
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
+	const Record = require('./Bool.js').Record
 
 	function ContainsQ (exp, list, tokenCoords) {
 		this.exp = exp
@@ -14,15 +14,15 @@ exports.ContainsQ = (function () {
 		const expEv = this.exp.ev(env, modSet)
 
 		if (!(expEv instanceof Record)) {
-		    throw 'Can not apply contains? to a non-record ' + this.tokenCoords
-        }
+			throw 'Can not apply contains? to a non-record ' + this.tokenCoords
+		}
 
 		// TODO: optimize this
 		for (const i in this.list) {
-            if (!expEv.contains(this.list[i])) {
-                return new Bool(false)
-            }
-        }
+			if (!expEv.contains(this.list[i])) {
+				return new Bool(false)
+			}
+		}
 
 		return new Bool(true)
 	}

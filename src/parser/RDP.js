@@ -101,12 +101,12 @@ exports.RDP = (function () {
 
 			let pub
 			if (token.match('public')) {
-                pub = true
-            } else if (token.match('private')) {
-                pub = false
-            } else {
-                throw 'RDP: def can be either public or private'
-            }
+				pub = true
+			} else if (token.match('private')) {
+				pub = false
+			} else {
+				throw 'RDP: def can be either public or private'
+			}
 			token.adv()
 
 			token.expect(RDP.tree.identifier, 'RDP: def name expected')
@@ -122,8 +122,8 @@ exports.RDP = (function () {
 				token.adv()
 				fun = RDP.tree.special._lambdaStar(token)
 			} else {
-			    throw 'RDP: def can bind only functions'
-            }
+				throw 'RDP: def can bind only functions'
+			}
 
 			ret.push(new Def(defName, modName, pub, fun))
 			token.expect(RDP.tree.rPar, 'RDP: def: Missing rpar')
@@ -138,7 +138,7 @@ exports.RDP = (function () {
 			return RDP.tree.special(token)
 		} else if (token.match(RDP.tree.bool)) {
 			const tmp = token.next()
-            return new Bool(tmp.s === '#t')
+			return new Bool(tmp.s === '#t')
 		} else if (token.match(RDP.tree.num)) {
 			return new Num(token.next().n)
 		} else if (token.match(RDP.tree.str)) {
@@ -150,8 +150,8 @@ exports.RDP = (function () {
 			const vTok = token.next()
 			return new Var(vTok.s, vTok.coords)
 		} else {
-            throw 'RDP: expected expression but got ' + token.cur() + ' ' + token.cur().coords
-        }
+			throw 'RDP: expected expression but got ' + token.cur() + ' ' + token.cur().coords
+		}
 	}
 
 	RDP.tree.ifList = function (token) {

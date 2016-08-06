@@ -65,9 +65,9 @@ exports.Tokenizer = (function () {
 
 	Tokenizer.chop.strUnescape = function (s) {
 		return s.replace(/\\\'/g, '\'')
-            .replace(/\\\"/g, '\"')
-            .replace(/\\\\/g, '\\')
-            .replace(/\\\n/g, '\n')
+			.replace(/\\\"/g, '\"')
+			.replace(/\\\\/g, '\\')
+			.replace(/\\\n/g, '\n')
 	}
 
 	Tokenizer.chop.strs = function (str) {
@@ -77,13 +77,13 @@ exports.Tokenizer = (function () {
 
 		while (true) {
 			if (str.cur() == '\\') {
-			    str.adv()
-            } else if (str.cur() == "'") {
-                str.adv()
-                return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords)
-            } else if (str.cur() == '\n' || !str.hasNext()) {
-                throw 'String did not end well ' + str.getCoords()
-            }
+				str.adv()
+			} else if (str.cur() == "'") {
+				str.adv()
+				return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords)
+			} else if (str.cur() == '\n' || !str.hasNext()) {
+				throw 'String did not end well ' + str.getCoords()
+			}
 
 			str.adv()
 		}
@@ -96,13 +96,13 @@ exports.Tokenizer = (function () {
 
 		while (true) {
 			if (str.cur() == '\\') {
-			    str.adv()
+				str.adv()
 			} else if (str.cur() == '"') {
-			    str.adv()
-                return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords)
+				str.adv()
+				return new TokStr(Tokenizer.chop.strUnescape(str.getMarked().slice(1, -1)), coords)
 			} else if (str.cur() == '\n' || !str.hasNext()) {
-			    throw 'String did not end well ' + str.getCoords()
-            }
+				throw 'String did not end well ' + str.getCoords()
+			}
 
 			str.adv()
 		}
@@ -128,8 +128,8 @@ exports.Tokenizer = (function () {
 		}
 
 		if (') \n\t'.indexOf(str.cur()) === -1) {
-		    throw "Unexpected character '" + str.cur() + "' after \"" + str.getMarked() + '" ' + str.getCoords()
-        }
+			throw "Unexpected character '" + str.cur() + "' after \"" + str.getMarked() + '" ' + str.getCoords()
+		}
 
 		return new TokNum(str.getMarked(), coords)
 	}
@@ -148,8 +148,8 @@ exports.Tokenizer = (function () {
 			} else if (str.hasNext()) {
 				str.adv()
 			} else {
-			    throw 'Multiline comment not properly terminated ' + str.getCoords()
-            }
+				throw 'Multiline comment not properly terminated ' + str.getCoords()
+			}
 		}
 	}
 
@@ -164,8 +164,8 @@ exports.Tokenizer = (function () {
 				str.adv()
 				return new TokCommSL(str.getMarked(), coords)
 			} else {
-			    str.adv()
-            }
+				str.adv()
+			}
 		}
 	}
 
@@ -182,12 +182,12 @@ exports.Tokenizer = (function () {
 		tmp = str.getMarked()
 
 		if (tmp == '#t' || tmp == '#f') {
-		    return new TokBool(tmp, coords)
-        } else if (Tokenizer.chop.alphanum.reserved.has(tmp)) {
-            return new TokKeyword(tmp, coords)
-        } else {
-            return new TokIdentifier(tmp, coords)
-        }
+			return new TokBool(tmp, coords)
+		} else if (Tokenizer.chop.alphanum.reserved.has(tmp)) {
+			return new TokKeyword(tmp, coords)
+		} else {
+			return new TokIdentifier(tmp, coords)
+		}
 	}
 
 	Tokenizer.chop.alphanum.reserved = new Set([
@@ -203,8 +203,8 @@ exports.Tokenizer = (function () {
 		'set!', 'setfst!', 'setsnd!',
 		'num?', 'bool?', 'unit?', 'string?',
 		'print', 'err',
-		'module', 'public', 'private'
-    ])
+		'module', 'public', 'private',
+	])
 
 	Tokenizer.chop.whitespace = function (str) {
 		const tmp = str.cur()

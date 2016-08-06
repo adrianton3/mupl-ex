@@ -20,7 +20,7 @@ exports.Type = (function () {
 			this.unit == that.unit &&
 			this.pair == that.pair &&
 			this.record == that.record &&
-			(this.fun && that.fun ? this.fun.equals(that.fun) : this.fun == that.fun))
+			(this.fun && that.fun ? this.fun.equals(that.fun) : this.fun === that.fun))
 	}
 
 	Type.prototype.or = function (that) {
@@ -49,7 +49,7 @@ exports.Type = (function () {
 
 	Type.prototype.toString = function () {
 		return '(' +
-		  (this.any ? 'any ' : '') +
+			(this.any ? 'any ' : '') +
 			(this.bool ? 'bool ' : '') +
 			(this.num ? 'num ' : '') +
 			(this.str ? 'str ' : '') +

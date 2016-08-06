@@ -2,7 +2,6 @@ exports.Add = (function () {
 	"use strict"
 
 	const Num = require('./Num.js').Num
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Add (e1, e2, tokenCoords) {
 		this.e1 = e1

@@ -2,7 +2,6 @@ exports.Deref = (function () {
 	"use strict"
 
 	const Record = require('./Record.js').Record
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Deref (exp, name, tokenCoords) {
 		this.exp = exp
@@ -18,8 +17,8 @@ exports.Deref = (function () {
 		const expEv = this.exp.ev(env, modSet)
 
 		if (!(expEv instanceof Record)) {
-		    throw 'Can not dereferentiate a non-record ' + this.tokenCoords
-        }
+			throw 'Can not dereferentiate a non-record ' + this.tokenCoords
+		}
 
 		return expEv.get(this.name)
 	}

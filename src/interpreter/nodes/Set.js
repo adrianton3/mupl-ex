@@ -1,8 +1,6 @@
 exports.Set = (function () {
 	"use strict"
 
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
-
 	function Set (name, e, body, bang, tokenCoords) {
 		this.name = name
 		this.e = e
@@ -15,10 +13,10 @@ exports.Set = (function () {
 		const eEv = this.e.ev(env, modSet)
 
 		if (this.bang) {
-		    env.setBindingBang(this.name, eEv)
-        } else {
-            env.setBinding(this.name, eEv)
-        }
+			env.setBindingBang(this.name, eEv)
+		} else {
+			env.setBinding(this.name, eEv)
+		}
 
 		return this.body.ev(env, modSet)
 	}

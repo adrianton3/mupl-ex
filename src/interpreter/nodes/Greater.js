@@ -3,7 +3,6 @@ exports.Greater = (function () {
 
 	const Bool = require('./Bool.js').Bool
 	const Num = require('./Num.js').Num
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Greater (e1, e2, tokenCoords) {
 		this.e1 = e1
@@ -14,15 +13,15 @@ exports.Greater = (function () {
 	Greater.prototype.ev = function (env, modSet) {
 		const e1Ev = this.e1.ev(env, modSet)
 		if (!(e1Ev instanceof Num)) {
-		    throw 'Can not compare non-numbers ' + this.tokenCoords
-        }
+			throw 'Can not compare non-numbers ' + this.tokenCoords
+		}
 
 		const e2Ev = this.e2.ev(env, modSet)
 		if (!(e1Ev instanceof Num)) {
-		    throw 'Can not compare non-numbers ' + this.tokenCoords
-        }
+			throw 'Can not compare non-numbers ' + this.tokenCoords
+		}
 
-        return new Bool(e1Ev.n > e2Ev.n)
+		return new Bool(e1Ev.n > e2Ev.n)
 	}
 
 	Greater.prototype.accept = function (visitor, state) {

@@ -9,14 +9,14 @@ exports.VarBinding = (function () {
 
 	VarBinding.prototype.set = function (nv) {
 		if (this.final) {
-		    throw this.s + ' is final'
-        } else {
-            this.v = nv
-        }
+			throw this.s + ' is final'
+		} else {
+			this.v = nv
+		}
 	}
 
 	VarBinding.prototype.toString = function () {
-        return this.s + (this.final ? ' := ' : ' *= ') + this.v
+		return this.s + (this.final ? ' := ' : ' *= ') + this.v
 	}
 
 	return VarBinding

@@ -2,7 +2,6 @@ exports.If = (function () {
 	"use strict"
 
 	const Bool = require('./Bool.js').Bool
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function If (cond, e1, e2, tokenCoords) {
 		this.cond = cond
@@ -14,12 +13,12 @@ exports.If = (function () {
 	If.prototype.ev = function (env, modSet) {
 		const condEv = this.cond.ev(env, modSet)
 		if (!(condEv instanceof Bool)) {
-		    throw 'If condition needs to be a boolean ' + this.tokenCoords
-        }
+			throw 'If condition needs to be a boolean ' + this.tokenCoords
+		}
 
 		return condEv.v ?
-            this.e1.ev(env, modSet) :
-		    this.e2.ev(env, modSet)
+			this.e1.ev(env, modSet) :
+			this.e2.ev(env, modSet)
 	}
 
 	If.prototype.accept = function (visitor, state) {

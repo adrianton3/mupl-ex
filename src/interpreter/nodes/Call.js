@@ -4,7 +4,6 @@ exports.Call = (function () {
 	const Closure = require('./Closure.js').Closure
 	const Def = require('./Def.js').Def
 	const VarBinding = require('../VarBinding.js').VarBinding
-	const TokenCoords = require('../../tokenizer/TokenCoords.js').TokenCoords
 
 	function Call (funexp, pexp, tokenCoords) {
 		this.funexp = funexp
@@ -28,25 +27,25 @@ exports.Call = (function () {
 
 		// local call
 		if (!(evClos instanceof Closure)) {
-		    throw 'Cannot call a non-function ' + this.tokenCoords
-        }
+			throw 'Cannot call a non-function ' + this.tokenCoords
+		}
 
 		let envPlusPar
 		if (evClos.fun.pformal === false || this.pexp === false) {
-            envPlusPar = evClos.env
-        } else {
+			envPlusPar = evClos.env
+		} else {
 			const evPexp = this.pexp.ev(env, modSet) // evaluate the parameter
 			envPlusPar = evClos.env.con(new VarBinding(evClos.fun.pformal, evPexp))
 		}
 
 		if (evClos.fun.name === false) {
-            return evClos.fun.body.ev(envPlusPar, modSet)
-        } else {
-            return evClos.fun.body.ev(
-                envPlusPar.con(new VarBinding(evClos.fun.name, evClos, true)),
-                modSet
-            )
-        }
+			return evClos.fun.body.ev(envPlusPar, modSet)
+		} else {
+			return evClos.fun.body.ev(
+				envPlusPar.con(new VarBinding(evClos.fun.name, evClos, true)),
+				modSet
+			)
+		}
 	}
 
 	Call.prototype.accept = function (visitor, state) {
