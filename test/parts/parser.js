@@ -1,96 +1,136 @@
-(function() {
-	"use strict";
+(() => {
+	"use strict"
+
+	const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
+
+	const { TokenCoords } = require('../tokenizer/TokenCoords.js')
 	
-	var Tokenizer = require('../tokenizer/Tokenizer.js').Tokenizer;
-	var TokEnd = require('../tokenizer/TokEnd.js').TokEnd;
-	var TokNum = require('../tokenizer/TokNum.js').TokNum;
-	var TokIdentifier = require('../tokenizer/TokIdentifier.js').TokIdentifier;
-	var TokBool = require('../tokenizer/TokBool.js').TokBool;
-	var TokStr = require('../tokenizer/TokStr.js').TokStr;
-	var TokCommSL = require('../tokenizer/TokCommSL.js').TokCommSL;
-	var TokCommML = require('../tokenizer/TokCommML.js').TokCommML;
-	var TokLPar = require('../tokenizer/TokLPar.js').TokLPar;
-	var TokRPar = require('../tokenizer/TokRPar.js').TokRPar;
-	var TokKeyword = require('../tokenizer/TokKeyword.js').TokKeyword;
-	var TokenCoords = require('../tokenizer/TokenCoords.js').TokenCoords;
-	
-	var Add = require('../interpreter/nodes/Add.js').Add;
-	var And = require('../interpreter/nodes/And.js').And;
-	var Bool = require('../interpreter/nodes/Bool.js').Bool;
-	var BoolQ = require('../interpreter/nodes/BoolQ.js').BoolQ;
-	var Call = require('../interpreter/nodes/Call.js').Call;
-	var ClosureQ = require('../interpreter/nodes/ClosureQ.js').ClosureQ;
-	var ContainsQ = require('../interpreter/nodes/ContainsQ.js').ContainsQ;
-	var Def = require('../interpreter/nodes/Def.js').Def;
-	var Div = require('../interpreter/nodes/Div.js').Div;
-	var Fst = require('../interpreter/nodes/Fst.js').Fst;
-	var Fun = require('../interpreter/nodes/Fun.js').Fun;
-	var If = require('../interpreter/nodes/If.js').If;
-	var Let = require('../interpreter/nodes/Let.js').Let;
-	var Mod = require('../interpreter/nodes/Mod.js').Mod;
-	var Module = require('../interpreter/Module.js').Module;
-	var ModuleSet = require('../interpreter/ModuleSet.js').ModuleSet;
-	var Mul = require('../interpreter/nodes/Mul.js').Mul;
-	var Not = require('../interpreter/nodes/Not.js').Not;
-	var Num = require('../interpreter/nodes/Num.js').Num;
-	var NumQ = require('../interpreter/nodes/NumQ.js').NumQ;
-	var Or = require('../interpreter/nodes/Or.js').Or;
-	var Pair = require('../interpreter/nodes/Pair.js').Pair;
-	var PairQ = require('../interpreter/nodes/PairQ.js').PairQ;
-	var Record = require('../interpreter/nodes/Record.js').Record;
-	var RecordQ = require('../interpreter/nodes/RecordQ.js').RecordQ;
-	var Snd = require('../interpreter/nodes/Snd.js').Snd;
-	var Str = require('../interpreter/nodes/Str.js').Str;
-	var StrQ = require('../interpreter/nodes/StrQ.js').StrQ;
-	var Sub = require('../interpreter/nodes/Sub.js').Sub;
-	var Unit = require('../interpreter/nodes/Unit.js').Unit;
-	var UnitQ = require('../interpreter/nodes/UnitQ.js').UnitQ;
-	var Var = require('../interpreter/nodes/Var.js').Var;
-	var Xor = require('../interpreter/nodes/Xor.js').Xor;
-	
-	var VarBinding = require('../interpreter/VarBinding.js').VarBinding;
-	var Env = require('../interpreter/Env.js').Env;
-	
-	var RDP = require('../parser/RDP.js').RDP;
-	
-	var _l = function(s) { return Tokenizer.chop(s); };
-	var _p = function(s) { return RDP.single(Tokenizer.chop(s)); };
-	
-	module('parser');
-	test('Atomic expressions', function() {
-		deepEqual(_p('234'), new Num(234), 'Number');
-		deepEqual(_p('#t'), new Bool(true), 'Bool true');
-		deepEqual(_p('#f'), new Bool(false), 'Bool false');
-		deepEqual(_p('unit'), new Unit(), 'Unit');
-	});
-	
-	test('Simple expressions', function() {
-		deepEqual(_p('234'), new Num(234, new TokenCoords(0, 0)), 'Num');
-		deepEqual(_p('asd'), new Var('asd', new TokenCoords(0, 0)), 'Var');
-		
-		deepEqual(_p('(if #t 11 22)'), new If(new Bool(true, new TokenCoords(0, 4)), 
-		                                      new Num(11, new TokenCoords(0, 7)), 
-		                                      new Num(22, new TokenCoords(0, 10)), 
-		                                      new TokenCoords(0, 1)), 'If');
-		
-		deepEqual(_p('(unit? unit)'), new UnitQ(new Unit()), 'unit? unit');
-		deepEqual(_p('(bool? 234)'), new BoolQ(new Num(234, new TokenCoords(0, 7)), new TokenCoords(0, 1)), 'bool? 234');
-		deepEqual(_p('(num? #f)'), new NumQ(new Bool(false, new TokenCoords(0, 6)), new TokenCoords(0, 1)), 'num? bool');
-		
-		deepEqual(_p('(pair 11 22)'), new Pair(new Num(11, new TokenCoords(0, 6)), 
-		                                       new Num(22, new TokenCoords(0, 9)), 
-		                                       new TokenCoords(0, 1)), 'pair num num');
-		deepEqual(_p('(pair? (pair 11 22))'), new PairQ(new Pair(new Num(11, new TokenCoords(0, 13)), 
-		                                                         new Num(22, new TokenCoords(0, 16)),
-		                                                         new TokenCoords(0, 8)), 
-		                                                new TokenCoords(0, 1)), 'pair? pair num num');
-		deepEqual(_p('(fst (pair 11 22))'), new Fst(new Pair(new Num(11, new TokenCoords(0, 11)), 
-		                                                     new Num(22, new TokenCoords(0, 14)),
-		                                                     new TokenCoords(0, 6)), 
-		                                            new TokenCoords(0, 1)), 'fst pair num num');
-		deepEqual(_p('(snd (pair 11 22))'), new Snd(new Pair(new Num(11, new TokenCoords(0, 11)), 
-		                                                     new Num(22, new TokenCoords(0, 14)),
-		                                                     new TokenCoords(0, 6)), 
-		                                            new TokenCoords(0, 1)), 'snd pair num num');
-	});
-})();
+	const { Add } = require('../interpreter/nodes/Add.js')
+	const { And } = require('../interpreter/nodes/And.js')
+	const { Bool } = require('../interpreter/nodes/Bool.js')
+	const { BoolQ } = require('../interpreter/nodes/BoolQ.js')
+	const { Call } = require('../interpreter/nodes/Call.js')
+	const { ClosureQ } = require('../interpreter/nodes/ClosureQ.js')
+	const { ContainsQ } = require('../interpreter/nodes/ContainsQ.js')
+	const { Def } = require('../interpreter/nodes/Def.js')
+	const { Div } = require('../interpreter/nodes/Div.js')
+	const { Fst } = require('../interpreter/nodes/Fst.js')
+	const { Fun } = require('../interpreter/nodes/Fun.js')
+	const { If } = require('../interpreter/nodes/If.js')
+	const { Let } = require('../interpreter/nodes/Let.js')
+	const { Mod } = require('../interpreter/nodes/Mod.js')
+	const { Module } = require('../interpreter/Module.js')
+	const { ModuleSet } = require('../interpreter/ModuleSet.js')
+	const { Mul } = require('../interpreter/nodes/Mul.js')
+	const { Not } = require('../interpreter/nodes/Not.js')
+	const { Num } = require('../interpreter/nodes/Num.js')
+	const { NumQ } = require('../interpreter/nodes/NumQ.js')
+	const { Or } = require('../interpreter/nodes/Or.js')
+	const { Pair } = require('../interpreter/nodes/Pair.js')
+	const { PairQ } = require('../interpreter/nodes/PairQ.js')
+	const { Record } = require('../interpreter/nodes/Record.js')
+	const { RecordQ } = require('../interpreter/nodes/RecordQ.js')
+	const { Snd } = require('../interpreter/nodes/Snd.js')
+	const { Str } = require('../interpreter/nodes/Str.js')
+	const { StrQ } = require('../interpreter/nodes/StrQ.js')
+	const { Sub } = require('../interpreter/nodes/Sub.js')
+	const { Unit } = require('../interpreter/nodes/Unit.js')
+	const { UnitQ } = require('../interpreter/nodes/UnitQ.js')
+	const { Var } = require('../interpreter/nodes/Var.js')
+	const { Xor } = require('../interpreter/nodes/Xor.js')
+
+
+	function makeIdentifier (name) {
+		return {
+			token: {
+				type: 'identifier',
+				value: name
+			}
+		}
+	}
+
+	function parse (inText) {
+		const tokens = espace.Tokenizer()(inText)
+		const tree = espace.Parser.parse(tokens)
+		return buildAst(tree)
+	}
+
+
+	module('parser')
+
+	test('Atomic expressions', () => {
+		deepEqual(parse('234'), new Num(234), 'Number')
+		deepEqual(parse('"234"'), new Str('234'), 'String')
+		deepEqual(parse('#t'), new Bool(true), 'Bool true')
+		deepEqual(parse('#f'), new Bool(false), 'Bool false')
+		deepEqual(parse('unit'), new Unit(), 'Unit')
+		deepEqual(parse('id'), new Var('id'), 'Identifier')
+	})
+
+	test('Simple expressions', () => {
+		deepEqual(
+			parse('(unit? unit)'),
+			new UnitQ(new Unit()),
+			'unit?'
+		)
+
+		deepEqual(
+			parse('(+ 11 22)'),
+			new Add(new Num(11), new Num(22)),
+			'+'
+		)
+
+		deepEqual(
+			parse('(if #t 11 22)'),
+			new If(new Bool(true), new Num(11), new Num(22)),
+			'if'
+		)
+	})
+
+	test('Call expressions', () => {
+		deepEqual(
+			parse('(call f)'),
+			new Call(new Var('f'), false),
+			'call/0'
+		)
+
+		deepEqual(
+			parse('(call f 11)'),
+			new Call(new Var('f'), new Num(11)),
+			'call/1'
+		)
+
+		deepEqual(
+			parse('(call f 11 22)'),
+			new Call(
+				new Call(new Var('f'), new Num(11)),
+				new Num(22)
+			),
+			'call/2'
+		)
+	})
+
+	test('Fun expressions', () => {
+		deepEqual(
+			parse('(fun f () 11)'),
+			new Fun(makeIdentifier('f'), false, new Num(11)),
+			'fun/0'
+		)
+
+		deepEqual(
+			parse('(fun f (a) 11)'),
+			new Fun(makeIdentifier('f'), makeIdentifier('a'), new Num(11)),
+			'fun/1'
+		)
+
+		deepEqual(
+			parse('(fun f (a b) 11)'),
+			new Fun(
+				makeIdentifier('f'),
+				makeIdentifier('a'),
+				new Fun(false, makeIdentifier('b'), new Num(11))
+			),
+			'fun/2'
+		)
+	})
+})()
