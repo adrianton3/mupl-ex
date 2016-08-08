@@ -149,4 +149,22 @@
 			'let/2'
 		)
 	})
+
+	test('Cond expressions', () => {
+		deepEqual(
+			parse('(cond ((11 22)) 33)'),
+			new If(new Num(11), new Num(22), new Num(33)),
+			'cond/1'
+		)
+
+		deepEqual(
+			parse('(cond ((11 22) (33 44)) 55)'),
+			new If(
+				new Num(11),
+				new Num(22),
+				new If(new Num(33), new Num(44), new Num(55))
+			),
+			'cond/2'
+		)
+	})
 })()

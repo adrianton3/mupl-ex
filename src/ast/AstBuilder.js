@@ -134,15 +134,15 @@ exports.AstBuilder = (function () {
 		}
 	})
 
-	register('cond', (...items) => {
-		return items.slice(-1).reduceRight(
-			(prev, { test, consequent }) =>
+	register('cond', (items, last) => {
+		return items.children.reduceRight(
+			(prev, item) =>
 				new If(
-					buildAst(test),
-					buildAst(consequent),
+					buildAst(item.children[0]),
+					buildAst(item.children[1]),
 					prev
 				),
-			buildAst(items[items.length - 1])
+			buildAst(last)
 		)
 	})
 
