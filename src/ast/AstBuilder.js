@@ -111,7 +111,19 @@ exports.AstBuilder = (function () {
 	})
 
 	register('fun', (name, args, body) => {
-		// verify that args are indeed args
+		if (name.token.type !== 'identifier') {
+			throw 'Expect function name to be an identifier'
+		}
+
+		if (args.token.type !== '(') {
+			throw 'Expect function to have arguments list'
+		}
+
+		args.children.forEach((item) => {
+			if (item.token.type !== 'identifier') {
+				throw 'Expect arguments list to contain identifiers'
+			}
+		})
 
 		if (args.children.length === 0) {
 			return new Fun(name.token, false, buildAst(body))

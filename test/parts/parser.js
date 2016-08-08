@@ -135,6 +135,26 @@
 		)
 	})
 
+	test('Fun expressions exceptions', () => {
+		throws(
+			() => { parse('(fun 11 () 11)') },
+			/Expect function name to be an identifier/,
+			'Function name is non-identifier'
+		)
+
+		throws(
+			() => { parse('(fun f g 11)') },
+			/Expect function to have arguments list/,
+			'Arguments non-list'
+		)
+
+		throws(
+			() => { parse('(fun f (11) 11)') },
+			/Expect arguments list to contain identifiers/,
+			'Arguments list contains non-identifiers'
+		)
+	})
+
 	test('Lambda expressions', () => {
 		deepEqual(
 			parse('(lambda () 11)'),
