@@ -191,7 +191,7 @@ exports.AstBuilder = (function () {
 		)
 	})
 
-	register('let', (items, body) => {
+	function validateBindings (items) {
 		if (items.token.type !== '(') {
 			throw 'Expect a list of bindings'
 		}
@@ -209,6 +209,10 @@ exports.AstBuilder = (function () {
 				throw 'Expect bindings to contain an identifier and an expression'
 			}
 		})
+	}
+
+	register('let', (items, body) => {
+		validateBindings(items)
 
 		return items.children.reduceRight(
 			(prev, { children: [name, expression] }) => {
@@ -223,20 +227,7 @@ exports.AstBuilder = (function () {
 	})
 
 	register('letrec', (items, body) => {
-		items.children.forEach(({ token, children }) => {
-			if (
-				token.type !== '(' ||
-				children.length !== 2
-			) {
-				throw 'binding must be a pair'
-			}
-
-			const [name] = children
-
-			if (name.token.type !== 'identifier') {
-				throw 'must be an identifier'
-			}
-		})
+		validateBindings(items)
 
 		const initialised = items.children.reduceRight(
 			(prev, { children: [name, expression] }) =>

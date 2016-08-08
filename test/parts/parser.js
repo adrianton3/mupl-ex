@@ -237,6 +237,62 @@
 		)
 	})
 
+	test('Letrec expressions', () => {
+		deepEqual(
+			parse('(letrec ((a 11)) 22)'),
+			new Let(
+				makeIdentifier('a'),
+				new Any(),
+				new Set(makeIdentifier('a'), new Num(11), new Num(22))
+			),
+			'letrec/1'
+		)
+
+		deepEqual(
+			parse('(letrec ((a 11) (b 22)) 33)'),
+			new Let(
+				makeIdentifier('a'),
+				new Any(),
+				new Let(
+					makeIdentifier('b'),
+					new Any(),
+					new Set(
+						makeIdentifier('a'),
+						new Num(11),
+						new Set(makeIdentifier('b'), new Num(22), new Num(33))
+					)
+				)
+			),
+			'letrec/2'
+		)
+	})
+
+	test('Letrec expressions exceptions', () => {
+		throws(
+			() => { parse('(letrec a 11)') },
+			/Expect a list of bindings/,
+			'Letrec binding list is not a list'
+		)
+
+		throws(
+			() => { parse('(letrec (a) 11)') },
+			/Expect a list of bindings/,
+			'Letrec binding list does not contain lists'
+		)
+
+		throws(
+			() => { parse('(letrec ((a b c)) 11)') },
+			/Expect bindings to contain an identifier and an expression/,
+			'Letrec binding list does not contain pairs'
+		)
+
+		throws(
+			() => { parse('(letrec ((11 22)) 33)') },
+			/Expect bindings to contain an identifier and an expression/,
+			'Letrec bindings do not have an identifier as their first element'
+		)
+	})
+
 	test('Cond expressions', () => {
 		deepEqual(
 			parse('(cond ((11 22)) 33)'),
@@ -292,36 +348,6 @@
 			parse('(list 11 22)'),
 			new Pair(new Num(11), new Pair(new Num(22), new Unit())),
 			'list/2'
-		)
-	})
-
-	test('Letrec expressions', () => {
-		deepEqual(
-			parse('(letrec ((a 11)) 22)'),
-			new Let(
-				makeIdentifier('a'),
-				new Any(),
-				new Set(makeIdentifier('a'), new Num(11), new Num(22))
-			),
-			'letrec/1'
-		)
-
-		deepEqual(
-			parse('(letrec ((a 11) (b 22)) 33)'),
-			new Let(
-				makeIdentifier('a'),
-				new Any(),
-				new Let(
-					makeIdentifier('b'),
-					new Any(),
-					new Set(
-						makeIdentifier('a'),
-						new Num(11),
-						new Set(makeIdentifier('b'), new Num(22), new Num(33))
-					)
-				)
-			),
-			'letrec/2'
 		)
 	})
 })()
