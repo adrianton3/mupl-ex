@@ -42,10 +42,8 @@
 
 	function makeIdentifier (name) {
 		return {
-			token: {
-				type: 'identifier',
-				value: name
-			}
+			type: 'identifier',
+			value: name,
 		}
 	}
 

@@ -112,14 +112,14 @@ exports.AstBuilder = (function () {
 		// verify that args are indeed args
 
 		if (args.children.length === 0) {
-			return new Fun(name, false, buildAst(body))
+			return new Fun(name.token, false, buildAst(body))
 		} else {
 			const partial = args.children.slice(1).reduceRight(
-				(prev, arg) => new Fun(false, arg, prev),
+				(prev, arg) => new Fun(false, arg.token, prev),
 				buildAst(body)
 			)
 
-			return new Fun(name, args.children[0], partial)
+			return new Fun(name.token, args.children[0].token, partial)
 		}
 	})
 
@@ -162,7 +162,7 @@ exports.AstBuilder = (function () {
 					throw 'must be an identifier'
 				}
 
-				return new Let(name, buildAst(expression), prev)
+				return new Let(name.token, buildAst(expression), prev)
 			},
 			buildAst(body)
 		)
