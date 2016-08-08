@@ -192,17 +192,26 @@ exports.AstBuilder = (function () {
 	})
 
 	register('let', (items, body) => {
+		if (items.token.type !== '(') {
+			throw 'Expect a list of bindings'
+		}
+
+		items.children.forEach((item) => {
+			if (item.token.type !== '(') {
+				throw 'Expect a list of bindings'
+			}
+
+			if (item.children.length !== 2) {
+				throw 'Expect bindings to contain an identifier and an expression'
+			}
+
+			if (item.children[0].token.type !== 'identifier') {
+				throw 'Expect bindings to contain an identifier and an expression'
+			}
+		})
+
 		return items.children.reduceRight(
-			(prev, { token, children }) => {
-				if (
-					token.type !== '(' ||
-					children.length !== 2
-				) {
-					throw 'binding must be a pair'
-				}
-
-				const [name, expression] = children
-
+			(prev, { children: [name, expression] }) => {
 				if (name.token.type !== 'identifier') {
 					throw 'must be an identifier'
 				}

@@ -211,6 +211,32 @@
 		)
 	})
 
+	test('Let expressions exceptions', () => {
+		throws(
+			() => { parse('(let a 11)') },
+			/Expect a list of bindings/,
+			'Let binding list is not a list'
+		)
+
+		throws(
+			() => { parse('(let (a) 11)') },
+			/Expect a list of bindings/,
+			'Let binding list does not contain lists'
+		)
+
+		throws(
+			() => { parse('(let ((a b c)) 11)') },
+			/Expect bindings to contain an identifier and an expression/,
+			'Let binding list does not contain pairs'
+		)
+
+		throws(
+			() => { parse('(let ((11 22)) 33)') },
+			/Expect bindings to contain an identifier and an expression/,
+			'Let bindings do not have an identifier as their first element'
+		)
+	})
+
 	test('Cond expressions', () => {
 		deepEqual(
 			parse('(cond ((11 22)) 33)'),
