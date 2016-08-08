@@ -125,7 +125,7 @@ exports.AstBuilder = (function () {
 
 	register('list', (...items) => {
 		if (items.length === 0) {
-			return new Pair(new Unit(), new Unit())
+			return new Unit()
 		} else {
 			return items.reduceRight(
 				(prev, item) => new Pair(buildAst(item), prev),

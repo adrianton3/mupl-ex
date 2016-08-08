@@ -167,4 +167,24 @@
 			'cond/2'
 		)
 	})
+
+	test('List expressions', () => {
+		deepEqual(
+			parse('(list)'),
+			new Unit(),
+			'list/0'
+		)
+
+		deepEqual(
+			parse('(list 11)'),
+			new Pair(new Num(11), new Unit()),
+			'list/1'
+		)
+
+		deepEqual(
+			parse('(list 11 22)'),
+			new Pair(new Num(11), new Pair(new Num(22), new Unit())),
+			'list/2'
+		)
+	})
 })()
