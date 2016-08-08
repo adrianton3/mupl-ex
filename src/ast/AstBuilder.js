@@ -166,6 +166,20 @@ exports.AstBuilder = (function () {
 	})
 
 	register('cond', (items, last) => {
+		if (items.token.type !== '(') {
+			throw 'Expect a list of cond pairs'
+		}
+
+		items.children.forEach((item) => {
+			if (item.token.type !== '(') {
+				throw 'Expect a list of cond pairs'
+			}
+
+			if (item.children.length !== 2) {
+				throw 'Expect cond pairs to contain a test and a result'
+			}
+		})
+
 		return items.children.reduceRight(
 			(prev, item) =>
 				new If(

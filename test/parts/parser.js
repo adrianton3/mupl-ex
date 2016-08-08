@@ -229,6 +229,26 @@
 		)
 	})
 
+	test('Cond expressions exceptions', () => {
+		throws(
+			() => { parse('(cond a 11)') },
+			/Expect a list of cond pairs/,
+			'Cond item list is not a list'
+		)
+
+		throws(
+			() => { parse('(cond (a) 11)') },
+			/Expect a list of cond pairs/,
+			'Cond list item is not a list'
+		)
+
+		throws(
+			() => { parse('(cond ((11 22 33)) 44)') },
+			/Expect cond pairs to contain a test and a result/,
+			'Cond list item is not a pair'
+		)
+	})
+
 	test('List expressions', () => {
 		deepEqual(
 			parse('(list)'),
