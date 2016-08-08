@@ -179,6 +179,20 @@
 		)
 	})
 
+	test('Lambda expressions exceptions', () => {
+		throws(
+			() => { parse('(lambda g 11)') },
+			/Expect function to have arguments list/,
+			'Arguments non-list'
+		)
+
+		throws(
+			() => { parse('(lambda (11) 11)') },
+			/Expect arguments list to contain identifiers/,
+			'Arguments list contains non-identifiers'
+		)
+	})
+
 	test('Let expressions', () => {
 		deepEqual(
 			parse('(let ((a 11)) 22)'),

@@ -110,11 +110,7 @@ exports.AstBuilder = (function () {
 		}
 	})
 
-	register('fun', (name, args, body) => {
-		if (name.token.type !== 'identifier') {
-			throw 'Expect function name to be an identifier'
-		}
-
+	function validateArguments (args) {
 		if (args.token.type !== '(') {
 			throw 'Expect function to have arguments list'
 		}
@@ -124,6 +120,14 @@ exports.AstBuilder = (function () {
 				throw 'Expect arguments list to contain identifiers'
 			}
 		})
+	}
+
+	register('fun', (name, args, body) => {
+		if (name.token.type !== 'identifier') {
+			throw 'Expect function name to be an identifier'
+		}
+
+		validateArguments(args)
 
 		if (args.children.length === 0) {
 			return new Fun(name.token, false, buildAst(body))
@@ -138,7 +142,7 @@ exports.AstBuilder = (function () {
 	})
 
 	register('lambda', (args, body) => {
-		// verify that args are indeed args
+		validateArguments(args)
 
 		if (args.children.length === 0) {
 			return new Fun(false, false, buildAst(body))
