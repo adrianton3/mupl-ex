@@ -135,6 +135,30 @@
 		)
 	})
 
+	test('Lambda expressions', () => {
+		deepEqual(
+			parse('(lambda () 11)'),
+			new Fun(false, false, new Num(11)),
+			'lambda/0'
+		)
+
+		deepEqual(
+			parse('(lambda (a) 11)'),
+			new Fun(false, makeIdentifier('a'), new Num(11)),
+			'lambda/1'
+		)
+
+		deepEqual(
+			parse('(lambda (a b) 11)'),
+			new Fun(
+				false,
+				makeIdentifier('a'),
+				new Fun(false, makeIdentifier('b'), new Num(11))
+			),
+			'lambda/2'
+		)
+	})
+
 	test('Let expressions', () => {
 		deepEqual(
 			parse('(let ((a 11)) 22)'),

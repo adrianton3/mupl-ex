@@ -125,6 +125,19 @@ exports.AstBuilder = (function () {
 		}
 	})
 
+	register('lambda', (args, body) => {
+		// verify that args are indeed args
+
+		if (args.children.length === 0) {
+			return new Fun(false, false, buildAst(body))
+		} else {
+			return args.children.reduceRight(
+				(prev, arg) => new Fun(false, arg.token, prev),
+				buildAst(body)
+			)
+		}
+	})
+
 	register('list', (...items) => {
 		if (items.length === 0) {
 			return new Unit()
