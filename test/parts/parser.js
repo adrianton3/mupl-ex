@@ -30,6 +30,7 @@
 	const { PairQ } = require('../interpreter/nodes/PairQ.js')
 	const { Record } = require('../interpreter/nodes/Record.js')
 	const { RecordQ } = require('../interpreter/nodes/RecordQ.js')
+	const { Set } = require('../interpreter/nodes/Set.js')
 	const { Snd } = require('../interpreter/nodes/Snd.js')
 	const { Str } = require('../interpreter/nodes/Str.js')
 	const { StrQ } = require('../interpreter/nodes/StrQ.js')
@@ -38,6 +39,8 @@
 	const { UnitQ } = require('../interpreter/nodes/UnitQ.js')
 	const { Var } = require('../interpreter/nodes/Var.js')
 	const { Xor } = require('../interpreter/nodes/Xor.js')
+
+	const { Any } = require('../interpreter/nodes/Any.js')
 
 
 	function makeIdentifier (name) {
@@ -185,6 +188,36 @@
 			parse('(list 11 22)'),
 			new Pair(new Num(11), new Pair(new Num(22), new Unit())),
 			'list/2'
+		)
+	})
+
+	test('Letrec expressions', () => {
+		deepEqual(
+			parse('(letrec ((a 11)) 22)'),
+			new Let(
+				makeIdentifier('a'),
+				new Any(),
+				new Set(makeIdentifier('a'), new Num(11), new Num(22))
+			),
+			'letrec/1'
+		)
+
+		deepEqual(
+			parse('(letrec ((a 11) (b 22)) 33)'),
+			new Let(
+				makeIdentifier('a'),
+				new Any(),
+				new Let(
+					makeIdentifier('b'),
+					new Any(),
+					new Set(
+						makeIdentifier('a'),
+						new Num(11),
+						new Set(makeIdentifier('b'), new Num(22), new Num(33))
+					)
+				)
+			),
+			'letrec/2'
 		)
 	})
 })()

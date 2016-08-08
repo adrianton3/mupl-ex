@@ -42,6 +42,8 @@ exports.AstBuilder = (function () {
 	const { Var } = require('../interpreter/nodes/Var.js')
 	const { Xor } = require('../interpreter/nodes/Xor.js')
 
+	const { Any } = require('../interpreter/nodes/Any.js')
+
 	const mapping = new Map()
 
 	const register = Map.prototype.set.bind(mapping)
@@ -165,6 +167,35 @@ exports.AstBuilder = (function () {
 				return new Let(name.token, buildAst(expression), prev)
 			},
 			buildAst(body)
+		)
+	})
+
+	register('letrec', (items, body) => {
+		items.children.forEach(({ token, children }) => {
+			if (
+				token.type !== '(' ||
+				children.length !== 2
+			) {
+				throw 'binding must be a pair'
+			}
+
+			const [name] = children
+
+			if (name.token.type !== 'identifier') {
+				throw 'must be an identifier'
+			}
+		})
+
+		const initialised = items.children.reduceRight(
+			(prev, { children: [name, expression] }) =>
+				new Set(name.token, buildAst(expression), prev),
+			buildAst(body)
+		)
+
+		return items.children.reduceRight(
+			(prev, { children: [name] }) =>
+				new Let(name.token, new Any(), prev),
+			initialised
 		)
 	})
 
