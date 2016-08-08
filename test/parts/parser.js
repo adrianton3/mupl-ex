@@ -133,4 +133,22 @@
 			'fun/2'
 		)
 	})
+
+	test('Let expressions', () => {
+		deepEqual(
+			parse('(let ((a 11)) 22)'),
+			new Let(makeIdentifier('a'), new Num(11), new Num(22)),
+			'let/1'
+		)
+
+		deepEqual(
+			parse('(let ((a 11) (b 22)) 33)'),
+			new Let(
+				makeIdentifier('a'),
+				new Num(11),
+				new Let(makeIdentifier('b'), new Num(22), new Num(33))
+			),
+			'let/2'
+		)
+	})
 })()

@@ -147,7 +147,7 @@ exports.AstBuilder = (function () {
 	})
 
 	register('let', (items, body) => {
-		return items.reduceRight(
+		return items.children.reduceRight(
 			(prev, { token, children }) => {
 				if (
 					token.type !== '(' ||
@@ -162,7 +162,7 @@ exports.AstBuilder = (function () {
 					throw 'must be an identifier'
 				}
 
-				return new Let(name.token.value, buildAst(expression), prev)
+				return new Let(name, buildAst(expression), prev)
 			},
 			buildAst(body)
 		)
