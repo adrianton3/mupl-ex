@@ -191,24 +191,26 @@ exports.AstBuilder = (function () {
 		)
 	})
 
+	function validateBinding (item) {
+		if (item.token.type !== '(') {
+			throw 'Expect a list of bindings'
+		}
+
+		if (item.children.length !== 2) {
+			throw 'Expect bindings to contain an identifier and an expression'
+		}
+
+		if (item.children[0].token.type !== 'identifier') {
+			throw 'Expect bindings to contain an identifier and an expression'
+		}
+	}
+
 	function validateBindings (items) {
 		if (items.token.type !== '(') {
 			throw 'Expect a list of bindings'
 		}
 
-		items.children.forEach((item) => {
-			if (item.token.type !== '(') {
-				throw 'Expect a list of bindings'
-			}
-
-			if (item.children.length !== 2) {
-				throw 'Expect bindings to contain an identifier and an expression'
-			}
-
-			if (item.children[0].token.type !== 'identifier') {
-				throw 'Expect bindings to contain an identifier and an expression'
-			}
-		})
+		items.children.forEach(validateBinding)
 	}
 
 	register('let', (items, body) => {
@@ -240,6 +242,19 @@ exports.AstBuilder = (function () {
 				new Let(name.token, new Any(), prev),
 			initialised
 		)
+	})
+
+	register('record', (...items) => {
+		items.forEach(validateBinding)
+
+		const map = {}
+		items.forEach(
+			({ children: [name, expression] }) => {
+				map[name.token.value] = buildAst(expression)
+			}
+		)
+
+		return new Record(map)
 	})
 
 	function buildAst (tree) {

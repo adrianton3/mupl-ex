@@ -350,4 +350,24 @@
 			'list/2'
 		)
 	})
+
+	test('List expressions', () => {
+		deepEqual(
+			parse('(record)'),
+			new Record({}),
+			'record/0'
+		)
+
+		deepEqual(
+			parse('(record (a 11))'),
+			new Record({ a: new Num(11) }),
+			'record/1'
+		)
+
+		deepEqual(
+			parse('(record (a 11) (b 22))'),
+			new Record({ a: new Num(11), b: new Num(22) }),
+			'record/2'
+		)
+	})
 })()
