@@ -110,16 +110,18 @@ exports.AstBuilder = (function () {
 		}
 	})
 
+	function validateArgument (item) {
+		if (item.token.type !== 'identifier') {
+			throw 'Expect arguments list to contain identifiers'
+		}
+	}
+
 	function validateArguments (args) {
 		if (args.token.type !== '(') {
 			throw 'Expect function to have arguments list'
 		}
 
-		args.children.forEach((item) => {
-			if (item.token.type !== 'identifier') {
-				throw 'Expect arguments list to contain identifiers'
-			}
-		})
+		args.children.forEach(validateArgument)
 	}
 
 	register('fun', (name, args, body) => {
@@ -255,6 +257,14 @@ exports.AstBuilder = (function () {
 		)
 
 		return new Record(map)
+	})
+
+	register('contains?', (...items) => {
+		items.forEach(validateArgument)
+
+		return new ContainsQ(
+			items.map((item) => item.token.value)
+		)
 	})
 
 	function buildAst (tree) {

@@ -351,7 +351,7 @@
 		)
 	})
 
-	test('List expressions', () => {
+	test('Record expressions', () => {
 		deepEqual(
 			parse('(record)'),
 			new Record({}),
@@ -368,6 +368,26 @@
 			parse('(record (a 11) (b 22))'),
 			new Record({ a: new Num(11), b: new Num(22) }),
 			'record/2'
+		)
+	})
+
+	test('ContainsQ expressions', () => {
+		deepEqual(
+			parse('(contains?)'),
+			new ContainsQ([]),
+			'contains?/0'
+		)
+
+		deepEqual(
+			parse('(contains? a)'),
+			new ContainsQ(['a']),
+			'contains?/1'
+		)
+
+		deepEqual(
+			parse('(contains? a b)'),
+			new ContainsQ(['a', 'b']),
+			'contains?/2'
 		)
 	})
 })()
