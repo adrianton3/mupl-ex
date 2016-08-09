@@ -302,23 +302,72 @@ exports.AstBuilder = (function () {
 		}
 	}
 
-	function buildDefinitionAst (definition, moduleName) {
-		const [access, name, expression] = definition.children
+	function buildDefinitionAst ({ token, children }, moduleName) {
+		if (token.type !== '(') {
+			throw 'Expect module member definition to be a list'
+		}
+
+		if (children.length !== 3) {
+			throw 'Expect module member definition to contain a ' +
+				'privacy qualifier, a name and a function expression'
+		}
+
+		if (
+			children[0].token.type !== 'identifier' ||
+			!['private', 'public'].includes(children[0].token.value)
+		) {
+			throw 'Expect module member definition privacy qualifier ' +
+				'to be either "private" or "public"'
+		}
+
+		if (children[1].token.type !== 'identifier') {
+			throw 'Expect module member definition name to be an identifier'
+		}
+
+		if (
+			children[2].token.type !== '(' ||
+			!['fun', 'lambda'].includes(children[2].children[0].token.value)
+		) {
+			throw 'Expect module member definition to be a function'
+		}
+
+		const [access, name, expression] = children
 
 		return new Def(
 			name.token.value,
-			moduleName.token.value,
+			moduleName,
 			access.token.value,
 			buildAst(expression)
 		)
 	}
 
-	function buildModuleAst (tree) {
-		const [, name, ...definitions] = tree.children
+	function buildModuleAst ({ token, children }) {
+		if (token.type !== '(') {
+			throw 'Expect module definition to be a list'
+		}
+
+		if (children.length < 3) {
+			throw 'Expect module definition contain at least one definition'
+		}
+
+		if (
+			children[0].token.type !== 'identifier' ||
+			children[0].token.value !== 'module'
+		) {
+			throw 'Expect module definition to start with "module"'
+		}
+
+		if (children[1].token.type !== 'identifier') {
+			throw 'Expect module name to be an identifier'
+		}
+
+		const [, name, ...definitions] = children
 
 		return new Module(
 			name.token.value,
-			definitions.map((definition) => buildDefinitionAst(definition, name))
+			definitions.map(
+				(definition) => buildDefinitionAst(definition, name.token.value)
+			)
 		)
 	}
 

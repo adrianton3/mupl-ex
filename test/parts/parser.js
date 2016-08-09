@@ -431,4 +431,42 @@
 			'module/2'
 		)
 	})
+
+	test('Module definition exceptions', () => {
+		throws(
+			() => { parseModule('a') },
+			/Expect module definition to be a list/,
+			'Module definition is not a list'
+		)
+
+		throws(
+			() => { parseModule('(module 11 (private b (lambda () 11)))') },
+			/Expect module name to be an identifier/,
+			'Module name is not an identifier'
+		)
+
+		throws(
+			() => { parseModule('(z a (private b (lambda () 11)))') },
+			/Expect module definition to start with "module"/,
+			'Module definition does not start with "module"'
+		)
+
+		throws(
+			() => { parseModule('(module a 11)') },
+			/Expect module member definition to be a list/,
+			'Module member is not a member definition'
+		)
+
+		throws(
+			() => { parseModule('(module a (b (lambda () 11)))') },
+			/Expect module member definition to contain a privacy qualifier, a name and a function expression/,
+			'Module member does not have a valid privacy qualifier'
+		)
+
+		throws(
+			() => { parseModule('(module a (private b 11))') },
+			/Expect module member definition to be a function/,
+			'Module member is not a function'
+		)
+	})
 })()
