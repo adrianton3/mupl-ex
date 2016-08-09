@@ -1,7 +1,7 @@
 (() => {
 	"use strict"
 
-	const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
+	const { buildAst, buildModuleAst } = require('../../src/ast/AstBuilder.js').AstBuilder
 
 	const { TokenCoords } = require('../tokenizer/TokenCoords.js')
 	
@@ -50,10 +50,17 @@
 		}
 	}
 
-	function parse (inText) {
-		const tokens = espace.Tokenizer()(inText)
-		const tree = espace.Parser.parse(tokens)
-		return buildAst(tree)
+	function getRawTree (source) {
+		const tokens = espace.Tokenizer()(source)
+		return espace.Parser.parse(tokens)
+	}
+
+	function parse (source) {
+		return buildAst(getRawTree(source))
+	}
+
+	function parseModule (source) {
+		return buildModuleAst(getRawTree(source))
 	}
 
 
@@ -388,6 +395,40 @@
 			parse('(contains? a b)'),
 			new ContainsQ(['a', 'b']),
 			'contains?/2'
+		)
+	})
+
+	test('Module definition', () => {
+		deepEqual(
+			parseModule('(module a (private b (lambda () 11)))'),
+			new Module('a', [
+				new Def(
+					'b',
+					'a',
+					'private',
+					new Fun(false, false, new Num(11))
+				)
+			]),
+			'module/1'
+		)
+
+		deepEqual(
+			parseModule('(module a (private b (lambda () 11)) (public c (lambda () 22)))'),
+			new Module('a', [
+				new Def(
+					'b',
+					'a',
+					'private',
+					new Fun(false, false, new Num(11))
+				),
+				new Def(
+					'c',
+					'a',
+					'public',
+					new Fun(false, false, new Num(22))
+				)
+			]),
+			'module/2'
 		)
 	})
 })()

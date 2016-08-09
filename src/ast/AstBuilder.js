@@ -302,5 +302,25 @@ exports.AstBuilder = (function () {
 		}
 	}
 
-	return { buildAst }
+	function buildDefinitionAst (definition, moduleName) {
+		const [access, name, expression] = definition.children
+
+		return new Def(
+			name.token.value,
+			moduleName.token.value,
+			access.token.value,
+			buildAst(expression)
+		)
+	}
+
+	function buildModuleAst (tree) {
+		const [, name, ...definitions] = tree.children
+
+		return new Module(
+			name.token.value,
+			definitions.map((definition) => buildDefinitionAst(definition, name))
+		)
+	}
+
+	return { buildModuleAst, buildAst }
 })()
