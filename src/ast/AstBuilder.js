@@ -82,20 +82,60 @@ exports.AstBuilder = (function () {
 
 	registerBinary('>', Greater)
 
-	registerBinary('and', Add)
+	registerBinary('and', And)
 	registerBinary('or', Or)
 	registerBinary('xor', Xor)
 
 	registerBinary('pair', Pair)
-
-	registerBinary('set-fst!', SetFst)
-	registerBinary('set-snd!', SetSnd)
 
 	register('if', (test, consequent, alternate) =>
 		new If(
 			buildAst(test),
 			buildAst(consequent),
 			buildAst(alternate)
+		)
+	)
+
+	register('deref', (expression, name) =>
+		new Deref(
+			buildAst(expression),
+			name.token.value
+		)
+	)
+
+	register('mut', (name, expression, body) =>
+		new Let(
+			name.token.value,
+			buildAst(expression),
+			buildAst(body),
+			false
+		)
+	)
+
+	register('set!', (name, expression, body) =>
+		new Set(
+			name.token.value,
+			buildAst(expression),
+			buildAst(body),
+			false
+		)
+	)
+
+	register('setfst!', (name, expression, body) =>
+		new SetFst(
+			name.token.value,
+			buildAst(expression),
+			buildAst(body),
+			false
+		)
+	)
+
+	register('setsnd!', (name, expression, body) =>
+		new SetSnd(
+			name.token.value,
+			buildAst(expression),
+			buildAst(body),
+			false
 		)
 	)
 
@@ -132,14 +172,14 @@ exports.AstBuilder = (function () {
 		validateArguments(args)
 
 		if (args.children.length === 0) {
-			return new Fun(name.token, false, buildAst(body))
+			return new Fun(name.token.value, false, buildAst(body))
 		} else {
 			const partial = args.children.slice(1).reduceRight(
-				(prev, arg) => new Fun(false, arg.token, prev),
+				(prev, arg) => new Fun(false, arg.token.value, prev),
 				buildAst(body)
 			)
 
-			return new Fun(name.token, args.children[0].token, partial)
+			return new Fun(name.token.value, args.children[0].token.value, partial)
 		}
 	})
 
@@ -150,7 +190,7 @@ exports.AstBuilder = (function () {
 			return new Fun(false, false, buildAst(body))
 		} else {
 			return args.children.reduceRight(
-				(prev, arg) => new Fun(false, arg.token, prev),
+				(prev, arg) => new Fun(false, arg.token.value, prev),
 				buildAst(body)
 			)
 		}
@@ -224,7 +264,7 @@ exports.AstBuilder = (function () {
 					throw 'must be an identifier'
 				}
 
-				return new Let(name.token, buildAst(expression), prev)
+				return new Let(name.token.value, buildAst(expression), prev, true)
 			},
 			buildAst(body)
 		)
@@ -235,13 +275,13 @@ exports.AstBuilder = (function () {
 
 		const initialised = items.children.reduceRight(
 			(prev, { children: [name, expression] }) =>
-				new Set(name.token, buildAst(expression), prev),
+				new Set(name.token.value, buildAst(expression), prev, true),
 			buildAst(body)
 		)
 
 		return items.children.reduceRight(
 			(prev, { children: [name] }) =>
-				new Let(name.token, new Any(), prev),
+				new Let(name.token.value, new Any(), prev, true),
 			initialised
 		)
 	})

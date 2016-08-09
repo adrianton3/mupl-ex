@@ -13,19 +13,23 @@
 	
 	var VarBinding = require('../interpreter/VarBinding.js').VarBinding;
 	var Env = require('../interpreter/Env.js').Env;
+
+	const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
+
+	function parse (source) {
+		const tokens = espace.Tokenizer()(source)
+		const rawTree = espace.Parser.parse(tokens)
+		return buildAst(rawTree)
+	}
+
+	function _e(source, modSet) {
+		return arguments.length > 1 ?
+			parse(source).ev(Env.Emp, modSet) :
+			parse(source).ev(Env.Emp)
+	}
 	
-	var StaticCheck = require('../interpreter/StaticCheck.js').StaticCheck;
-	var VarCheckState = require('../interpreter/VarCheckState.js').VarCheckState;
-	var ToJS = require('../interpreter/ToJS.js').ToJS;
-	
-	var RDP = require('../parser/RDP.js').RDP;
-	
-	var _e = function(s, modSet) {
-		if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Env.Emp, modSet);
-		else return RDP.single(Tokenizer.chop(s)).ev(Env.Emp); 
-	};
-	
-	module('interpreter');
+	module('interpreter')
+
 	test('Atomic trees', function() {
 		deepEqual(new Num(234).ev(Env.Emp), new Num(234), 'Num');
 		deepEqual(new Bool(true).ev(Env.Emp), new Bool(true), 'Bool');
@@ -74,8 +78,8 @@
 	test('Scope', function() {
 		deepEqual(new Var('a').ev(new Env(new VarBinding('a', new Num(10)))), new Num(10), 'Simple lookup');
 		deepEqual(new Var('a').ev(new Env(new VarBinding('a', new Num(10))).con(new VarBinding('a', new Num(20)))), new Num(20), 'Shadowing');
-		deepEqual(_e('(let a 10 a)'), new Num(10), 'Let');
-		deepEqual(_e('(let a 10 (let a 20 a))'), new Num(20), 'Let');
+		deepEqual(_e('(let ((a 10)) a)'), new Num(10), 'Let');
+		deepEqual(_e('(let ((a 10) (a 20)) a)'), new Num(20), 'Let');
 	});
 	
 	test('Record', function() {
@@ -85,27 +89,43 @@
 	});
 	
 	test('Fun', function() {
-		deepEqual(_e('(call (fun f (x) (+ 10 x)) 5)'), new Num(15), 'Fun');
-		deepEqual(_e('(let a 10 (call (fun f (x) (+ a x)) 5))'), new Num(15), 'Closure');
-		deepEqual(_e('(let a 10 (let f (fun f (x) (+ a x)) (let a 30 (call f 5))))'), new Num(15), 'Closure scope');
+		deepEqual(_e(
+			`(call 
+				(fun f (x) 
+					(+ 10 x)) 5)`
+		), new Num(15), 'Fun')
+
+		deepEqual(_e(
+			`(let 
+				((a 10)) 
+				(call (fun f (x) (+ a x)) 5))`
+		), new Num(15), 'Closure')
+
+		deepEqual(_e(
+			`(let 
+				((a 10) 
+				(f (lambda (x) (+ a x)))
+				(a 30)) 
+				(call f 5))`
+		), new Num(15), 'Closure scope')
 	});
 	
 	test('Set!', function() {
 		deepEqual(_e('(mut a 15 (set! a 33 a))'), new Num(33), 'Set!');
-		deepEqual(_e('(let a (pair 11 22) (setfst! a 33 (fst a)))'), new Num(33), 'SetFst!');
-		deepEqual(_e('(let a (pair 11 22) (setfst! a 33 (snd a)))'), new Num(22), 'SetFst!');
-		deepEqual(_e('(let a (pair 11 22) (setsnd! a 33 (snd a)))'), new Num(33), 'SetSnd!');
-		deepEqual(_e('(let a (pair 11 22) (setsnd! a 33 (fst a)))'), new Num(11), 'SetSnd!');
+		deepEqual(_e('(let ((a (pair 11 22))) (setfst! a 33 (fst a)))'), new Num(33), 'SetFst!');
+		deepEqual(_e('(let ((a (pair 11 22))) (setfst! a 33 (snd a)))'), new Num(22), 'SetFst!');
+		deepEqual(_e('(let ((a (pair 11 22))) (setsnd! a 33 (snd a)))'), new Num(33), 'SetSnd!');
+		deepEqual(_e('(let ((a (pair 11 22))) (setsnd! a 33 (fst a)))'), new Num(11), 'SetSnd!');
 	});
 	
-	test('Extendibles', function() {
-		deepEqual(_e('(cond ((#t 10) (#t 20)) 30)'), new Num(10), 'If*');
-		deepEqual(_e('(cond ((#f 10) (#t 20)) 30)'), new Num(20), 'If*');
-		deepEqual(_e('(cond ((#f 10) (#f 20)) 30)'), new Num(30), 'If*');
+	test('Extendables', function() {
+		deepEqual(_e('(cond ((#t 10) (#t 20)) 30)'), new Num(10), 'Cond');
+		deepEqual(_e('(cond ((#f 10) (#t 20)) 30)'), new Num(20), 'Cond');
+		deepEqual(_e('(cond ((#f 10) (#f 20)) 30)'), new Num(30), 'Cond');
 		
-		deepEqual(_e('(let* ((a 10) (b 20)) a)'), new Num(10), 'Let*');
-		deepEqual(_e('(let* ((a 10) (a 20)) a)'), new Num(20), 'Let*');
-		deepEqual(_e('(let* ((a 10) (b a)) b)'), new Num(10), 'Let*');
+		deepEqual(_e('(let ((a 10) (b 20)) a)'), new Num(10), 'Let');
+		deepEqual(_e('(let ((a 10) (a 20)) a)'), new Num(20), 'Let');
+		deepEqual(_e('(let ((a 10) (b a)) b)'), new Num(10), 'Let');
 		
 		deepEqual(_e('(list 11 22 33 44 55)'), 
 			new Pair(new Num(11), new Pair(new Num(22), new Pair(new Num(33), new Pair(new Num(44), new Pair(new Num(55), new Unit()))))), 'List');
@@ -113,7 +133,7 @@
 		deepEqual(_e('(list)'), new Unit(), 'Shortest list');
 		
 		deepEqual(_e('(call (fun f (a b) (+ a b)) 11 22)'), new Num(33), 'Call(Fun)');
-		deepEqual(_e('(let c (call (fun f (a b) (+ a b)) 11) (call c 22))'), new Num(33), 'Call(Fun)');
+		deepEqual(_e('(let ((c (call (fun f (a b) (+ a b)) 11))) (call c 22))'), new Num(33), 'Call(Fun)');
 		
 		deepEqual(_e('(call (lambda (a b) (+ a b)) 11 22)'), new Num(33), 'Call(Lambda)');
 		

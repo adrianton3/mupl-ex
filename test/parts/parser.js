@@ -44,10 +44,7 @@
 
 
 	function makeIdentifier (name) {
-		return {
-			type: 'identifier',
-			value: name,
-		}
+		return name
 	}
 
 	function getRawTree (source) {
@@ -203,7 +200,7 @@
 	test('Let expressions', () => {
 		deepEqual(
 			parse('(let ((a 11)) 22)'),
-			new Let(makeIdentifier('a'), new Num(11), new Num(22)),
+			new Let(makeIdentifier('a'), new Num(11), new Num(22), true),
 			'let/1'
 		)
 
@@ -212,7 +209,8 @@
 			new Let(
 				makeIdentifier('a'),
 				new Num(11),
-				new Let(makeIdentifier('b'), new Num(22), new Num(33))
+				new Let(makeIdentifier('b'), new Num(22), new Num(33), true),
+				true
 			),
 			'let/2'
 		)
@@ -250,7 +248,8 @@
 			new Let(
 				makeIdentifier('a'),
 				new Any(),
-				new Set(makeIdentifier('a'), new Num(11), new Num(22))
+				new Set(makeIdentifier('a'), new Num(11), new Num(22), true),
+				true
 			),
 			'letrec/1'
 		)
@@ -266,9 +265,12 @@
 					new Set(
 						makeIdentifier('a'),
 						new Num(11),
-						new Set(makeIdentifier('b'), new Num(22), new Num(33))
-					)
-				)
+						new Set(makeIdentifier('b'), new Num(22), new Num(33), true),
+						true
+					),
+					true
+				),
+				true
 			),
 			'letrec/2'
 		)
