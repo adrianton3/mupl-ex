@@ -117,6 +117,19 @@
 		deepEqual(_e('(let ((a (pair 11 22))) (setsnd! a 33 (snd a)))'), new Num(33), 'SetSnd!');
 		deepEqual(_e('(let ((a (pair 11 22))) (setsnd! a 33 (fst a)))'), new Num(11), 'SetSnd!');
 	});
+
+	test('Err', function() {
+		throws(function() { return _e('(err "oh noes!")'); }, 'oh noes!', 'simple throw');
+		throws(function() { return _e('(if #f 10 (err 15))'); }, '15', 'if err');
+		throws(function() { return _e('(err (if #f "no err" "err"))'); }, 'err', 'err if');
+	});
+
+	test('Strings', function() {
+		deepEqual(_e('"a string"'), new Str('a string'), 'a string');
+		deepEqual(_e('(str? "str")'), new Bool(true), 'str? string');
+		deepEqual(_e('(str? unit)'), new Bool(false), 'str? unit');
+		deepEqual(_e('(str? 321)'), new Bool(false), 'str? num');
+	});
 	
 	test('Extendables', function() {
 		deepEqual(_e('(cond ((#t 10) (#t 20)) 30)'), new Num(10), 'Cond');
