@@ -15,7 +15,7 @@ exports.Module = (function () {
 	Module.getPub = function (defs) {
 		const ret = []
 		for (const i in defs) {
-			if (defs[i].pub) {
+			if (defs[i].pub === 'public') {
 				ret.push(defs[i])
 			}
 		}
