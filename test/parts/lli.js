@@ -1,48 +1,60 @@
 (function() {
 	"use strict";
 	
-	var Tokenizer = require('../tokenizer/Tokenizer.js').Tokenizer;
-	var RDP = require('../parser/RDP.js').RDP;
 	var Env = require('../interpreter/Env.js').Env;
 	var ToLL = require('../lli/ToLL.js').ToLL;
 	var LLI = require('../lli/LLI.js').LLI;
+
+	const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
+
+	function parse (source) {
+		const tokens = espace.Tokenizer()(source)
+		const rawTree = espace.Parser.parse(tokens)
+		return buildAst(rawTree)
+	}
+
+	function _e(source) {
+		return parse(source).ev(Env.Emp)
+	}
 	
-	var _e = function(s, modSet) { 
-		if(arguments.length > 1) return RDP.single(Tokenizer.chop(s)).ev(Env.Emp, modSet);
-		else return RDP.single(Tokenizer.chop(s)).ev(Env.Emp); 
-	};
+	function _ell (source) {
+		const lli = new LLI()
+		const opStack = lli.interpret(source)
+
+		if (opStack.length !== 1) {
+			throw 'Too many/few elements left on stack'
+		}
+
+		return opStack[0]
+	}
 	
-	var _ell = function(s) { 
-		var lli = new LLI();
-		var opStack = lli.interpret(s);
-		if(opStack.length !== 1) throw 'Too many/few elements left on stack'; 
-		return opStack[0]; 
-	};
+	function _trll (source) {
+		const ast = parse(source)
+		return ast.accept(new ToLL())
+	}
 	
-	var _trll = function(s) { 
-		var exp = RDP.single(Tokenizer.chop(s)); 
-		return exp.accept(new ToLL()); 
-	};
-	
-	var _eqnll = function(s) { return _e(s).getValue() == _ell(_trll(s)); };
+	function _eqll (source) {
+		return _e(source).getValue() === _ell(_trll(source))
+	}
 	
 	module('toLL');
+
 	test('Primitives', function() {
-		ok(_eqnll('25'), 'num');
+		ok(_eqll('25'), 'num');
 	});
 	
 	test('Simple functions', function() {
-		ok(_eqnll('(+ 23 54)'), '+ num num');
-		ok(_eqnll('(* 23 54)'), '+ num num');
-		ok(_eqnll('(> 23 54)'), '+ num num');
-		ok(_eqnll('(> 54 23)'), '+ num num');
+		ok(_eqll('(+ 23 54)'), '+ num num');
+		ok(_eqll('(* 23 54)'), '+ num num');
+		ok(_eqll('(> 23 54)'), '+ num num');
+		ok(_eqll('(> 54 23)'), '+ num num');
 		
-		ok(_eqnll('(if (> 1 2) 30 20)'), 'if #t');
-		ok(_eqnll('(if (> 2 1) 30 20)'), 'if #f');
+		ok(_eqll('(if (> 1 2) 30 20)'), 'if #t');
+		ok(_eqll('(if (> 2 1) 30 20)'), 'if #f');
 	});
 	
 	test('Fun, Call', function() {
-		ok(_eqnll('(call (lambda (x) (+ x 30)) 20)'), 'call lambda');
-		ok(_eqnll('(call (lambda (x y) (+ x y)) 10 45)'), 'call lambda');
+		ok(_eqll('(call (lambda (x) (+ x 30)) 20)'), 'call lambda');
+		ok(_eqll('(call (lambda (x y) (+ x y)) 10 45)'), 'call lambda');
 	});
 })();
