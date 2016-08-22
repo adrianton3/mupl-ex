@@ -13,7 +13,7 @@ exports.Type = (function () {
 	}
 
 	Type.prototype.equals = function (that) {
-		return (this.any || that.any) ||
+		return (this.any && that.any) ||
 			(this.bool === that.bool &&
 			this.num === that.num &&
 			this.str === that.str &&
