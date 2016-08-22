@@ -2,8 +2,8 @@
   "name": "muplex",
   "version": "0.1.0",
   "scripts": {
-    "eslint": "node node_modules/eslint/bin/eslint.js src/ || true",
-    "eslint-fix": "node node_modules/eslint/bin/eslint.js --fix src/ || true"
+    "eslint": "node node_modules/eslint/bin/eslint.js src/ test/parts/ || true",
+    "eslint-fix": "node node_modules/eslint/bin/eslint.js --fix src/ test/parts/ || true"
   },
   "repository": {
     "type": "git",

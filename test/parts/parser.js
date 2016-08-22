@@ -4,7 +4,7 @@
 	const { buildAst, buildModuleAst } = require('../../src/ast/AstBuilder.js').AstBuilder
 
 	const { TokenCoords } = require('../tokenizer/TokenCoords.js')
-	
+
 	const { Add } = require('../interpreter/nodes/Add.js')
 	const { And } = require('../interpreter/nodes/And.js')
 	const { Bool } = require('../interpreter/nodes/Bool.js')
@@ -409,7 +409,7 @@
 					'a',
 					'private',
 					new Fun(false, false, new Num(11))
-				)
+				),
 			]),
 			'module/1'
 		)
@@ -428,7 +428,7 @@
 					'a',
 					'public',
 					new Fun(false, false, new Num(22))
-				)
+				),
 			]),
 			'module/2'
 		)
