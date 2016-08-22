@@ -411,5 +411,30 @@ exports.AstBuilder = (function () {
 		)
 	}
 
-	return { buildModuleAst, buildAst }
+	function buildProgramAst ({ token, children }) {
+		if (token.type !== '(') {
+			throw 'Expect program definition to be a list'
+		}
+
+		if (children.length < 2) {
+			throw 'Expect program definition contain at least one module'
+		}
+
+		if (
+			children[0].token.type !== 'identifier' ||
+			children[0].token.value !== 'program'
+		) {
+			throw 'Expect program definition to start with "program"'
+		}
+
+		const [, ...definitions] = children
+
+		return new ModuleSet(
+			definitions.map(
+				(definition) => buildModuleAst(definition)
+			)
+		)
+	}
+
+	return { buildAst, buildModuleAst, buildProgramAst }
 })()

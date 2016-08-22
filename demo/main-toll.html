@@ -13,6 +13,8 @@
 		<script type="text/javascript" src="lib/codemirror.js"></script>
 		<script type="text/javascript" src="lib/matchbrackets.js"></script>
 
+		<script type="text/javascript" src="../lib/espace.min.js"></script>
+
 		<script type="text/javascript" src="../src/Require.js"></script>
 
 		<script type="text/javascript" src="../src/tokenizer/TokenCoords.js"></script>
@@ -89,24 +91,7 @@
 		<script type="text/javascript" src="../src/lli/ToLL.js"></script>
 		<script type="text/javascript" src="../src/lli/LLI.js"></script>
 
-		<script type="text/javascript" src="../src/tokenizer/IterableString.js"></script>
-
-		<script type="text/javascript" src="../src/tokenizer/TokBool.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokCommML.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokCommSL.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokEnd.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokIdentifier.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokKeyword.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokLPar.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokNum.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokRPar.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokStr.js"></script>
-		<script type="text/javascript" src="../src/tokenizer/TokWhitespace.js"></script>
-
-		<script type="text/javascript" src="../src/tokenizer/Tokenizer.js"></script>
-
-		<script type="text/javascript" src="../src/parser/TokenList.js"></script>
-		<script type="text/javascript" src="../src/parser/RDP.js"></script>
+		<script type="text/javascript" src="../src/ast/AstBuilder.js"></script>
 
 <!-- --- -->
 
@@ -115,7 +100,7 @@
 			<tr>
 				<td>
 					<span class="title">Expression</span><br>
-					<textarea id="in_exp" rows="6" cols="50">(let a 10
+					<textarea id="in_exp" rows="6" cols="50">(let ((a 10))
  (+ 5 a)
 )</textarea>
 				</td>
@@ -137,8 +122,7 @@
 		<script type="text/javascript">
 			'use strict';
 
-			var Tokenizer = require('./tokenizer/Tokenizer.js').Tokenizer;
-			var RDP = require('./parser/RDP.js').RDP;
+			const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
 			var StaticCheck = require('./interpreter/StaticCheck.js').StaticCheck;
 			var VarCheckState = require('./interpreter/VarCheckState.js').VarCheckState;
 			var Env = require('./interpreter/Env.js').Env;
@@ -147,7 +131,6 @@
 
 			window.onload = process;
 			var _parsedFreeExp;
-			var _modSet;
 
 			var inExpEditor, outLLEditor, outInterpreterEditor;
 
@@ -180,18 +163,17 @@
 
 			setupEditors();
 
+			function parse (source) {
+				const tokens = espace.Tokenizer()(source)
+				return espace.Parser.parse(tokens)
+			}
+
 			function process() {
-				var hComputeButton = document.getElementById('but_compute');
-
-				var hTokens = document.getElementById('chk_tokens');
-				var hAST = document.getElementById('chk_ast');
-
 				var expIn = inExpEditor.getValue();
 				var outParser = '';
 
 				try {
-					var toksFreeExp = Tokenizer.chop(expIn);
-					_parsedFreeExp = RDP.single(toksFreeExp);
+					_parsedFreeExp = buildAst(parse(expIn))
 
 					var freeExpt = _parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, null));
 					outParser += 'Free exp type/reference check: OK.\n';
