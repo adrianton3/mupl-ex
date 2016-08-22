@@ -130,22 +130,26 @@ Planned features:
 Version history:
 ----------------
 
-### 0.5.4
+### r18
+
+* replace the tokenizer and parser with espace
+
+### r17
 
 * experimental translation to a low level language (*toLL*)
 * basic styling
 * separate pages for each "module"
 * upgraded textareas to codemirror
 
-### 0.5.3
+### r16
 
 * added better type-checking
 
-### 0.5.2
+### r15
 
 * added more tests for *toJS*
 
-### 0.5.1
+### r14
 
 * *toJS* translator now supports modules
 * added necessary helper functions for *toJS*
@@ -154,17 +158,17 @@ Version history:
 * cleaned up *RDP.js*
 * fixed a `contains?` not parsing properly
 
-### 0.5.0
+### r13
 
 * added experimental *toJS* translator
 
-### 0.4.4
+### r12
 
 * added line numbers in error messages
 * updated *Usage* examples
 * renamed *TypeCheck.js* to *StaticCheck.js*
 
-### 0.4.3
+### r11
 
 * unified *TypeCheck.js* and *VarCheck.js*
 * expressions keep their type when they're bound
@@ -174,51 +178,51 @@ Version history:
 * improved some error messages
 * fixed a bug in *index-pretty.html*
 
-### 0.4.2
+### r10
 
 * added strings
 * added "exceptions" via `err`
 * cleaned up *List.js*
 
-### 0.4.1
+### r9
 
 * removed `_M` from global scope
 * added a *Usage* section to this document
 
-### 0.4
+### r8
 
 * added modules with public and private definitions
 * updated reference checking to work with modules
 * fixed bugs in *main.html*
 
-### 0.3.2
+### r7
 
 * added a simple syntax highlighter and export to HTML option
 * added `closure?`
 
-### 0.3.1
+### r6
 
 * added "compile time" checking for variables' definition
 
-### 0.3
+### r5
 
 * added "compile time" basic type checking
 
-### 0.2.2
+### r4
 
 * added a quick and dirty way to print stuff
 
-### 0.2.1
+### r3
 
 * added `/`, `%`, `not`
 
-### 0.2
+### r2
 
 * added anonymous functions
 * added no-parameter functions
 * removed old `fun` and `call`
 * renamed `if*` to `cond`
 
-### 0.1
+### r1
 
 * basic scheme-like language
