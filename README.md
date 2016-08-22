@@ -11,7 +11,7 @@ As of version 0.5.1 MUPLex programs can be either interpreted or translated into
 
 1. The map function
 
- ```scheme
+```scheme
 (call
 
  (fun map (l op)
@@ -25,8 +25,8 @@ As of version 0.5.1 MUPLex programs can be either interpreted or translated into
 
 2. Closures
 
- ```scheme
-(let*
+```scheme
+(let
  ((f (lambda (x y) (+ x y)))
   (add10 (call f 10)))
  (call add10 3))
@@ -34,9 +34,9 @@ As of version 0.5.1 MUPLex programs can be either interpreted or translated into
 
 3. Mutation
 
- ```scheme
+```scheme
 (mut a 10
- (let f (lambda (x) (+ x a))
+ (let ((f (lambda (x) (+ x a))))
   (set! a 3
    (call f 11))))
 ```
