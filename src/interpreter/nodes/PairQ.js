@@ -2,7 +2,7 @@ exports.PairQ = (function () {
 	"use strict"
 
 	const Pair = require('./Pair.js').Pair
-	const Bool = require('./interpreter/nodes/Bool.js').Bool
+	const Bool = require('./Bool.js').Bool
 
 	function PairQ (e) {
 		this.e = e

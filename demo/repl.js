@@ -1,35 +1,38 @@
-var Tokenizer = require('./tokenizer/Tokenizer.js').Tokenizer;
-var RDP = require('./parser/RDP.js').RDP;
-var StaticCheck = require('./interpreter/StaticCheck.js').StaticCheck;
-var VarCheckState = require('./interpreter/VarCheckState.js').VarCheckState;
-var Env = require('./interpreter/Env.js').Env;
-var Out = require('./interpreter/Out.js').Out;
+const espace = require('../lib/espace.min')
+const { buildAst } = require('../src/ast/AstBuilder.js').AstBuilder
+const StaticCheck = require('../src/interpreter/StaticCheck.js').StaticCheck;
+const VarCheckState = require('../src/interpreter/VarCheckState.js').VarCheckState;
+const Env = require('../src/interpreter/Env.js').Env;
+const Out = require('../src/interpreter/Out.js').Out;
 
-var sys = require("sys");
-var stdin = process.openStdin();
-var stdout = process.stdout;
+const stdin = process.openStdin();
+const stdout = process.stdout;
+
+function parse (source) {
+	const tokens = espace.Tokenizer()(source)
+	return espace.Parser.parse(tokens)
+}
 
 stdout.write('> ');
-stdin.addListener("data", function(d) {
-	var expIn = d.toString().substring(0, d.length-2);
+stdin.addListener("data", (data) => {
+	const expIn = data.toString()
   
-  var istr = '';
+  	let istr = '';
 	try {
-		var toksFreeExp = Tokenizer.chop(expIn);
-		var _parsedFreeExp = RDP.single(toksFreeExp);
-		var freeExpt = _parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, null));
+		const _parsedFreeExp = buildAst(parse(expIn))
+		_parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, null));
 		
 		Out.reset();
-		
-		var res = _parsedFreeExp.ev(Env.Emp);
+
+		const res = _parsedFreeExp.ev(Env.Emp);
 		istr += res.toString() + '\n';
-		
-		var outStr = Out.toString();
-		if(outStr.length > 0) {
+
+		const outStr = Out.toString();
+		if (outStr.length > 0) {
 			istr += 'Out ======\n\n';
 			istr += outStr;
 		}
-	} catch(err) {
+	} catch (err) {
 		istr += err + '\n';
 	}
 
