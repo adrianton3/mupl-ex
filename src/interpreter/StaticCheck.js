@@ -108,7 +108,7 @@ exports.StaticCheck = (() => {
 
 	StaticCheck.prototype.visitContainsQ = function (containsQ, state) {
 		containsQ.list.forEach((item) => {
-			if (item.indexOf('.') !== -1) {
+			if (item.contains('.')) {
 				throw 'Member names (' + item + ') can not contain "." ' + containsQ.tokenCoords
 			}
 		})
@@ -119,7 +119,7 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitDef = function (def, state) {
-		if (def.defName.indexOf('.') !== -1) {
+		if (def.defName.contains('.')) {
 			throw 'Def name (' + def.defName + ') can not contain "."'
 		}
 
@@ -127,7 +127,7 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitDeref = function (deref, state) {
-		if (deref.name.indexOf('.') !== -1) {
+		if (deref.name.contains('.')) {
 			throw 'Member name (' + deref.name + ') can not contain "." ' + deref.tokenCoords
 		}
 
@@ -173,14 +173,14 @@ exports.StaticCheck = (() => {
 		let nState = state
 
 		if (fun.name !== false) {
-			if (fun.name.indexOf('.') !== -1) {
+			if (fun.name.contains('.')) {
 				throw 'Function name (' + fun.name + ') cannot contain a "." ' + fun.tokenCoords
 			}
 			nState = nState.con(new TypeBinding(fun.name, _tfun_any, true))
 		}
 
 		if (fun.pformal !== false) {
-			if (fun.pformal.indexOf('.') !== -1) {
+			if (fun.pformal.contains('.')) {
 				throw 'Function parameter (' + fun.pformal + ') cannot contain a "." ' + fun.tokenCoords
 			}
 			nState = nState.con(new TypeBinding(fun.pformal, _tany, true))
@@ -218,7 +218,7 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitLet = function (lete, state) {
-		if (lete.name.indexOf('.') !== -1) {
+		if (lete.name.contains('.')) {
 			throw 'Let binding (' + lete.name + ') cannot contain a "." ' + lete.tokenCoords
 		}
 
@@ -331,8 +331,8 @@ exports.StaticCheck = (() => {
 
 	StaticCheck.prototype.visitRecord = function (record, state) {
 		Object.keys(record.map).forEach((key) => {
-			if (key.indexOf('.') !== -1) {
-				throw 'Record member name (' + key + ')can not contain "." ' + record.tokenCoords
+			if (key.contains('.')) {
+				throw 'Record member name (' + key + ') can not contain "." ' + record.tokenCoords
 			}
 			record.map[key].accept(this, state)
 		})
@@ -346,7 +346,7 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitSet = function (set, state) {
-		if (set.name.indexOf('.') !== -1) {
+		if (set.name.contains('.')) {
 			throw 'Set can be applied only on local variables ' + set.tokenCoords
 		}
 
@@ -364,7 +364,7 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitSetFst = function (setFst, state) {
-		if (setFst.name.indexOf('.') !== -1) {
+		if (setFst.name.contains('.')) {
 			throw 'SetFst can be applied only on local variables ' + setFst.tokenCoords
 		}
 
@@ -378,7 +378,7 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitSetSnd = function (setSnd, state) {
-		if (setSnd.name.indexOf('.') !== -1) {
+		if (setSnd.name.contains('.')) {
 			throw 'SetSnd can be applied only on local variables ' + setSnd.tokenCoords
 		}
 
