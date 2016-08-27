@@ -1,7 +1,7 @@
 exports.SetSnd = (() => {
 	'use strict'
 
-	const Pair = require('./Pair.js').Pair
+	const { Pair } = require('./Pair.js')
 
 	function SetSnd (name, e, body, tokenCoords) {
 		this.name = name

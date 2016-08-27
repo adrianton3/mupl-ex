@@ -1,7 +1,7 @@
 exports.Fun = (() => {
 	'use strict'
 
-	const Closure = require('./Closure.js').Closure
+	const { Closure } = require('./Closure.js')
 
 	function Fun (name, pformal, body, tokenCoords) {
 		this.name = name

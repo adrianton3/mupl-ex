@@ -1,8 +1,8 @@
 exports.ContainsQ = (() => {
 	'use strict'
 
-	const Bool = require('./Bool.js').Bool
-	const Record = require('./Bool.js').Record
+	const { Bool } = require('./Bool.js')
+	const { Record } = require('./Bool.js')
 
 	function ContainsQ (exp, list, tokenCoords) {
 		this.exp = exp

@@ -1,8 +1,8 @@
 exports.StrQ = (() => {
 	'use strict'
 
-	const Str = require('./Str.js').Str
-	const Bool = require('./Bool.js').Bool
+	const { Str } = require('./Str.js')
+	const { Bool } = require('./Bool.js')
 
 	function StrQ (e) {
 		this.e = e

@@ -1,18 +1,18 @@
 (function () {
 	"use strict"
 
-	const Tokenizer = require('../tokenizer/Tokenizer.js').Tokenizer
+	const { Tokenizer } = require('../tokenizer/Tokenizer.js')
 
-	const Bool = require('../interpreter/nodes/Bool.js').Bool
-	const Num = require('../interpreter/nodes/Num.js').Num
-	const Pair = require('../interpreter/nodes/Pair.js').Pair
-	const Record = require('../interpreter/nodes/Record.js').Record
-	const Str = require('../interpreter/nodes/Str.js').Str
-	const Unit = require('../interpreter/nodes/Unit.js').Unit
-	const Var = require('../interpreter/nodes/Var.js').Var
+	const { Bool } = require('../interpreter/nodes/Bool.js')
+	const { Num } = require('../interpreter/nodes/Num.js')
+	const { Pair } = require('../interpreter/nodes/Pair.js')
+	const { Record } = require('../interpreter/nodes/Record.js')
+	const { Str } = require('../interpreter/nodes/Str.js')
+	const { Unit } = require('../interpreter/nodes/Unit.js')
+	const { Var } = require('../interpreter/nodes/Var.js')
 
-	const VarBinding = require('../interpreter/VarBinding.js').VarBinding
-	const Env = require('../interpreter/Env.js').Env
+	const { VarBinding } = require('../interpreter/VarBinding.js')
+	const { Env } = require('../interpreter/Env.js')
 
 	const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
 

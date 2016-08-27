@@ -1,7 +1,7 @@
 exports.Div = (() => {
 	'use strict'
 
-	const Num = require('./Num.js').Num
+	const { Num } = require('./Num.js')
 
 	function Div (e1, e2, tokenCoords) {
 		this.e1 = e1

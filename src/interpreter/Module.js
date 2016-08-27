@@ -1,9 +1,9 @@
 exports.Module = (() => {
 	'use strict'
 
-	const Env = require('./Env.js').Env
-	const Closure = require('./nodes/Closure.js').Closure
-	const VarBinding = require('./VarBinding.js').VarBinding
+	const { Env } = require('./Env.js')
+	const { Closure } = require('./nodes/Closure.js')
+	const { VarBinding } = require('./VarBinding.js')
 
 	function Module (name, defs) {
 		this.name = name

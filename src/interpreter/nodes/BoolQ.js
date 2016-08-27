@@ -1,7 +1,7 @@
 exports.BoolQ = (() => {
 	'use strict'
 
-	const Bool = require('./Bool.js').Bool
+	const { Bool } = require('./Bool.js')
 
 	function BoolQ (e) {
 		this.e = e

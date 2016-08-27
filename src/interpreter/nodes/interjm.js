@@ -1,11 +1,11 @@
 exports.interjm = (() => {
 	'use strict'
 
-	const Bool = require('./Bool.js').Bool
-	const Num = require('./Num.js').Num
-	const Pair = require('./Pair.js').Pair
-	const Record = require('./Record.js').Record
-	const Str = require('./Str.js').Str
+	const { Bool } = require('./Bool.js')
+	const { Num } = require('./Num.js')
+	const { Pair } = require('./Pair.js')
+	const { Record } = require('./Record.js')
+	const { Str } = require('./Str.js')
 
 	function interjm () {}
 

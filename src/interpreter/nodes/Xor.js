@@ -1,7 +1,7 @@
 exports.Xor = (() => {
 	'use strict'
 
-	const Bool = require('./Bool.js').Bool
+	const { Bool } = require('./Bool.js')
 
 	function Xor (e1, e2, tokenCoords) {
 		this.e1 = e1

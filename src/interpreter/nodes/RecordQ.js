@@ -1,8 +1,8 @@
 exports.RecordQ = (() => {
 	'use strict'
 
-	const Record = require('./Record.js').Record
-	const Bool = require('./Bool.js').Bool
+	const { Record } = require('./Record.js')
+	const { Bool } = require('./Bool.js')
 
 	function RecordQ (e) {
 		this.e = e

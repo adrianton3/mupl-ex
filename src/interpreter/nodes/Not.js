@@ -1,7 +1,7 @@
 exports.Not = (() => {
 	'use strict'
 
-	const Bool = require('./Bool.js').Bool
+	const { Bool } = require('./Bool.js')
 
 	function Not (e, tokenCoords) {
 		this.e = e

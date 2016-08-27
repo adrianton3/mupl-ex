@@ -1,8 +1,8 @@
 exports.NumQ = (() => {
 	'use strict'
 
-	const Num = require('./Num.js').Num
-	const Bool = require('./Bool.js').Bool
+	const { Num } = require('./Num.js')
+	const { Bool } = require('./Bool.js')
 
 	function NumQ (e) {
 		this.e = e

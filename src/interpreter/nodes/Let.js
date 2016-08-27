@@ -1,7 +1,7 @@
 exports.Let = (() => {
 	'use strict'
 
-	const VarBinding = require('../VarBinding.js').VarBinding
+	const { VarBinding } = require('../VarBinding.js')
 
 	function Let (name, e, body, final, tokenCoords) {
 		this.name = name

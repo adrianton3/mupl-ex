@@ -1,10 +1,10 @@
 exports.StaticCheck = (() => {
 	'use strict'
 
-	const Closure = require('./nodes/Closure.js').Closure
-	const Type = require('./types/Type.js').Type
-	const TypeBinding = require('./TypeBinding.js').TypeBinding
-	const VarCheckState = require('./VarCheckState.js').VarCheckState
+	const { Closure } = require('./nodes/Closure.js')
+	const { Type } = require('./types/Type.js')
+	const { TypeBinding } = require('./TypeBinding.js')
+	const { VarCheckState } = require('./VarCheckState.js')
 
 	function StaticCheck () {}
 

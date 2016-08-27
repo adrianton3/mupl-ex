@@ -1,9 +1,9 @@
 exports.Call = (() => {
 	'use strict'
 
-	const Closure = require('./Closure.js').Closure
-	const Def = require('./Def.js').Def
-	const VarBinding = require('../VarBinding.js').VarBinding
+	const { Closure } = require('./Closure.js')
+	const { Def } = require('./Def.js')
+	const { VarBinding } = require('../VarBinding.js')
 
 	function Call (funexp, pexp, tokenCoords) {
 		this.funexp = funexp

@@ -1,7 +1,7 @@
 exports.Mul = (() => {
 	'use strict'
 
-	const Num = require('./Num.js').Num
+	const { Num } = require('./Num.js')
 
 	function Mul (e1, e2, tokenCoords) {
 		this.e1 = e1

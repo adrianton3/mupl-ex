@@ -1,7 +1,7 @@
 exports.If = (() => {
 	'use strict'
 
-	const Bool = require('./Bool.js').Bool
+	const { Bool } = require('./Bool.js')
 
 	function If (cond, e1, e2, tokenCoords) {
 		this.cond = cond

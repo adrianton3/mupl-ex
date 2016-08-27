@@ -1,7 +1,7 @@
 exports.Deref = (() => {
 	'use strict'
 
-	const Record = require('./Record.js').Record
+	const { Record } = require('./Record.js')
 
 	function Deref (exp, name, tokenCoords) {
 		this.exp = exp

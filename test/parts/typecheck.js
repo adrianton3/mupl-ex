@@ -1,12 +1,12 @@
 (function () {
 	"use strict"
 
-	const Env = require('../interpreter/Env.js').Env
+	const { Env } = require('../interpreter/Env.js')
 
-	const StaticCheck = require('../interpreter/StaticCheck.js').StaticCheck
-	const VarCheckState = require('../interpreter/VarCheckState.js').VarCheckState
+	const { StaticCheck } = require('../interpreter/StaticCheck.js')
+	const { VarCheckState } = require('../interpreter/VarCheckState.js')
 
-	const Type = require('../interpreter/types/Type.js').Type
+	const { Type } = require('../interpreter/types/Type.js')
 
 	const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
 

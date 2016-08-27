@@ -1,8 +1,8 @@
 exports.ClosureQ = (() => {
 	'use strict'
 
-	const Closure = require('./Closure.js').Closure
-	const Bool = require('./Bool.js').Bool
+	const { Closure } = require('./Closure.js')
+	const { Bool } = require('./Bool.js')
 
 	function ClosureQ (e) {
 		this.e = e

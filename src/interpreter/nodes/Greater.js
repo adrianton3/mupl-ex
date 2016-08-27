@@ -1,8 +1,8 @@
 exports.Greater = (() => {
 	'use strict'
 
-	const Bool = require('./Bool.js').Bool
-	const Num = require('./Num.js').Num
+	const { Bool } = require('./Bool.js')
+	const { Num } = require('./Num.js')
 
 	function Greater (e1, e2, tokenCoords) {
 		this.e1 = e1

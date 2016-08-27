@@ -1,8 +1,8 @@
 exports.PairQ = (() => {
 	'use strict'
 
-	const Pair = require('./Pair.js').Pair
-	const Bool = require('./Bool.js').Bool
+	const { Pair } = require('./Pair.js')
+	const { Bool } = require('./Bool.js')
 
 	function PairQ (e) {
 		this.e = e

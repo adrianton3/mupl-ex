@@ -1,8 +1,8 @@
 exports.LLI = (() => {
 	'use strict'
 
-	const Env = require('../Env.js').Env
-	const VarBinding = require('../VarBinding.js').VarBinding
+	const { Env } = require('../Env.js')
+	const { VarBinding } = require('../VarBinding.js')
 
 	function State (pc, env) { this.pc = pc; this.env = env }
 	State.prototype.toString = function () { return '(pc: ' + this.pc + ')' }

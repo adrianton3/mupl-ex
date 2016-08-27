@@ -1,7 +1,7 @@
 exports.Snd = (() => {
 	'use strict'
 
-	const Pair = require('./Pair.js').Pair
+	const { Pair } = require('./Pair.js')
 
 	function Snd (e, tokenCoords) {
 		this.e = e

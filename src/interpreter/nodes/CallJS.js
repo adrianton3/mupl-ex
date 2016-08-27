@@ -1,7 +1,7 @@
 exports.CallJS = (() => {
 	'use strict'
 
-	const interjm = require('./interjm.js').interjm
+	const { interjm } = require('./interjm.js')
 
 	function CallJS (funIdentifier, parameterExps, tokenCoords) {
 		this.funIdentifier = funIdentifier

@@ -1,7 +1,7 @@
 exports.SetFst = (() => {
 	'use strict'
 
-	const Pair = require('./Pair.js').Pair
+	const { Pair } = require('./Pair.js')
 
 	function SetFst (name, e, body, tokenCoords) {
 		this.name = name

@@ -1,9 +1,9 @@
 (function () {
 	"use strict"
 
-	const Env = require('../interpreter/Env.js').Env
+	const { Env } = require('../interpreter/Env.js')
 
-	const ToJS = require('../interpreter/ToJS.js').ToJS
+	const { ToJS } = require('../interpreter/ToJS.js')
 
 	const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
 

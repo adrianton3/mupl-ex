@@ -1,7 +1,7 @@
 exports.ArrJS = (() => {
 	'use strict'
 
-	const interjm = require('./interjm.js').interjm
+	const { interjm } = require('./interjm.js')
 
 	function ArrJS (arrIdentifier, indexExps, tokenCoords) {
 		this.arrIdentifier = arrIdentifier

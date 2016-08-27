@@ -1,8 +1,8 @@
 exports.UnitQ = (() => {
 	'use strict'
 
-	const Unit = require('./Unit.js').Unit
-	const Bool = require('./Bool.js').Bool
+	const { Unit } = require('./Unit.js')
+	const { Bool } = require('./Bool.js')
 
 	function UnitQ (e) {
 		this.e = e
