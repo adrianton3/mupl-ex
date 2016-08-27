@@ -1,5 +1,5 @@
-exports.Closure = (function () {
-	"use strict"
+exports.Closure = (() => {
+	'use strict'
 
 	function Closure (env, fun) {
 		this.env = env

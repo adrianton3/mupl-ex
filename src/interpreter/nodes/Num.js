@@ -1,5 +1,5 @@
-exports.Num = (function () {
-	"use strict"
+exports.Num = (() => {
+	'use strict'
 
 	function Num (n) {
 		this.n = n

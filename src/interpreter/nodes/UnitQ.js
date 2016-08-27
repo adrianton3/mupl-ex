@@ -1,5 +1,5 @@
-exports.UnitQ = (function () {
-	"use strict"
+exports.UnitQ = (() => {
+	'use strict'
 
 	const Unit = require('./Unit.js').Unit
 	const Bool = require('./Bool.js').Bool

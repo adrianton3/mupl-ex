@@ -1,5 +1,5 @@
-exports.ContainsQ = (function () {
-	"use strict"
+exports.ContainsQ = (() => {
+	'use strict'
 
 	const Bool = require('./Bool.js').Bool
 	const Record = require('./Bool.js').Record

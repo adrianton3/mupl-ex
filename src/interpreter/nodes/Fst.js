@@ -1,5 +1,5 @@
-exports.Fst = (function () {
-	"use strict"
+exports.Fst = (() => {
+	'use strict'
 
 	const Pair = require('./Pair.js').Pair
 

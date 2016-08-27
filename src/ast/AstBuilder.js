@@ -1,5 +1,5 @@
-exports.AstBuilder = (function () {
-	"use strict"
+exports.AstBuilder = (() => {
+	'use strict'
 
 	const { Add } = require('../interpreter/nodes/Add.js')
 	const { And } = require('../interpreter/nodes/And.js')

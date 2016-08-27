@@ -1,5 +1,5 @@
-exports.ToJS = (function () {
-	"use strict"
+exports.ToJS = (() => {
+	'use strict'
 
 	function ToJS () { }
 

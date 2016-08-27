@@ -1,5 +1,5 @@
-exports.Greater = (function () {
-	"use strict"
+exports.Greater = (() => {
+	'use strict'
 
 	const Bool = require('./Bool.js').Bool
 	const Num = require('./Num.js').Num

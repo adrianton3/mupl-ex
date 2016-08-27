@@ -1,5 +1,5 @@
-exports.VarBinding = (function () {
-	"use strict"
+exports.VarBinding = (() => {
+	'use strict'
 
 	function VarBinding (s, v, final) {
 		this.s = s

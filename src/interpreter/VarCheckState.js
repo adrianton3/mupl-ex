@@ -1,5 +1,5 @@
-exports.VarCheckState = (function () {
-	"use strict"
+exports.VarCheckState = (() => {
+	'use strict'
 
 	function VarCheckState (env, modSet) {
 		this.env = env

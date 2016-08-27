@@ -1,5 +1,5 @@
-exports.CallJS = (function () {
-	"use strict"
+exports.CallJS = (() => {
+	'use strict'
 
 	const interjm = require('./interjm.js').interjm
 

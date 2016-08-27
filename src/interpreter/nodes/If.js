@@ -1,5 +1,5 @@
-exports.If = (function () {
-	"use strict"
+exports.If = (() => {
+	'use strict'
 
 	const Bool = require('./Bool.js').Bool
 

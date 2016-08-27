@@ -1,5 +1,5 @@
-exports.Deref = (function () {
-	"use strict"
+exports.Deref = (() => {
+	'use strict'
 
 	const Record = require('./Record.js').Record
 

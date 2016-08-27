@@ -1,5 +1,5 @@
-exports.Let = (function () {
-	"use strict"
+exports.Let = (() => {
+	'use strict'
 
 	const VarBinding = require('../VarBinding.js').VarBinding
 

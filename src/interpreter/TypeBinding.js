@@ -1,5 +1,5 @@
-exports.TypeBinding = (function () {
-	"use strict"
+exports.TypeBinding = (() => {
+	'use strict'
 
 	function TypeBinding (s, v, final) {
 		this.s = s

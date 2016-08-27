@@ -1,5 +1,5 @@
-exports.ModuleSet = (function () {
-	"use strict"
+exports.ModuleSet = (() => {
+	'use strict'
 
 	function ModuleSet (mods) {
 		this.mods = mods

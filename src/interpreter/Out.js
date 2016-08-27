@@ -1,5 +1,5 @@
-exports.Out = (function () {
-	"use strict"
+exports.Out = (() => {
+	'use strict'
 
 	const Out = { }
 

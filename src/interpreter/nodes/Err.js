@@ -1,5 +1,5 @@
-exports.Err = (function () {
-	"use strict"
+exports.Err = (() => {
+	'use strict'
 
 	function Err (e) {
 		this.e = e

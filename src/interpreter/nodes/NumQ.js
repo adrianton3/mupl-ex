@@ -1,5 +1,5 @@
-exports.NumQ = (function () {
-	"use strict"
+exports.NumQ = (() => {
+	'use strict'
 
 	const Num = require('./Num.js').Num
 	const Bool = require('./Bool.js').Bool

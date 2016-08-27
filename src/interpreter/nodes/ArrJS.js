@@ -1,5 +1,5 @@
-exports.ArrJS = (function () {
-	"use strict"
+exports.ArrJS = (() => {
+	'use strict'
 
 	const interjm = require('./interjm.js').interjm
 

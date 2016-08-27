@@ -1,5 +1,5 @@
-exports.Type = (function () {
-	"use strict"
+exports.Type = (() => {
+	'use strict'
 
 	function Type (any, bool, num, str, unit, pair, record, fun) {
 		this.any = any

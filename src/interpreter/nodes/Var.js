@@ -1,5 +1,5 @@
-exports.Var = (function () {
-	"use strict"
+exports.Var = (() => {
+	'use strict'
 
 	function Var (name, tokenCoords) {
 		this.name = name

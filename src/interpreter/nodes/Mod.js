@@ -1,5 +1,5 @@
-exports.Mod = (function () {
-	"use strict"
+exports.Mod = (() => {
+	'use strict'
 
 	const Num = require('./Num.js').Num
 

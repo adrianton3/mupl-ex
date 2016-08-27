@@ -1,4 +1,4 @@
-exports.Pretty = (function () {
+exports.Pretty = (() => {
 	function Pretty () { }
 
 	Pretty.prototype.visitAdd = function (add, state) {

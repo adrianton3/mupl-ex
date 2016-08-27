@@ -1,5 +1,5 @@
-exports.LLI = (function () {
-	"use strict"
+exports.LLI = (() => {
+	'use strict'
 
 	const Env = require('../Env.js').Env
 	const VarBinding = require('../VarBinding.js').VarBinding

@@ -1,5 +1,5 @@
-exports.And = (function () {
-	"use strict"
+exports.And = (() => {
+	'use strict'
 
 	const Bool = require('./Bool.js').Bool
 

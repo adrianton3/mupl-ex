@@ -1,5 +1,5 @@
-exports.Env = (function () {
-	"use strict"
+exports.Env = (() => {
+	'use strict'
 
 	function Env (n, tail) {
 		this.n = n

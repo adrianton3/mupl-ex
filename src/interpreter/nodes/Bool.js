@@ -1,5 +1,5 @@
-exports.Bool = (function () {
-	"use strict"
+exports.Bool = (() => {
+	'use strict'
 
 	function Bool (v) {
 		this.v = v

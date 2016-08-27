@@ -1,5 +1,5 @@
-exports.ToLL = (function () {
-	"use strict"
+exports.ToLL = (() => {
+	'use strict'
 
 	function getU () {
 		return Math.random() * 1000 | 0

@@ -1,5 +1,5 @@
-exports.StaticCheck = (function () {
-	"use strict"
+exports.StaticCheck = (() => {
+	'use strict'
 
 	const Closure = require('./nodes/Closure.js').Closure
 	const Type = require('./types/Type.js').Type

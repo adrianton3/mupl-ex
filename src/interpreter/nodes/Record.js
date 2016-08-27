@@ -1,5 +1,5 @@
-exports.Record = (function () {
-	"use strict"
+exports.Record = (() => {
+	'use strict'
 
 	function Record (map) {
 		this.map = map

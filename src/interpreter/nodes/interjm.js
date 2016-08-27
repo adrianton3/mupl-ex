@@ -1,5 +1,5 @@
-exports.interjm = (function () {
-	"use strict"
+exports.interjm = (() => {
+	'use strict'
 
 	const Bool = require('./Bool.js').Bool
 	const Num = require('./Num.js').Num

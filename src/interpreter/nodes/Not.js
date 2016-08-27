@@ -1,5 +1,5 @@
-exports.Not = (function () {
-	"use strict"
+exports.Not = (() => {
+	'use strict'
 
 	const Bool = require('./Bool.js').Bool
 

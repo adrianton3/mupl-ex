@@ -1,5 +1,5 @@
-exports.Set = (function () {
-	"use strict"
+exports.Set = (() => {
+	'use strict'
 
 	function Set (name, e, body, bang, tokenCoords) {
 		this.name = name

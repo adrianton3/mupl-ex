@@ -1,5 +1,5 @@
-exports.Def = (function () {
-	"use strict"
+exports.Def = (() => {
+	'use strict'
 
 	function Def (defName, modName, pub, fun, tokenCoords) {
 		this.defName = defName

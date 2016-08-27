@@ -1,5 +1,5 @@
-exports.Any = (function () {
-	"use strict"
+exports.Any = (() => {
+	'use strict'
 
 	function Any () {}
 

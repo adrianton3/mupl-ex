@@ -1,5 +1,5 @@
-exports.RecordQ = (function () {
-	"use strict"
+exports.RecordQ = (() => {
+	'use strict'
 
 	const Record = require('./Record.js').Record
 	const Bool = require('./Bool.js').Bool

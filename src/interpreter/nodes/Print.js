@@ -1,5 +1,5 @@
-exports.Print = (function () {
-	"use strict"
+exports.Print = (() => {
+	'use strict'
 
 	function Print (e, body) {
 		this.e = e

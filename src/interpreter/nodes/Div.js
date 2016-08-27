@@ -1,5 +1,5 @@
-exports.Div = (function () {
-	"use strict"
+exports.Div = (() => {
+	'use strict'
 
 	const Num = require('./Num.js').Num
 

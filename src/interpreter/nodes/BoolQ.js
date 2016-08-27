@@ -1,5 +1,5 @@
-exports.BoolQ = (function () {
-	"use strict"
+exports.BoolQ = (() => {
+	'use strict'
 
 	const Bool = require('./Bool.js').Bool
 

@@ -1,5 +1,5 @@
-exports.Pair = (function () {
-	"use strict"
+exports.Pair = (() => {
+	'use strict'
 
 	function Pair (e1, e2) {
 		this.e1 = e1

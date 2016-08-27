@@ -1,5 +1,5 @@
-exports.Unit = (function () {
-	"use strict"
+exports.Unit = (() => {
+	'use strict'
 
 	function Unit () {
 

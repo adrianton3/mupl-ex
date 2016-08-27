@@ -1,5 +1,5 @@
-exports.Sub = (function () {
-	"use strict"
+exports.Sub = (() => {
+	'use strict'
 
 	const Num = require('./Num.js').Num
 

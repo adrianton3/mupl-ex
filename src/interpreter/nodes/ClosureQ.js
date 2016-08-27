@@ -1,5 +1,5 @@
-exports.ClosureQ = (function () {
-	"use strict"
+exports.ClosureQ = (() => {
+	'use strict'
 
 	const Closure = require('./Closure.js').Closure
 	const Bool = require('./Bool.js').Bool

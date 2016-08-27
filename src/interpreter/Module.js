@@ -1,5 +1,5 @@
-exports.Module = (function () {
-	"use strict"
+exports.Module = (() => {
+	'use strict'
 
 	const Env = require('./Env.js').Env
 	const Closure = require('./nodes/Closure.js').Closure

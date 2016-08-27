@@ -1,5 +1,5 @@
-exports.Xor = (function () {
-	"use strict"
+exports.Xor = (() => {
+	'use strict'
 
 	const Bool = require('./Bool.js').Bool
 

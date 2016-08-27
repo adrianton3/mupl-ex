@@ -1,5 +1,5 @@
-exports.Str = (function () {
-	"use strict"
+exports.Str = (() => {
+	'use strict'
 
 	function Str (s) {
 		this.s = s
