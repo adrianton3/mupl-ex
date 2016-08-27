@@ -13,29 +13,25 @@ exports.Module = (() => {
 	}
 
 	Module.getPub = function (defs) {
-		const ret = []
-		for (const i in defs) {
-			if (defs[i].pub === 'public') {
-				ret.push(defs[i])
-			}
-		}
-
-		return ret
+		return defs.filter(({ pub }) => pub === 'public')
 	}
 
 	Module.getEnv = function (defs) {
-		let old = Env.Emp
-		for (const i in defs) {
-			old = old.con(new VarBinding(defs[i].defName, new Closure(Env.Emp, defs[i].fun), true))
-		}
-
-		return old
+		return defs.reduce(
+			(env, { defName, fun }) => env.con(
+				new VarBinding(defName,
+					new Closure(Env.Emp, fun),
+					true
+				)
+			),
+			Env.Emp
+		)
 	}
 
 	Module.prototype.getVal = function (name) {
-		for (const i in this.publicDefs) {
-			if (this.publicDefs[i].defName === name) {
-				return this.publicDefs[i]
+		for (const publicDef of this.publicDefs) {
+			if (publicDef.defName === name) {
+				return publicDef
 			}
 		}
 

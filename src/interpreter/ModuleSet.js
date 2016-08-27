@@ -14,9 +14,9 @@ exports.ModuleSet = (() => {
 		const modName = name.substring(sepIndex, 0)
 		const defName = name.substring(sepIndex + 1)
 
-		for (const i in this.mods) {
-			if (this.mods[i].name === modName) {
-				return this.mods[i].getVal(defName)
+		for (const mod of this.mods) {
+			if (mod.name === modName) {
+				return mod.getVal(defName)
 			}
 		}
 
@@ -24,9 +24,9 @@ exports.ModuleSet = (() => {
 	}
 
 	ModuleSet.prototype.getEnv = function (name) {
-		for (const i in this.mods) {
-			if (this.mods[i].name === name) {
-				return this.mods[i].privateEnv
+		for (const mod of this.mods) {
+			if (mod.name === name) {
+				return mod.privateEnv
 			}
 		}
 

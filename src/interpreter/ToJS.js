@@ -43,12 +43,11 @@ exports.ToJS = (() => {
 	}
 
 	ToJS.prototype.visitArrJS = function (arrJS, state) {
-		const indexAr = []
-		for (const i in arrJS.indexExps) {
-			indexAr.push(arrJS.indexExps[i].accept(this, state))
-		}
-		const indexStr = indexAr.join('][')
-		return arrJS.arrIdentifier + '[' + indexStr + ']'
+		const indices = arrJS.indexExps.map(
+			(indexExp) => indexExp.accept(this, state)
+		).join('][')
+
+		return arrJS.arrIdentifier + '[' + indices + ']'
 	}
 
 	ToJS.prototype.visitBool = function (bool, state) {
@@ -71,12 +70,11 @@ exports.ToJS = (() => {
 	}
 
 	ToJS.prototype.visitCallJS = function (callJS, state) {
-		const parameterAr = []
-		for (const i in callJS.parameterExps) {
-			parameterAr.push(callJS.parameterExps[i].accept(this, state))
-		}
-		const parameterStr = parameterAr.join(',')
-		return callJS.funIdentifier + '(' + parameterStr + ')'
+		const parameters = callJS.parameterExps.map(
+			(parameterExp) => parameterExp.accept(this, state)
+		).join(',')
+
+		return callJS.funIdentifier + '(' + parameters + ')'
 	}
 
 	ToJS.prototype.visitClosureQ = function (closureQ, state) {
@@ -85,15 +83,13 @@ exports.ToJS = (() => {
 	}
 
 	ToJS.prototype.visitContainsQ = function (containsQ, state) {
-		let containsQj = ''
-
-		for (const i in containsQ.list) {
-			containsQj += '"' + containsQ.list[i] + '", '
-		}
+		const items = containsQ.list.map(
+			(item) => `"${item}"`
+		).join(', ')
 
 		const expj = containsQ.exp.accept(this, state)
 
-		return '_containsQ(' + expj + ', [' + containsQj.slice(0, -2) + '])'
+		return '_containsQ(' + expj + ', [' + items + '])'
 	}
 
 	ToJS.prototype.visitDef = function (def, state) {
@@ -170,23 +166,18 @@ exports.ToJS = (() => {
 
 	ToJS.prototype.visitModule = function (module, state) {
 		const namej = module.name
-		let defsj = ''
 
-		for (const i in module.defs) {
-			defsj += module.defs[i].accept(this, state)
-		}
+		const defsj = module.defs.map(
+			(def) => def.accept(this, state)
+		).join(' ')
 
 		return 'var ' + namej + ' = {};\n(function(_module) {\n' + defsj + '})(' + namej + ');'
 	}
 
 	ToJS.prototype.visitModuleSet = function (modSet, state) {
-		let modSetj = ''
-
-		for (const i in modSet.mods) {
-			modSetj += modSet.mods[i].accept(this, state) + '\n\n'
-		}
-
-		return modSetj
+		return modSet.mods.map(
+			(mod) => mod.accept(this, state)
+		).join('\n\n')
 	}
 
 	ToJS.prototype.visitMul = function (mul, state) {
@@ -240,14 +231,13 @@ exports.ToJS = (() => {
 	}
 
 	ToJS.prototype.visitRecord = function (record, state) {
-		let recordj = ''
-		for (const key in record.map) {
-			const namej = key
+		const pairs = Object.keys(record.map).map((key) => {
 			const expj = record.map[key].accept(this, state)
-			recordj += '"' + namej + '", ' + expj + ', '
-		}
 
-		return '(new _Record(' + recordj.slice(0, -2) + '))'
+			return `"${key}", ${expj}`
+		}).join(', ')
+
+		return '(new _Record(' + pairs + '))'
 	}
 
 	ToJS.prototype.visitRecordQ = function (recordQ, state) {

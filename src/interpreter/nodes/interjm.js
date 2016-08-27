@@ -17,10 +17,12 @@ exports.interjm = (() => {
 		} else if (typeof jValue === "string") {
 			return new Str(jValue)
 		} else if (typeof jValue === "object") {
-			const mapConv = { }
-			for (const key in jValue) {
+			const mapConv = {}
+
+			Object.keys(jValue).forEach((key) => {
 				mapConv[key] = interjm.jtomValue(jValue[key])
-			}
+			})
+
 			return new Record(mapConv)
 		}
 		return undefined

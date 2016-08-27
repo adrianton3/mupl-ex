@@ -17,14 +17,11 @@ exports.ContainsQ = (() => {
 			throw 'Can not apply contains? to a non-record ' + this.tokenCoords
 		}
 
-		// TODO: optimize this
-		for (const i in this.list) {
-			if (!expEv.contains(this.list[i])) {
-				return new Bool(false)
-			}
-		}
-
-		return new Bool(true)
+		return new Bool(
+			this.list.every(
+				(item) => expEv.contains(item)
+			)
+		)
 	}
 
 	ContainsQ.prototype.accept = function (visitor, state) {

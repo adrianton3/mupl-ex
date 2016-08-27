@@ -50,9 +50,9 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitArrJS = function (arrJS, state) {
-		for (const i in arrJS.indexExps) {
-			arrJS.indexExps[i].accept(this, state)
-		}
+		arrJS.indexExps.forEach((indexExp) => {
+			indexExp.accept(this, state)
+		})
 
 		return _tany
 	}
@@ -93,9 +93,9 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitCallJS = function (callJS, state) {
-		for (const i in callJS.parameterExps) {
-			callJS.parameterExps[i].accept(this, state)
-		}
+		callJS.parameterExps.forEach((parameterExp) => {
+			parameterExp.accept(this, state)
+		})
 
 		return _tany
 	}
@@ -107,11 +107,11 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitContainsQ = function (containsQ, state) {
-		for (const i in containsQ.list) {
-			if (containsQ.list[i].indexOf('.') !== -1) {
-				throw 'Member names (' + containsQ.list[i] + ') can not contain "." ' + containsQ.tokenCoords
+		containsQ.list.forEach((item) => {
+			if (item.indexOf('.') !== -1) {
+				throw 'Member names (' + item + ') can not contain "." ' + containsQ.tokenCoords
 			}
-		}
+		})
 
 		containsQ.exp.accept(this, state)
 
@@ -249,21 +249,20 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitModule = function (module, state) {
-		for (const i in module.defs) {
-			const deft = module.defs[i].accept(this, state)
-			module.defs[i].fun.type = deft
-		}
+		module.defs.forEach((def) => {
+			def.fun.type = def.accept(this, state)
+		})
 
 		return _tany
 	}
 
 	StaticCheck.prototype.visitModuleSet = function (modSet, state) {
-		for (const i in modSet.mods) {
-			modSet.mods[i].accept(
+		modSet.mods.forEach((mod) => {
+			mod.accept(
 				this,
-				new VarCheckState(modSet.mods[i].privateEnv, state.modSet)
+				new VarCheckState(mod.privateEnv, state.modSet)
 			)
-		}
+		})
 
 		return _tany
 	}
@@ -331,12 +330,12 @@ exports.StaticCheck = (() => {
 	}
 
 	StaticCheck.prototype.visitRecord = function (record, state) {
-		for (const key in record.map) {
+		Object.keys(record.map).forEach((key) => {
 			if (key.indexOf('.') !== -1) {
 				throw 'Record member name (' + key + ')can not contain "." ' + record.tokenCoords
 			}
 			record.map[key].accept(this, state)
-		}
+		})
 
 		return _trecord
 	}

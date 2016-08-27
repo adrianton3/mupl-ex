@@ -8,9 +8,9 @@ exports.Record = (() => {
 	Record.prototype.ev = function (env, modSet) {
 		const mapEv = {}
 
-		for (const key in this.map) {
+		Object.keys(this.map).forEach((key) => {
 			mapEv[key] = this.map[key].ev(env, modSet)
-		}
+		})
 
 		return new Record(mapEv)
 	}
@@ -32,12 +32,11 @@ exports.Record = (() => {
 	}
 
 	Record.prototype.toString = function () {
-		let ls = ''
-		for (const key in this.map) {
-			ls += ' ' + key + ': ' + this.map[key].toString()
-		}
+		const pairs = Object.keys(this.map).forEach((key) =>
+			`${key}: ${this.map[key].toString()}`
+		).join(', ')
 
-		return '(record' + ls + ')'
+		return '(record' + pairs + ')'
 	}
 
 	return Record
