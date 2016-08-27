@@ -1,12 +1,9 @@
 (function () {
 	"use strict"
 
-	const { Tokenizer } = require('../tokenizer/Tokenizer.js')
-
 	const { Bool } = require('../interpreter/nodes/Bool.js')
 	const { Num } = require('../interpreter/nodes/Num.js')
 	const { Pair } = require('../interpreter/nodes/Pair.js')
-	const { Record } = require('../interpreter/nodes/Record.js')
 	const { Str } = require('../interpreter/nodes/Str.js')
 	const { Unit } = require('../interpreter/nodes/Unit.js')
 	const { Var } = require('../interpreter/nodes/Var.js')

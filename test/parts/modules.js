@@ -3,48 +3,10 @@
 
 	const { buildAst, buildModuleAst } = require('../../src/ast/AstBuilder.js').AstBuilder
 
-	const { Add } = require('../interpreter/nodes/Add.js')
-	const { And } = require('../interpreter/nodes/And.js')
-	const { Bool } = require('../interpreter/nodes/Bool.js')
-	const { BoolQ } = require('../interpreter/nodes/BoolQ.js')
-	const { Call } = require('../interpreter/nodes/Call.js')
-	const { ClosureQ } = require('../interpreter/nodes/ClosureQ.js')
-	const { ContainsQ } = require('../interpreter/nodes/ContainsQ.js')
-	const { Def } = require('../interpreter/nodes/Def.js')
-	const { Div } = require('../interpreter/nodes/Div.js')
-	const { Fst } = require('../interpreter/nodes/Fst.js')
-	const { Fun } = require('../interpreter/nodes/Fun.js')
-	const { If } = require('../interpreter/nodes/If.js')
-	const { Let } = require('../interpreter/nodes/Let.js')
-	const { Mod } = require('../interpreter/nodes/Mod.js')
-	const { Module } = require('../interpreter/Module.js')
 	const { ModuleSet } = require('../interpreter/ModuleSet.js')
-	const { Mul } = require('../interpreter/nodes/Mul.js')
-	const { Not } = require('../interpreter/nodes/Not.js')
 	const { Num } = require('../interpreter/nodes/Num.js')
-	const { NumQ } = require('../interpreter/nodes/NumQ.js')
-	const { Or } = require('../interpreter/nodes/Or.js')
-	const { Pair } = require('../interpreter/nodes/Pair.js')
-	const { PairQ } = require('../interpreter/nodes/PairQ.js')
-	const { Record } = require('../interpreter/nodes/Record.js')
-	const { RecordQ } = require('../interpreter/nodes/RecordQ.js')
-	const { Snd } = require('../interpreter/nodes/Snd.js')
-	const { Str } = require('../interpreter/nodes/Str.js')
-	const { StrQ } = require('../interpreter/nodes/StrQ.js')
-	const { Sub } = require('../interpreter/nodes/Sub.js')
-	const { Unit } = require('../interpreter/nodes/Unit.js')
-	const { UnitQ } = require('../interpreter/nodes/UnitQ.js')
-	const { Var } = require('../interpreter/nodes/Var.js')
-	const { Xor } = require('../interpreter/nodes/Xor.js')
 
-	const { VarBinding } = require('../interpreter/VarBinding.js')
 	const { Env } = require('../interpreter/Env.js')
-
-	const { StaticCheck } = require('../interpreter/StaticCheck.js')
-	const { VarCheckState } = require('../interpreter/VarCheckState.js')
-	const { ToJS } = require('../interpreter/ToJS.js')
-
-	const { Type } = require('../interpreter/types/Type.js')
 
 	function getRawTree (source) {
 		const tokens = espace.Tokenizer()(source)
