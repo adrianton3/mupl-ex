@@ -2,46 +2,46 @@
 	'use strict'
 
 	const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
-	var StaticCheck = require('./interpreter/StaticCheck.js').StaticCheck;
-	var VarCheckState = require('./interpreter/VarCheckState.js').VarCheckState;
-	var Env = require('./interpreter/Env.js').Env;
-	var ToLL = require('./interpreter/ToLL.js').ToLL;
-	var LLI = require('./interpreter/LLI.js').LLI;
+	const StaticCheck = require('./interpreter/StaticCheck.js').StaticCheck
+	const VarCheckState = require('./interpreter/VarCheckState.js').VarCheckState
+	const Env = require('./interpreter/Env.js').Env
+	const ToLL = require('./interpreter/ToLL.js').ToLL
+	const LLI = require('./interpreter/LLI.js').LLI
 
-	var _parsedFreeExp;
+	let _parsedFreeExp
 
-	var inExpEditor, outLLEditor, outInterpreterEditor;
+	let inExpEditor, outLLEditor, outInterpreterEditor
 
-	function setupEditors() {
+	function setupEditors () {
 		inExpEditor = CodeMirror.fromTextArea(document.getElementById('in_exp'), {
 			lineNumbers: true,
 			styleActiveLine: true,
-			matchBrackets: true
-		});
-		inExpEditor.setSize(500, 300);
-		inExpEditor.setOption('theme', 'cobalt');
-		inExpEditor.on('change', process);
+			matchBrackets: true,
+		})
+		inExpEditor.setSize(500, 300)
+		inExpEditor.setOption('theme', 'cobalt')
+		inExpEditor.on('change', process)
 
 		outLLEditor = CodeMirror.fromTextArea(document.getElementById('out_ll'), {
 			lineNumbers: true,
 			styleActiveLine: true,
-			readOnly: true
-		});
-		outLLEditor.setSize(500, 300);
-		outLLEditor.setOption('theme', 'cobalt');
+			readOnly: true,
+		})
+		outLLEditor.setSize(500, 300)
+		outLLEditor.setOption('theme', 'cobalt')
 
 		outInterpreterEditor = CodeMirror.fromTextArea(document.getElementById('out_interpreter'), {
 			lineNumbers: true,
 			styleActiveLine: true,
-			readOnly: true
-		});
-		outInterpreterEditor.setSize(500, 100);
-		outInterpreterEditor.setOption('theme', 'cobalt');
+			readOnly: true,
+		})
+		outInterpreterEditor.setSize(500, 100)
+		outInterpreterEditor.setOption('theme', 'cobalt')
 	}
 
-	function setupUI() {
+	function setupUI () {
 		document.getElementById('but_compute_ll')
-			.addEventListener('click', doEvalLL);
+			.addEventListener('click', doEvalLL)
 	}
 
 	function parse (source) {
@@ -49,39 +49,39 @@
 		return espace.Parser.parse(tokens)
 	}
 
-	function process() {
-		var expIn = inExpEditor.getValue();
-		var outParser = '';
+	function process () {
+		const expIn = inExpEditor.getValue()
+		let outParser = ''
 
 		try {
 			_parsedFreeExp = buildAst(parse(expIn))
 
-			var freeExpt = _parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, null));
-			outParser += 'Free exp type/reference check: OK.\n';
+			const freeExpt = _parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, null))
+			outParser += 'Free exp type/reference check: OK.\n'
 
-			doCompile();
-		} catch(err) {
+			doCompile()
+		} catch (err) {
 			// include outParser
-			outLLEditor.setValue('Parsing failed ==> nothing to translate\nCheck "parser output"' + '\n' + err);
+			outLLEditor.setValue('Parsing failed ==> nothing to translate\nCheck "parser output"' + '\n' + err)
 		}
 	}
 
-	function doCompile() {
-		var ll = '';
+	function doCompile () {
+		let ll = ''
 		try {
-			ll += _parsedFreeExp.accept(new ToLL());
-		}	catch(err) {
-			ll += '\n\nTranslation exception: ' + err;
+			ll += _parsedFreeExp.accept(new ToLL())
+		}	catch (err) {
+			ll += '\n\nTranslation exception: ' + err
 		}
 
-		outLLEditor.setValue(ll);
+		outLLEditor.setValue(ll)
 	}
 
-	function doEvalLL() {
-		var source = outLLEditor.getValue();
-		var result = new LLI().interpret(source);
+	function doEvalLL () {
+		const source = outLLEditor.getValue()
+		const result = new LLI().interpret(source)
 
-		outInterpreterEditor.setValue(result.toString());
+		outInterpreterEditor.setValue(result.toString())
 	}
 
 	setupEditors()
