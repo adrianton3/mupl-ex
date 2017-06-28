@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MUPLex</title>
+		<link href='http://fonts.googleapis.com/css?family=Leckerli+One' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="lib/codemirror.css">
+		<link rel="stylesheet" href="lib/cobalt.css">
+		<link rel="stylesheet" href="style.css">
+	</head>
+
+	<body>
+		<script type="text/javascript" src="lib/codemirror.js"></script>
+		<script type="text/javascript" src="lib/matchbrackets.js"></script>
+
+		<script type="text/javascript" src="../lib/espace.min.js"></script>
+
+		<script type="text/javascript" src="../src/Require.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/TypeBinding.js"></script>
+		<script type="text/javascript" src="../src/interpreter/VarBinding.js"></script>
+		<script type="text/javascript" src="../src/interpreter/VarCheckState.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/Env.js"></script>
+		<script type="text/javascript" src="../src/interpreter/Out.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/Any.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Bool.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Num.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Str.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Unit.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/UnitQ.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/NumQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Add.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Sub.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Mul.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Div.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Mod.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/Def.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/Let.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Var.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Closure.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Fun.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/ClosureQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Call.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/StrQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/BoolQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/If.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Greater.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Not.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/And.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Or.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Xor.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/Record.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/RecordQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Deref.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/ContainsQ.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/Pair.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/PairQ.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Fst.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Snd.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/Set.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/SetFst.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/SetSnd.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/Print.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/Err.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/interjm.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/nodes/ArrJS.js"></script>
+		<script type="text/javascript" src="../src/interpreter/nodes/CallJS.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/Module.js"></script>
+		<script type="text/javascript" src="../src/interpreter/ModuleSet.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/types/Type.js"></script>
+
+		<script type="text/javascript" src="../src/interpreter/StaticCheck.js"></script>
+		<script type="text/javascript" src="../src/interpreter/ToJS.js"></script>
+
+		<script type="text/javascript" src="../src/lli/ToLL.js"></script>
+		<script type="text/javascript" src="../src/lli/LLI.js"></script>
+
+		<script type="text/javascript" src="../src/ast/AstBuilder.js"></script>
+
+<!-- --- -->
+
+		<h2>MUPLex: to LL</h2>
+		<table>
+			<tr>
+				<td>
+					<span class="title">Expression</span><br>
+					<textarea id="in_exp" rows="6" cols="50">(let ((a 10))
+ (+ 5 a)
+)</textarea>
+				</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td>
+					<span class="title">LL translation</span><br>
+					<textarea id="out_ll" rows="10" cols="50" readonly="readonly"></textarea>
+					<br>
+					<input value="Compute LL" id="but_computell" type="button" onclick="doEvalLL()"><br>
+					<br>
+  			<span class="title">Interpreter output</span><br>
+					<textarea id="out_interpreter" rows="3" cols="50" readonly="readonly"></textarea>
+				</td>
+			</tr>
+		</table>
+
+<!-- --- -->
+
+		<script type="text/javascript">
+			'use strict';
+
+			const { buildAst } = require('../../src/ast/AstBuilder.js').AstBuilder
+			var StaticCheck = require('./interpreter/StaticCheck.js').StaticCheck;
+			var VarCheckState = require('./interpreter/VarCheckState.js').VarCheckState;
+			var Env = require('./interpreter/Env.js').Env;
+			var ToLL = require('./interpreter/ToLL.js').ToLL;
+			var LLI = require('./interpreter/LLI.js').LLI;
+
+			window.onload = process;
+			var _parsedFreeExp;
+
+			var inExpEditor, outLLEditor, outInterpreterEditor;
+
+			function setupEditors() {
+				inExpEditor = CodeMirror.fromTextArea(document.getElementById('in_exp'), {
+					lineNumbers: true,
+					styleActiveLine: true,
+					matchBrackets: true
+				});
+				inExpEditor.setSize(500, 300);
+				inExpEditor.setOption('theme', 'cobalt');
+				inExpEditor.on('change', process);
+
+				outLLEditor = CodeMirror.fromTextArea(document.getElementById('out_ll'), {
+					lineNumbers: true,
+					styleActiveLine: true,
+					readOnly: true
+				});
+				outLLEditor.setSize(500, 300);
+				outLLEditor.setOption('theme', 'cobalt');
+
+				outInterpreterEditor = CodeMirror.fromTextArea(document.getElementById('out_interpreter'), {
+					lineNumbers: true,
+					styleActiveLine: true,
+					readOnly: true
+				});
+				outInterpreterEditor.setSize(500, 100);
+				outInterpreterEditor.setOption('theme', 'cobalt');
+			}
+
+			setupEditors();
+
+			function parse (source) {
+				const tokens = espace.Tokenizer()(source)
+				return espace.Parser.parse(tokens)
+			}
+
+			function process() {
+				var expIn = inExpEditor.getValue();
+				var outParser = '';
+
+				try {
+					_parsedFreeExp = buildAst(parse(expIn))
+
+					var freeExpt = _parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, null));
+					outParser += 'Free exp type/reference check: OK.\n';
+
+					doCompile();
+				} catch(err) {
+					// include outParser
+					outLLEditor.setValue('Parsing failed ==> nothing to translate\nCheck "parser output"' + '\n' + err);
+				}
+			}
+
+			function doCompile() {
+				var ll = '';
+			 	try {
+			  		ll += _parsedFreeExp.accept(new ToLL());
+				}	catch(err) {
+					ll += '\n\nTranslation exception: ' + err;
+				}
+
+				outLLEditor.setValue(ll);
+			}
+
+			function doEvalLL() {
+				var source = outLLEditor.getValue();
+				var result = new LLI().interpret(source);
+
+				outInterpreterEditor.setValue(result.toString());
+			}
+		</script>
+	</body>
+</html>
