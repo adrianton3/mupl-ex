@@ -5,7 +5,7 @@ MUPLex is a Scheme-like language, a superset of MUPL. The original MUPL specific
 In addition to MUPL, MUPLex supports records, mutability, letrec, booleans, branching and implicit currying.
 As of version 0.5.1 MUPLex programs can be either interpreted or translated into JavaScript via the experimental *toJS* translator.
 
-### Try it out: [Interpreter](http://adrianton3.github.io/muplex/main-parse.html) | [to JS](http://adrianton3.github.io/muplex/main-tojs.html) | [to LL](http://adrianton3.github.io/muplex/main-toll.html)
+### Try it out: [Interpreter](http://adrianton3.github.io/muplex/demo/main-parse) | [to JS](http://adrianton3.github.io/muplex/demo/main-tojs) | [to LL](http://adrianton3.github.io/muplex/demo/main-toll)
 
 **Examples:**
 
@@ -46,7 +46,7 @@ This was intially considered because it greatly simplified the parser and later 
 it's very good as syntactic salt for preventing the common "I lost 15 minutes on a bug caused by a pair of rogue parantheses"
 
 
-###The type system
+### The type system
 MUPLex is dynamically typed. Before doing any operation, the evaluator first checks that the arguments
 are of the correct type and throws a runtime error if they are not.
 
