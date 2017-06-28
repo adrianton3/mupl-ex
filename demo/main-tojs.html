@@ -118,8 +118,8 @@
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td>
 					<span class="title">JavaScript translation</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input id="chk_headjs" type="checkbox" onchange="doTranslate();"><span class="title">Header</span>&nbsp;&nbsp;
-					<input id="chk_modjs" type="checkbox" onchange="doTranslate();"><span class="title">Modules</span><br>
+					<input id="chk_headjs" type="checkbox"><span class="title">Header</span>&nbsp;&nbsp;
+					<input id="chk_modjs" type="checkbox"><span class="title">Modules</span><br>
 					<textarea id="out_js" rows="10" cols="50" readonly="readonly"></textarea>
 				</td>
 			</tr>
@@ -171,7 +171,16 @@
 				outJSEditor.setOption('theme', 'cobalt');
 			}
 
+			function setupCheckboxes() {
+				document.getElementById('chk_headjs')
+                    .addEventListener('change', doTranslate);
+
+				document.getElementById('chk_modjs')
+					.addEventListener('change', doTranslate);
+            }
+
 			setupEditors();
+			setupCheckboxes();
 
 			function parse (source) {
 				const tokens = espace.Tokenizer()(source)

@@ -118,7 +118,7 @@
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td>
 					<span class="title">Parser output</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input id="chk_ast" type="checkbox" onchange="process()"><span class="title">AST</span>
+					<input id="chk_ast" type="checkbox"><span class="title">AST</span>
 					<textarea id="out_parser" rows="3" cols="50" readonly="readonly"></textarea>
 				</td>
 			</tr>
@@ -177,7 +177,13 @@
 				outInterpreterEditor.setOption('theme', 'cobalt');
 			}
 
+			function setupCheckboxes() {
+				document.getElementById('chk_ast')
+					.addEventListener('change', process);
+			}
+
 			setupEditors();
+			setupCheckboxes();
 
             function parse (source) {
                 const tokens = espace.Tokenizer()(source)
