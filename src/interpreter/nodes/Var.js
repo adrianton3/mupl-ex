@@ -3,7 +3,7 @@ exports.Var = (() => {
 
 	function Var (name, tokenCoords) {
 		this.name = name
-		this.extern = this.name.contains('.')
+		this.extern = this.name.includes('.')
 		this.tokenCoords = tokenCoords
 	}
 
