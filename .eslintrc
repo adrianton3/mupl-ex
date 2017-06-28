@@ -28,5 +28,13 @@
     "no-trailing-spaces": "error",
     "no-multi-spaces": "error",
     "spaced-comment": ["error", "always", { "exceptions": ["-"] }]
+  },
+  "globals": {
+    "espace": true,
+    "ok": true,
+    "throws": true,
+    "test": true,
+    "deepEqual": true,
+    "CodeMirror": true
   }
 }
