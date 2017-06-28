@@ -1,100 +1,25 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>MUPLex</title>
-		<link href='http://fonts.googleapis.com/css?family=Leckerli+One' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="lib/codemirror.css">
-		<link rel="stylesheet" href="lib/cobalt.css">
-		<link rel="stylesheet" href="style.css">
-	</head>
+<head>
+    <meta charset="utf-8">
+    <title>MUPLex</title>
+    <link href='http://fonts.googleapis.com/css?family=Leckerli+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="lib/cobalt.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="https://github.com/adrianton3/muplex">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png">
+    </a>
 
-	<body>
-		<script type="text/javascript" src="lib/codemirror.js"></script>
-		<script type="text/javascript" src="lib/matchbrackets.js"></script>
-
-        <script type="text/javascript" src="../lib/espace.min.js"></script>
-
-		<script type="text/javascript" src="../src/Require.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/TypeBinding.js"></script>
-		<script type="text/javascript" src="../src/interpreter/VarBinding.js"></script>
-		<script type="text/javascript" src="../src/interpreter/VarCheckState.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/Env.js"></script>
-		<script type="text/javascript" src="../src/interpreter/Out.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/Any.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Bool.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Num.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Str.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Unit.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/UnitQ.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/NumQ.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Add.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Sub.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Mul.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Div.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Mod.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/Def.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/Let.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Var.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Closure.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Fun.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/ClosureQ.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Call.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/StrQ.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/BoolQ.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/If.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Greater.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Not.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/And.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Or.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Xor.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/Record.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/RecordQ.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Deref.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/ContainsQ.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/Pair.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/PairQ.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Fst.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Snd.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/Set.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/SetFst.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/SetSnd.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/Print.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/Err.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/interjm.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/nodes/ArrJS.js"></script>
-		<script type="text/javascript" src="../src/interpreter/nodes/CallJS.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/Module.js"></script>
-		<script type="text/javascript" src="../src/interpreter/ModuleSet.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/types/Type.js"></script>
-
-		<script type="text/javascript" src="../src/interpreter/StaticCheck.js"></script>
-
-        <script type="text/javascript" src="../src/ast/AstBuilder.js"></script>
-
-<!-- --- -->
-
-		<h2>MUPLex: parsing</h2>
-		<table>
-			<tr>
-				<td>
-					<span class="title">Module definitions</span><br>
-					<textarea id="in_mods" rows="10" cols="50">(program
+    <div id="container">
+    <h2>MUPLex: parsing</h2>
+    <table id="app" style="visibility:hidden;">
+        <tr>
+            <td>
+                <span class="title">Module definitions</span><br>
+                <textarea id="in_mods">(program
 (module m
  (public f (lambda (x) (* x x)))
  (private g (lambda (x) (* (* x x) x)))
@@ -106,137 +31,106 @@
  (private b (lambda (x) (* (* x x) x)))
  (public c (lambda (x) (+ 1 (call m.h x))))
 ))</textarea><br>
-					<span class="title">Expression to evaluate</span><br>
-					<textarea id="in_exp" rows="6" cols="50">(let ((a 10))
+                <span class="title">Expression to evaluate</span><br>
+                <textarea id="in_exp">(let ((a 10))
  (+ (call m.f 5) a)
 )</textarea><br>
-				 <input value="Compute" id="but_compute" type="button" onclick="doEval()"><br>
-				 <br>
-				 <span class="title">Interpreter output</span><br>
-					<textarea id="out_interpreter" rows="3" cols="50" readonly="readonly"></textarea>
-				</td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td>
-					<span class="title">Parser output</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input id="chk_ast" type="checkbox"><span class="title">AST</span>
-					<textarea id="out_parser" rows="3" cols="50" readonly="readonly"></textarea>
-				</td>
-			</tr>
-		</table>
+                <button id="but_compute">Compute</button><br>
+                <br>
+                <span class="title">Interpreter output</span><br>
+                <textarea id="out_interpreter" readonly="readonly"></textarea>
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>
+                <span class="title">Parser output</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input id="chk_ast" type="checkbox"><span class="title">AST</span>
+                <textarea id="out_parser" readonly="readonly"></textarea>
+            </td>
+        </tr>
+    </table>
+    </div>
 
-<!-- --- -->
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/matchbrackets.js"></script>
 
-		<script type="text/javascript">
-			'use strict';
+    <script src="../lib/espace.min.js"></script>
 
-            const { buildAst, buildProgramAst } = require('../../src/ast/AstBuilder.js').AstBuilder
-			var StaticCheck = require('./interpreter/StaticCheck.js').StaticCheck;
-			var VarCheckState = require('./interpreter/VarCheckState.js').VarCheckState;
-			var Env = require('./interpreter/Env.js').Env;
-			var Out = require('./interpreter/Out.js').Out;
+    <script src="../src/Require.js"></script>
 
-			window.onload = process;
-			var _parsedFreeExp;
-			var _modSet;
+    <script src="../src/interpreter/TypeBinding.js"></script>
+    <script src="../src/interpreter/VarBinding.js"></script>
+    <script src="../src/interpreter/VarCheckState.js"></script>
 
-			var inModsEditor, inExpEditor, outParserEditor, outInterpreterEditor;
+    <script src="../src/interpreter/Env.js"></script>
+    <script src="../src/interpreter/Out.js"></script>
 
-			function setupEditors() {
-				inModsEditor = CodeMirror.fromTextArea(document.getElementById('in_mods'), {
-					lineNumbers: true,
-					styleActiveLine: true,
-					matchBrackets: true
-				});
-				inModsEditor.setSize(500, 200);
-				inModsEditor.setOption('theme', 'cobalt');
-				inModsEditor.on('change', process);
+    <script src="../src/interpreter/nodes/Any.js"></script>
+    <script src="../src/interpreter/nodes/Bool.js"></script>
+    <script src="../src/interpreter/nodes/Num.js"></script>
+    <script src="../src/interpreter/nodes/Str.js"></script>
+    <script src="../src/interpreter/nodes/Unit.js"></script>
+    <script src="../src/interpreter/nodes/UnitQ.js"></script>
 
-				inExpEditor = CodeMirror.fromTextArea(document.getElementById('in_exp'), {
-					lineNumbers: true,
-					styleActiveLine: true,
-					matchBrackets: true
-				});
-				inExpEditor.setSize(500, 100);
-				inExpEditor.setOption('theme', 'cobalt');
-				inExpEditor.on('change', process);
+    <script src="../src/interpreter/nodes/NumQ.js"></script>
+    <script src="../src/interpreter/nodes/Add.js"></script>
+    <script src="../src/interpreter/nodes/Sub.js"></script>
+    <script src="../src/interpreter/nodes/Mul.js"></script>
+    <script src="../src/interpreter/nodes/Div.js"></script>
+    <script src="../src/interpreter/nodes/Mod.js"></script>
 
-				outParserEditor = CodeMirror.fromTextArea(document.getElementById('out_parser'), {
-					lineNumbers: true,
-					styleActiveLine: true,
-					readOnly: true
-				});
-				outParserEditor.setSize(500, 300);
-				outParserEditor.setOption('theme', 'cobalt');
+    <script src="../src/interpreter/nodes/Def.js"></script>
 
-				outInterpreterEditor = CodeMirror.fromTextArea(document.getElementById('out_interpreter'), {
-					lineNumbers: true,
-					styleActiveLine: true,
-					readOnly: true
-				});
-				outInterpreterEditor.setSize(500, 100);
-				outInterpreterEditor.setOption('theme', 'cobalt');
-			}
+    <script src="../src/interpreter/nodes/Let.js"></script>
+    <script src="../src/interpreter/nodes/Var.js"></script>
+    <script src="../src/interpreter/nodes/Closure.js"></script>
+    <script src="../src/interpreter/nodes/Fun.js"></script>
+    <script src="../src/interpreter/nodes/ClosureQ.js"></script>
+    <script src="../src/interpreter/nodes/Call.js"></script>
 
-			function setupCheckboxes() {
-				document.getElementById('chk_ast')
-					.addEventListener('change', process);
-			}
+    <script src="../src/interpreter/nodes/StrQ.js"></script>
+    <script src="../src/interpreter/nodes/BoolQ.js"></script>
+    <script src="../src/interpreter/nodes/If.js"></script>
+    <script src="../src/interpreter/nodes/Greater.js"></script>
+    <script src="../src/interpreter/nodes/Not.js"></script>
+    <script src="../src/interpreter/nodes/And.js"></script>
+    <script src="../src/interpreter/nodes/Or.js"></script>
+    <script src="../src/interpreter/nodes/Xor.js"></script>
 
-			setupEditors();
-			setupCheckboxes();
+    <script src="../src/interpreter/nodes/Record.js"></script>
+    <script src="../src/interpreter/nodes/RecordQ.js"></script>
+    <script src="../src/interpreter/nodes/Deref.js"></script>
+    <script src="../src/interpreter/nodes/ContainsQ.js"></script>
 
-            function parse (source) {
-                const tokens = espace.Tokenizer()(source)
-                return espace.Parser.parse(tokens)
-            }
+    <script src="../src/interpreter/nodes/Pair.js"></script>
+    <script src="../src/interpreter/nodes/PairQ.js"></script>
+    <script src="../src/interpreter/nodes/Fst.js"></script>
+    <script src="../src/interpreter/nodes/Snd.js"></script>
 
-			function process() {
-				var hComputeButton = document.getElementById('but_compute');
+    <script src="../src/interpreter/nodes/Set.js"></script>
+    <script src="../src/interpreter/nodes/SetFst.js"></script>
+    <script src="../src/interpreter/nodes/SetSnd.js"></script>
 
-				var hAst = document.getElementById('chk_ast');
+    <script src="../src/interpreter/nodes/Print.js"></script>
+    <script src="../src/interpreter/nodes/Err.js"></script>
 
-    			var modsIn = inModsEditor.getValue();
-				var expIn = inExpEditor.getValue();
-				var outParser = '';
+    <script src="../src/interpreter/nodes/interjm.js"></script>
 
-				try {
-					_modSet = buildProgramAst(parse(modsIn))
+    <script src="../src/interpreter/nodes/ArrJS.js"></script>
+    <script src="../src/interpreter/nodes/CallJS.js"></script>
 
-					_modSet.accept(new StaticCheck(), new VarCheckState(Env.Emp, _modSet));
-					outParser += 'Modules type/reference check: OK.\n';
+    <script src="../src/interpreter/Module.js"></script>
+    <script src="../src/interpreter/ModuleSet.js"></script>
 
-					_parsedFreeExp = buildAst(parse(expIn))
-					if (hAst.checked) {
-                        outParser += 'Free exp AST:\n----\n' + _parsedFreeExp.toString() + '\n\n';
-                    }
+    <script src="../src/interpreter/types/Type.js"></script>
 
-					_parsedFreeExp.accept(new StaticCheck(), new VarCheckState(Env.Emp, _modSet));
-					outParser += 'Free exp type/reference check: OK.\n';
+    <script src="../src/interpreter/StaticCheck.js"></script>
 
-					hComputeButton.disabled = false;
-				} catch(err) {
-					outParser += err;
-					hComputeButton.disabled = true;
-				}
-				outParserEditor.setValue(outParser);
-			}
+    <script src="../src/ast/AstBuilder.js"></script>
 
-			function doEval() {
-				var istr = '';
-				try {
-					Out.reset();
-					var res = _parsedFreeExp.ev(Env.Emp, _modSet);
-					istr += res.toString();
+    <script src="main.js"></script>
 
-					istr += '\n---\n\n';
-					istr += Out.toString();
-				} catch(err) {
-					istr += 'Runtime exception: ' + err;
-				}
-
-				outInterpreterEditor.setValue(istr);
-			}
-		</script>
-
-	</body>
+    <script>
+        document.getElementById('app').style.visibility = 'visible'
+    </script>
+</body>
 </html>
